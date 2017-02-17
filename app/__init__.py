@@ -1,13 +1,9 @@
 from flask import (
-    Flask,
-    render_template,
-    flash,
-    request,
-    session
+    Flask
 )
+from config import config
 
 app = Flask(__name__)
-# app.config.from_object('config')
-app.config['DEBUG'] = True
+app.config.from_object(config['default'])
 
 from app import views
