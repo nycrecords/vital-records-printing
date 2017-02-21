@@ -1,5 +1,13 @@
 from app import app
-from flask import Flask, render_template, request, flash
+from app.forms import SearchForm
+from flask import (
+    Flask,
+    render_template,
+    request,
+    flash,
+    redirect,
+    url_for
+)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -23,7 +31,13 @@ def search():
     """
     Return search page
     """
-    return render_template('search.html')
+    form = SearchForm()
+    if request.method == "POST":
+        # form = SearchForm(request.form)
+        # if form.validate()
+        if form.validate_on_submit():
+            return redirect(url_for("main"))
+    return render_template('search.html', form=form)
 
 
 @app.route('/edit', methods=['GET', 'POST'])
