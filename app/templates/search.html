@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    SEARCH <br>
+
+    <form method="post" action="{{ url_for("search") }}">
+        {{ form.hidden_tag() }}
+
+        {{ form.name.label }}
+        <div class="input-group">
+            {{ form.name(class="form-control") }}
+        </div>
+
+        {{ form.submit }}
+
+{#        {{ form.name.errors }}#}
+{#        {{ form.errors }}#}
+    </form>
+{% endblock %}
