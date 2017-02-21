@@ -2,16 +2,16 @@
 <html>
 
 <head>
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="static/css/simple-sidebar.css" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/bootstrap.min.css") }}" rel="stylesheet">
 </head>
 
 <body>
 
 {% block content %}{% endblock %}
 
-<script src="static/js/jquery.js"></script>
-<script src="static/js/bootstrap.min.js"></script>
+<script src="{{ url_for("static", filename="js/jquery-3.1.1.slim.min.js") }}"></script>
+<script src="{{ url_for("static", filename="js/tether.min.js") }}"></script>
+<script src="{{ url_for("static", filename="js/bootstrap.min.js") }}"></script>
 </body>
 
 </html>

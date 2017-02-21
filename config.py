@@ -1,6 +1,7 @@
 
 class Config(object):
     DEBUG = True
+    SECRET_KEY = "secrets"
 
 
 class DevelopmentConfig(Config):
