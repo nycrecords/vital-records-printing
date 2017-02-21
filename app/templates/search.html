@@ -7,7 +7,9 @@
         {{ form.hidden_tag() }}
 
         {{ form.name.label }}
-        {{ form.name(class="form-control") }}
+        <div class="input-group">
+            {{ form.name(class="form-control") }}
+        </div>
 
         {{ form.submit }}
 
