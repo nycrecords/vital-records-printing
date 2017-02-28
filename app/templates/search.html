@@ -6,14 +6,30 @@
     <form method="post" action="{{ url_for("search") }}">
         {{ form.hidden_tag() }}
 
-        {{ form.name.label }}
-        <div class="input-group">
-            {{ form.name(class="form-control") }}
-        </div>
+        {{ form.type.label }}
+        {{ form.type(class="form-control") }}
+
+        {{ form.county.label }}
+        {{ form.county(class="form-control") }}
+
+        {{ form.year.label }}
+        {{ form.year(class="form-control") }}
+
+        {{ form.number.label }}
+        {{ form.number(class="form-control") }}
+
+        {{ form.first_name.label }}
+        {{ form.first_name(class="form-control") }}
+
+        {{ form.last_name.label }}
+        {{ form.last_name(class="form-control") }}
+
+        {{ form.soundex.label }}
+        {{ form.soundex(class="form-control", maxLength=4) }}
+
+        {{ form.errors }}
+        {{ form.soundex.errors }}
 
         {{ form.submit }}
-
-{#        {{ form.name.errors }}#}
-{#        {{ form.errors }}#}
     </form>
 {% endblock %}
