@@ -7,25 +7,25 @@
         {{ form.hidden_tag() }}
 
         {{ form.type.label }}
-        {{ form.type(class="form-control") }}
+        {{ form.type(class="form-control col-lg-1") }}
 
         {{ form.county.label }}
-        {{ form.county(class="form-control") }}
+        {{ form.county(class="form-control col-lg-2") }}
 
         {{ form.year.label }}
-        {{ form.year(class="form-control") }}
+        {{ form.year(class="form-control col-lg-1", maxLength=4) }}
 
         {{ form.number.label }}
-        {{ form.number(class="form-control") }}
+        {{ form.number(class="form-control col-lg-3") }}
 
         {{ form.first_name.label }}
-        {{ form.first_name(class="form-control") }}
+        {{ form.first_name(class="form-control col-lg-3") }}
 
         {{ form.last_name.label }}
-        {{ form.last_name(class="form-control") }}
+        {{ form.last_name(class="form-control col-lg-3") }}
 
         {{ form.soundex.label }}
-        {{ form.soundex(class="form-control", maxLength=4) }}
+        {{ form.soundex(class="form-control col-lg-1", maxLength=4) }}
 
         {{ form.errors }}
         {{ form.soundex.errors }}
