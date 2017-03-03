@@ -3,44 +3,66 @@ Models for Vital Records Printing
 """
 
 from app import db
+from app.constants import certificate_types, months, counties
 
 
-class Certificate(db.Model):
+class Cert(db.Model):
     """
-    Define the Certificate class with the following columns:
+    Define the Cert class with the following columns:
 
     type - an enum containing certificate type (e.g. 'birth')
     county - an enum containing one of 'brooklyn', 'queens', 'bronx', 'manhattan', 'staten_island'
     year - an int (4) containing certificate year
-    number - an int containing certificate number
+    number - a varchar containing certificate number
     first_name - a varchar containing first name of individual pertaining to certificate
     last_name - a varchar containing last name of individual pertaining to certificate
     soundex - a varchar(4) containing ???
     filename - a varchar containing filename
     """
     __tablename__ = "certificate"
-    # id=primary key
-    type = db.Column(  # TODO: type of marriage too (bride vs groom)
+    id = db.Column(db.Integer, primary_key=True)  # TODO: might have use composite key instead (names & certificate number)
+    # TODO: type of marriage change to 'bride' and 'groom'?
+    type = db.Column(
         db.Enum(
-            'Birth',
-            'Death',
-            'Marriage',
+            certificate_types.BIRTH,
+            certificate_types.DEATH,
+            certificate_types.MARRIAGE,
             name='certificate_type'),
-        nullable=False)
+        nullable=False
+    )
     county = db.Column(
         db.Enum(
-            'Kings',
-            'Queens',
-            'Bronx',
-            'Manhattan',
-            'Staten_Island',
-            name='county'))
-    year = db.Column(db.Integer)  # TODO: limit to 4 digits, unsigned
-    number = db.Column(db.Integer)
-    first_name = db.Column(db.String(64))
-    last_name = db.Column(db.String(64))
-    soundex = db.Column(db.String(4))
-    filename = db.Column(db.String(64))
+            counties.KINGS,
+            counties.QUEENS,
+            counties.BRONX,
+            counties.MANHATTAN,
+            counties.RICHMOND,
+            name='county'),
+        nullable=False
+    )
+    month = db.Column(
+        db.Enum(
+            months.JAN,
+            months.FEB,
+            months.MAR,
+            months.APR,
+            months.MAY,
+            months.JUN,
+            months.JUL,
+            months.AUG,
+            months.SEP,
+            months.OCT,
+            months.NOV,
+            months.DEC,
+            name='month'))
+    # TODO: on day, year, and number: http://stackoverflow.com/questions/20810134/why-unsigned-integer-is-not-available-in-postgresql
+    day = db.Column(db.String(6))  # some include apostrophes, why?
+    year = db.Column(db.Integer, nullable=False)
+    number = db.Column(db.String(64), nullable=False)
+    first_name = db.Column(db.String(64))  # many first names not included
+    last_name = db.Column(db.String(64), nullable=False)
+    soundex = db.Column(db.String(4))  # NULLABLE?!
+    filename = db.Column(db.String(64), nullable=False)
 
     def __init__(self,
                  type,
