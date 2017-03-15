@@ -46,40 +46,29 @@
 {#      </div>#}
 {#    </div>#}
 
-{#    <img id="test" data-caman="hue(0) contrast(0)" src="./static/img/test_pic.jpg">#}
-{#    <canvas id="canvas"></canvas>#}
-{##}
-{##}
-{##}
-{#    <form id="silderInput">#}
-{#  <label for="hue">Hue</label>#}
-{#  <input id="hue" name="hue" type="range" min="0" max="300" value="0">#}
-{##}
-{#  <label for="contrast">Contrast</label>#}
-{#  <input id="contrast" name="contrast" type="range" min="-20" max="20" value="0">#}
-{#</form>#}
-{##}
-{##}
-{#    <canvas id="canvas" src="./static/img/test_pic.jpg"></canvas>#}
-{#    <button id="vintagebtn">Vintage</button>#}
-{#    <button id="noisebtn">Noise</button>#}
-{#    <button id="tiltshiftbtn">Tilt Shift</button>#}
+
+    <script type="text/javascript" src="caman.full.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
 
-<style>
-.democlass {
-    color: red;
-}
-</style>
-
-    <img id="test" data-caman="hue(0) contrast(0)" src="./static/img/test_pic.jpg">
-{#    <button onclick="myFunction()">Click me</button>#}
+{#    <script src="{{ url_for("static", filename="js/jquery-3.1.1.slim.min.js") }}"></script>#}
+{#    <script src="{{ url_for("static", filename="js/tether.min.js") }}"></script>#}
+{#    <script src="{{ url_for("static", filename="js/bootstrap.min.js") }}"></script>#}
+{#    <script src="{{ url_for("static", filename="js/caman.full.js") }}"></script>#}
+{#    <script src="{{ url_for("static", filename="js/test.js") }}"></script>#}
 
 
 
-    <h1>Hello World</h1>
-<button onclick="myFunction()">Try it</button>
+{#    <img id="image-id" data-caman="hue(0) contrast(0)" src="./static/img/sage.png">#}
+    <canvas id="canvas-id"></canvas>
 
+<form id="silderInput">
+  <label for="brightness">Brightness</label>
+  <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0">
+
+  <label for="contrast">Contrast</label>
+  <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0">
+</form>
 
 
 
