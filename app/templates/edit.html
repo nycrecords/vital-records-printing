@@ -1,75 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-{#    <p>Certificate Brightness and Contrast can be changed here.</p>#}
-{##}
-{#    <img id="my-image" data-caman="brightness(0) contrast(0)" src="./static/img/test_pic.jpg">#}
-{##}
-{#    <canvas id="canvas" src="./static/img/test_pic.jpg"></canvas>#}
-{#<button id="vintagebtn">Vintage</button>#}
-{#<button id="noisebtn">Noise</button>#}
-{#<button id="tiltshiftbtn">Tilt Shift</button>#}
-{##}
-{#    <div class="Filter">#}
-{#      <div class="FilterName">#}
-{#        <p>brightness</p>#}
-{#      </div>#}
-{##}
-{#      <div class="FilterSetting">#}
-{#        <input#}
-{#          type="range"#}
-{#          min="-100"#}
-{#          max="100"#}
-{#          step="1"#}
-{#          value="0"#}
-{#          data-filter="brightness"#}
-{#        >#}
-{#        <span class="FilterValue">0</span>#}
-{#      </div>#}
-{#    </div>#}
-{##}
-{#    <div class="Filter">#}
-{#      <div class="FilterName">#}
-{#        <p>contrast</p>#}
-{#      </div>#}
-{##}
-{#      <div class="FilterSetting">#}
-{#        <input#}
-{#          type="range"#}
-{#          min="-100"#}
-{#          max="100"#}
-{#          step="1"#}
-{#          value="0"#}
-{#          data-filter="contrast"#}
-{#        >#}
-{#        <span class="FilterValue">0</span>#}
-{#      </div>#}
-{#    </div>#}
-
-
-    <script type="text/javascript" src="caman.full.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-
-
-{#    <script src="{{ url_for("static", filename="js/jquery-3.1.1.slim.min.js") }}"></script>#}
-{#    <script src="{{ url_for("static", filename="js/tether.min.js") }}"></script>#}
-{#    <script src="{{ url_for("static", filename="js/bootstrap.min.js") }}"></script>#}
-{#    <script src="{{ url_for("static", filename="js/caman.full.js") }}"></script>#}
-{#    <script src="{{ url_for("static", filename="js/test.js") }}"></script>#}
+    <img id="image-id" src="./static/img/test_pic.jpg">
+{#    <img id="image-id2" src="./static/img/test_pic.jpg">#}
 
 
 
-{#    <img id="image-id" data-caman="hue(0) contrast(0)" src="./static/img/sage.png">#}
-    <canvas id="canvas-id"></canvas>
+    <form id="silderInput">
+      <label for="brightness">Brightness</label>
+      <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0">
 
-<form id="silderInput">
-  <label for="brightness">Brightness</label>
-  <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0">
-
-  <label for="contrast">Contrast</label>
-  <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0">
-</form>
+      <label for="contrast">Contrast</label>
+      <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0">
+    </form>
 
 
+    <button id="increase-brightness-btn" value="0">Inc Brightness</button>
+    <button id="decrease-brightness-btn" value="0">Dec Brightness</button>
 
+    <button id="increase-contrast-btn" value="0">Inc Contrast</button>
+    <button id="decrease-contrast-btn" value="0">Dec Contrast</button>
+
+    <button id="resetbtn" class="btn btn-success">Reset Photo</button>
+
+    <button id="savebtn" class="btn btn-success">Save Photo</button>
 {% endblock %}
