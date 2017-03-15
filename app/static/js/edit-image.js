@@ -1,7 +1,3 @@
-Caman("#image-id", function () {
-  
-});
-
 $('input[type=range]').change(applyFilters);
 
 function applyFilters() {
@@ -15,43 +11,6 @@ function applyFilters() {
       this.render();
     });
 }
-
-
-
-$('#increase-brightness-btn').on('click', function(e) {
-  var current = document.getElementById("increase-brightness-btn").value;
-  Caman('#image-id', function() {
-    this.brightness(current + 5);
-    this.render();
-    current = current + 5;
-  });
-
-});
-
-$('#decrease-brightness-btn').on('click', function(e) {
-  var current = document.getElementById("increase-brightness-btn").value;
-  Caman('#image-id', function() {
-    this.brightness(current - 5);
-    this.render();
-    current = current - 5;
-  });
-});
-
-
-$('#increase-contrast-btn').on('click', function(e) {
-  Caman('#image-id', function() {
-    this.contrast(5);
-    this.render();
-  });
-});
-
-$('#decrease-contrast-btn').on('click', function(e) {
-  Caman('#image-id', function() {
-    this.contrast(-5);
-    this.render();
-  });
-});
-
 
 $('#resetbtn').on('click', function(e) {
   $('input[type=range]').val(0);
@@ -70,3 +29,14 @@ $('#savebtn').on('click', function(e) {
   });
 });
 
+
+function toggleMode(){
+  if(document.getElementById("interactive-mode").checked){
+    document.getElementById("brightness").setAttribute("oninput", "applyFilters()");
+    document.getElementById("contrast").setAttribute("oninput", "applyFilters()");
+  }
+  else{
+    document.getElementById("brightness").setAttribute("oninput", "");
+    document.getElementById("contrast").setAttribute("oninput", "");
+  }
+}

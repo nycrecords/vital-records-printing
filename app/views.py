@@ -45,4 +45,5 @@ def edit():
     """
     Return edit page
     """
+
     return render_template('edit.html')

@@ -2,24 +2,17 @@
 
 {% block content %}
     <img id="image-id" src="./static/img/test_pic.jpg">
-{#    <img id="image-id2" src="./static/img/test_pic.jpg">#}
-
-
 
     <form id="silderInput">
       <label for="brightness">Brightness</label>
-      <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0">
+      <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0" oninput="applyFilters()">
 
       <label for="contrast">Contrast</label>
-      <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0">
+      <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0" oninput="applyFilters()">
     </form>
 
-
-    <button id="increase-brightness-btn" value="0">Inc Brightness</button>
-    <button id="decrease-brightness-btn" value="0">Dec Brightness</button>
-
-    <button id="increase-contrast-btn" value="0">Inc Contrast</button>
-    <button id="decrease-contrast-btn" value="0">Dec Contrast</button>
+    <input type="checkbox" id="interactive-mode" value="true" checked onclick="toggleMode()">Interactive Mode<br>
+    <p>Interactive mode lets you see your changes in real time as you adjust the sliders</p>
 
     <button id="resetbtn" class="btn btn-success">Reset Photo</button>
 
