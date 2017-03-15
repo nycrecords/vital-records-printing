@@ -3,33 +3,76 @@
 {% block content %}
     SEARCH <br>
 
-    <form method="post" action="{{ url_for("search") }}">
+    <form id="search-form" method="post" action="{{ url_for("search") }}">
         {{ form.hidden_tag() }}
 
-        {{ form.type.label }}
-        {{ form.type(class="form-control col-lg-1") }}
+        <div class="row">
+            <div class="col-md-12">
+                {{ form.type.label }}
+                {{ form.type(class="form-control") }}
+            </div>
+        </div>
 
-        {{ form.county.label }}
-        {{ form.county(class="form-control col-lg-2") }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.first_name.label }}
+                {{ form.first_name(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+                {{ form.last_name.label }}
+                {{ form.last_name(class="form-control") }}
+            </div>
+        </div>
 
-        {{ form.year.label }}
-        {{ form.year(class="form-control col-lg-1", maxLength=4) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.county.label }}
+                {{ form.county(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+                {{ form.year.label }}
+                {{ form.year(class="form-control", maxLength=4) }}
+            </div>
+        </div>
 
-        {{ form.number.label }}
-        {{ form.number(class="form-control col-lg-3") }}
-
-        {{ form.first_name.label }}
-        {{ form.first_name(class="form-control col-lg-3") }}
-
-        {{ form.last_name.label }}
-        {{ form.last_name(class="form-control col-lg-3") }}
-
-        {{ form.soundex.label }}
-        {{ form.soundex(class="form-control col-lg-1", maxLength=4) }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.number.label }}
+                {{ form.number(class="form-control") }}
+            </div>
+            <div class="col-md-6">
+                {{ form.soundex.label }}
+                {{ form.soundex(class="form-control", maxLength=4) }}
+            </div>
+        </div>
 
         {{ form.errors }}
         {{ form.soundex.errors }}
 
         {{ form.submit }}
     </form>
+    <div id="results">
+
+    </div>
+{% endblock %}
+
+{% block custom_script %}
+    <script type="text/javascript">
+        $(function () {
+            $("#search-form").submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "/search",
+                    method: "post",
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        $("#results").empty();
+                        for (var i = 0; i < response.data.length; i++) {
+                            $("#results").append(response.data[i]);
+                        }
+                    }
+                });
+            })
+        });
+    </script>
 {% endblock %}
