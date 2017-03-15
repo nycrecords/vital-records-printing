@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <img id="image-id" src="./static/img/test_pic.jpg">
+{#    <img id="image-id" src="{{ file_path }}">#}
+    <img id="image-id" src="{{ url_for("static", filename="img/test_pic.jpg") }}">
 
     <form id="silderInput">
       <label for="brightness">Brightness</label>
@@ -15,6 +16,6 @@
     <p>Interactive mode lets you see your changes in real time as you adjust the sliders</p>
 
     <button id="resetbtn" class="btn btn-success">Reset Photo</button>
-
     <button id="savebtn" class="btn btn-success">Save Photo</button>
+    <button id="printbtn" class="btn btn-success">Print Photo</button>
 {% endblock %}
