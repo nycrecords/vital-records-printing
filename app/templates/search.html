@@ -7,52 +7,84 @@
         {{ form.hidden_tag() }}
 
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-sm-12">
                 {{ form.type.label }}
                 {{ form.type(class="form-control") }}
+                <div class="error type"></div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 {{ form.first_name.label }}
                 {{ form.first_name(class="form-control") }}
             </div>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 {{ form.last_name.label }}
                 {{ form.last_name(class="form-control") }}
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 {{ form.county.label }}
                 {{ form.county(class="form-control") }}
+                <div class="error county"></div>
             </div>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 {{ form.year.label }}
                 {{ form.year(class="form-control", maxLength=4) }}
+                <div class="error year"></div>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 {{ form.number.label }}
                 {{ form.number(class="form-control") }}
             </div>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 {{ form.soundex.label }}
                 {{ form.soundex(class="form-control", maxLength=4) }}
+                <div class="error soundex"></div>
             </div>
         </div>
 
-        {{ form.errors }}
-        {{ form.soundex.errors }}
+        {{ form.year_sort }}  <!-- (hidden="true") -->
+        {{ form.number_sort }}
+        {{ form.first_name_sort }}
+        {{ form.last_name_sort }}
+        {{ form.soundex_sort }}
 
         {{ form.submit }}
     </form>
-    <div id="results">
 
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-sm-2">
+                    County
+                </div>
+                <div class="col-sm-2 sort-field" data-sort-order="none" data-target="year_sort">
+                    Year <span class="glyphicon" aria-hidden="true"></span>
+                </div>
+                <div class="col-sm-2 sort-field" data-sort-order="none" data-target="number_sort">
+                    Certificate Number <span class="glyphicon" aria-hidden="true"></span>
+                </div>
+                <div class="col-sm-2 sort-field" data-sort-order="none" data-target="first_name_sort">
+                    First Name <span class="glyphicon" aria-hidden="true"></span>
+                </div>
+                <div class="col-sm-2 sort-field" data-sort-order="none" data-target="last_name_sort">
+                    Last Name <span class="glyphicon" aria-hidden="true"></span>
+                </div>
+                <div class="col-sm-2 sort-field" data-sort-order="none" data-target="soundex_sort">
+                    Soundex <span class="glyphicon" aria-hidden="true"></span>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div id="results"></div>
+        </div>
     </div>
 {% endblock %}
 
@@ -65,14 +97,57 @@
                     url: "/search",
                     method: "post",
                     data: $(this).serialize(),
-                    success: function(response) {
-                        $("#results").empty();
-                        for (var i = 0; i < response.data.length; i++) {
-                            $("#results").append(response.data[i]);
+                    success: function (response) {
+                        $(".type").text('');
+                        $(".county").text('');
+                        $(".year").text('');
+                        $(".soundex").text('');
+
+                        if (response.hasOwnProperty('errors')) {
+                            console.log(response.errors);
+                            $(".type").text(response.errors.type);
+                            $(".county").text(response.errors.county);
+                            $(".year").text(response.errors.year);
+                            $(".soundex").text(response.errors.soundex);
+                        }
+                        else {
+                            var results = $("#results");
+                            results.empty();
+                            for (var i = 0; i < response.data.length; i++) {
+                                results.append(response.data[i]);
+                            }
                         }
                     }
                 });
-            })
+            });
+
+            // Sorting
+            var sortOrderToGlyphicon = {
+                desc: "glyphicon-triangle-bottom",
+                asc: "glyphicon-triangle-top",
+                none: "",
+            };
+
+            var sortSequence = ["none", "desc", "asc"];
+
+            function cycleSort(elem) {
+                var icon = elem.find(".glyphicon");
+                icon.removeClass(sortOrderToGlyphicon[elem.attr("data-sort-order")]);
+
+                elem.attr(
+                    "data-sort-order",
+                    sortSequence[
+                    (sortSequence.indexOf(elem.attr("data-sort-order")) + 1 + sortSequence.length)
+                    % sortSequence.length]);
+
+                icon.addClass(sortOrderToGlyphicon[elem.attr("data-sort-order")]);
+            }
+
+            $(".sort-field").click(function () {
+                cycleSort($(this));
+                // fill hidden inputs
+                $("#" + $(this).attr("data-target")).val($(this).attr("data-sort-order"));
+            });
         });
     </script>
 {% endblock %}

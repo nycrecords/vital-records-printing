@@ -1,0 +1,16 @@
+#results .row:nth-child(even) {
+    background-color: #7ab5e0;
+}
+
+.error {
+    color: red;
+}
+
+.sort-field {
+    color: #2165ff;
+}
+
+.sort-field:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}

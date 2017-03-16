@@ -49,14 +49,15 @@ def search():
                 if value:
                     filters[name] = value
 
+            # TODO: .order_by(Cert.soundex.asc()) or .desc()
             rows = []
             for cert in Cert.query.filter_by(**filters).limit(10).all():
                 rows.append(render_template('certificate_row.html', certificate=cert))
 
             return jsonify({"data": rows})
+        else:
+            return jsonify({"errors": form.errors})
 
-        print("ERRORS: ")
-        print(form.errors)
     return render_template('search.html', form=form)
 
 
