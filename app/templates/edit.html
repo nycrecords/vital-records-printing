@@ -1,21 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
-{#    <img id="image-id" src="{{ file_path }}">#}
-    <img id="image-id" src="{{ url_for("static", filename="img/test_pic.jpg") }}">
+    <div class="row" id="cert-image-row">
+        <div class="col-md-12">
+            {#    <img id="cert-image" src="{{ file_path }}">#}
+            <img id="cert-image" src="{{ url_for("static", filename="img/test_pic.jpg")}}">
+        </div>
+    </div>
 
-    <form id="silderInput">
-      <label for="brightness">Brightness</label>
-      <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0" oninput="applyFilters()">
+    <div class="row" id="image-sliders">
+        <div class="col-md-12">
+            <label for="brightness">Brightness</label>
+            <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0" oninput="applyFilters()">
+            <label for="contrast">Contrast</label>
+            <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0" oninput="applyFilters()">
+        </div>
+    </div>
 
-      <label for="contrast">Contrast</label>
-      <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0" oninput="applyFilters()">
-    </form>
+    <div class="row" id="interactive-mode-toggle">
+        <div class="col-md-12">
+            <input type="checkbox" id="interactive-mode" value="true" checked onclick="toggleMode()">Interactive Mode<br>
+            <p>Interactive mode lets you see your changes in real time as you adjust the sliders</p>
+        </div>
+    </div>
 
-    <input type="checkbox" id="interactive-mode" value="true" checked onclick="toggleMode()">Interactive Mode<br>
-    <p>Interactive mode lets you see your changes in real time as you adjust the sliders</p>
+    <div class="row" id="image-buttons">
+        <div class="col-md-12">
+            <div id="image-buttons">
+                <button id="resetbtn" class="btn btn-success" style="text-align: center">Reset Photo</button>
+                <button id="savebtn" class="btn btn-success">Save Photo</button>
+                <button id="printbtn" class="btn btn-success">Print Photo</button>
+            </div>
+        </div>
+    </div>
 
-    <button id="resetbtn" class="btn btn-success">Reset Photo</button>
-    <button id="savebtn" class="btn btn-success">Save Photo</button>
-    <button id="printbtn" class="btn btn-success">Print Photo</button>
 {% endblock %}

@@ -4,7 +4,7 @@ function applyFilters() {
   var brightness = parseInt($('#brightness').val());
   var cntrst = parseInt($('#contrast').val());
 
-    Caman('#image-id', function() {
+    Caman('#cert-image', function() {
       this.revert(false);
       this.brightness(brightness);
       this.contrast(cntrst);
@@ -14,7 +14,7 @@ function applyFilters() {
 
 $('#resetbtn').on('click', function(e) {
   $('input[type=range]').val(0);
-  Caman('#image-id', function() {
+  Caman('#cert-image', function() {
     this.revert(false);
     this.render();
   });
@@ -22,9 +22,9 @@ $('#resetbtn').on('click', function(e) {
 
 
 $('#savebtn').on('click', function(e) {
-  Caman('#image-id', function() {
+  Caman('#cert-image', function() {
     this.render(function() {
-      this.save('png');
+      this.save('jpg');
     });
   });
 });
