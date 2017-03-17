@@ -16,7 +16,7 @@ def main():
     """
     Stuff
     """
-    pdf_to_png(input_file_path="app/static/pdf/bitcoin.pdf", output_file_path="app/png/")
+    pdf_to_png(input_file_path="app/static/pdf/bitcoin.pdf")
     return render_template('index.html')
 
 
