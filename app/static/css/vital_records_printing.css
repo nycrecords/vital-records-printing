@@ -14,3 +14,11 @@
 #image-buttons {
     text-align: center;
 }
+
+#brightness {
+    width: 200px;
+}
+
+#contrast {
+    width:200px;
+}
