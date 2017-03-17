@@ -19,14 +19,3 @@ $('#resetbtn').on('click', function(e) {
     this.render();
   });
 });
-
-function toggleMode(){
-  if(document.getElementById("interactive-mode").checked){
-    document.getElementById("brightness").setAttribute("oninput", "applyFilters()");
-    document.getElementById("contrast").setAttribute("oninput", "applyFilters()");
-  }
-  else{
-    document.getElementById("brightness").setAttribute("oninput", "");
-    document.getElementById("contrast").setAttribute("oninput", "");
-  }
-}

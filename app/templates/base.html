@@ -3,7 +3,7 @@
 
 <head>
     <link href="{{ url_for("static", filename="css/bootstrap.min.css") }}" rel="stylesheet">
-    <link href="{{ url_for("static", filename="css/vital_records_printing.css") }}" rel="stylesheet">
+    {% block custom_css %}{% endblock %}
 </head>
 
 <body>
@@ -15,8 +15,9 @@
 <script src="{{ url_for("static", filename="js/jquery-3.1.1.slim.min.js") }}"></script>
 <script src="{{ url_for("static", filename="js/tether.min.js") }}"></script>
 <script src="{{ url_for("static", filename="js/bootstrap.min.js") }}"></script>
-<script src="{{ url_for("static", filename="js/caman.full.js") }}"></script>
-<script src="{{ url_for("static", filename="js/edit-image.js") }}"></script>
+
+{% block custom_script %}{% endblock %}
+
 </body>
 
 </html>
