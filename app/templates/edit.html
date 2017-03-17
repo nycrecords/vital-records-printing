@@ -8,11 +8,16 @@
         </div>
     </div>
 
-    <div class="row" id="image-sliders">
+    <div class="row" id="brightness-slider">
         <div class="col-md-12">
-            <label for="brightness">Brightness</label>
+            <p>Brightness</p>
             <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0" oninput="applyFilters()">
-            <label for="contrast">Contrast</label>
+        </div>
+    </div>
+
+    <div class="row" id="contrast-slider">
+        <div class="col-md-12">
+            <p>Contrast</p>
             <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0" oninput="applyFilters()">
         </div>
     </div>
@@ -27,11 +32,10 @@
     <div class="row" id="image-buttons">
         <div class="col-md-12">
             <div id="image-buttons">
-                <button id="resetbtn" class="btn btn-success" style="text-align: center">Reset Photo</button>
-                <button id="savebtn" class="btn btn-success">Save Photo</button>
-                <button id="printbtn" class="btn btn-success">Print Photo</button>
+                <button id="resetbtn" class="btn btn-warning" style="text-align: center">Reset Photo</button>
+                &nbsp;
+                <button id="printbtn" class="btn btn-info">Print Photo</button>
             </div>
         </div>
     </div>
-
 {% endblock %}
