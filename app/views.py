@@ -1,5 +1,6 @@
 from app import app
 from app.forms import SearchForm
+from app.models import Cert
 from flask import (
     Flask,
     render_template,
@@ -8,7 +9,6 @@ from flask import (
     redirect,
     url_for
 )
-
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
@@ -40,7 +40,17 @@ def search():
     return render_template('search.html', form=form)
 
 
-@app.route('/edit', methods=['GET', 'POST'])
+# will be used later
+# @app.route('/edit/<int:cert_id>', methods=['GET'])
+# def edit(cert_id):
+#     """
+#     Return edit page
+#     """
+#     cert = Cert.query.filter_by(id=cert_id).one()
+#
+#     return render_template('edit.html', file_path=cert.filename)
+
+@app.route('/edit', methods=['GET'])
 def edit():
     """
     Return edit page

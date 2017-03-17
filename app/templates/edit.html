@@ -1,5 +1,43 @@
 {% extends "base.html" %}
 
+{% block custom_css %}
+    <link href="{{ url_for("static", filename="css/edit.css") }}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-  <p>Certificate Brightness and Contrast can be changed here.</p>
+    <div class="row" id="cert-image-row">
+        <div class="col-md-12">
+            {#    <img id="cert-image" src="{{ file_path }}">#}
+            <img id="cert-image" src="{{ url_for("static", filename="img/test_pic.jpg")}}">
+        </div>
+    </div>
+
+    <div class="row" id="brightness-slider">
+        <div class="col-md-12">
+            <p>Brightness</p>
+            <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0" oninput="applyFilters()">
+        </div>
+    </div>
+
+    <div class="row" id="contrast-slider">
+        <div class="col-md-12">
+            <p>Contrast</p>
+            <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0" oninput="applyFilters()">
+        </div>
+    </div>
+
+    <div class="row" id="image-buttons">
+        <div class="col-md-12">
+            <div id="image-buttons">
+                <button id="resetbtn" class="btn btn-warning" style="text-align: center">Reset Photo</button>
+                &nbsp;
+                <button id="printbtn" class="btn btn-info">Print Photo</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block custom_script %}
+    <script src="{{ url_for("static", filename="js/caman.full.min.js") }}"></script>
+    <script src="{{ url_for("static", filename="js/edit-image.js") }}"></script>
 {% endblock %}
