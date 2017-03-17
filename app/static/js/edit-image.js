@@ -19,3 +19,18 @@ $('#resetbtn').on('click', function(e) {
     this.render();
   });
 });
+
+$('#printbtn').on('click', function(e) {
+  Caman('#cert-image', function() {
+    this.render(function() {
+        var finalImage=this.toBase64();
+        var printWindow = window.open();
+        printWindow.document.write('<html><body><img src=\'');
+        printWindow.document.write(finalImage);
+        printWindow.document.write('\' /></body></html>');
+        printWindow.document.close();
+        printWindow.print();
+        printWindow.close();
+    });
+  });
+});
