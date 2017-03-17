@@ -20,16 +20,6 @@ $('#resetbtn').on('click', function(e) {
   });
 });
 
-
-$('#savebtn').on('click', function(e) {
-  Caman('#cert-image', function() {
-    this.render(function() {
-      this.save('jpg');
-    });
-  });
-});
-
-
 function toggleMode(){
   if(document.getElementById("interactive-mode").checked){
     document.getElementById("brightness").setAttribute("oninput", "applyFilters()");
