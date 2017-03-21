@@ -50,13 +50,13 @@
             </div>
         </div>
 
-        {{ form.year_sort }}  <!-- (hidden="true") -->
-        {{ form.number_sort }}
-        {{ form.first_name_sort }}
-        {{ form.last_name_sort }}
-        {{ form.soundex_sort }}
+        {{ form.year_sort(hidden="true") }}  <!-- (hidden="true") -->
+        {{ form.number_sort(hidden="true") }}
+        {{ form.first_name_sort(hidden="true") }}
+        {{ form.last_name_sort(hidden="true") }}
+        {{ form.soundex_sort(hidden="true") }}
 
-        {{ form.submit }}
+        <button type="submit" class="btn btn-default">Submit</button>
     </form>
 
     <div class="panel panel-default">
@@ -125,7 +125,7 @@
             var sortOrderToGlyphicon = {
                 desc: "glyphicon-triangle-bottom",
                 asc: "glyphicon-triangle-top",
-                none: "",
+                none: ""
             };
 
             var sortSequence = ["none", "desc", "asc"];
@@ -147,6 +147,15 @@
                 cycleSort($(this));
                 // fill hidden inputs
                 $("#" + $(this).attr("data-target")).val($(this).attr("data-sort-order"));
+                // clear sorting from other columns
+                $.each($(".sort-field").not($(this)), function (key, value) {
+                    var elem = $(value);
+                    $("#" + elem.attr("data-target")).val("none");
+                    var icon = elem.find(".glyphicon");
+                    icon.removeClass(sortOrderToGlyphicon[elem.attr("data-sort-order")]);
+                    elem.attr("data-sort-order", "none");
+                });
+                $("#search-form").submit();
             });
         });
     </script>

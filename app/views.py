@@ -49,9 +49,23 @@ def search():
                 if value:
                     filters[name] = value
 
-            # TODO: .order_by(Cert.soundex.asc()) or .desc()
+            base_query = Cert.query.filter_by(**filters)
+
+            for field, col in [
+                (form.year_sort, Cert.year),
+                (form.number_sort, Cert.number),
+                (form.first_name_sort, Cert.first_name),
+                (form.last_name_sort, Cert.last_name),
+                (form.soundex_sort, Cert.soundex)
+            ]:
+                if field.data != 'none':
+                    if field.data == 'asc':
+                        base_query = base_query.order_by(col.asc())
+                    else:
+                        base_query = base_query.order_by(col.desc())
+
             rows = []
-            for cert in Cert.query.filter_by(**filters).limit(10).all():
+            for cert in base_query.limit(10).all():
                 rows.append(render_template('certificate_row.html', certificate=cert))
 
             return jsonify({"data": rows})
