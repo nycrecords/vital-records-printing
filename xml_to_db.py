@@ -110,9 +110,9 @@ def xml_to_db(filename, row_node_key, certificate_type):
 
 if __name__ == "__main__":
     files_to_type = {
-        "Grooms 1866-1900.xml": certificate_types.MARRIAGE,
-        "Brides 1866-1900.xml": certificate_types.MARRIAGE,
-        "NYC Births 1901-1907.xml": certificate_types.BIRTH,
+        # "Grooms 1866-1900.xml": certificate_types.MARRIAGE,
+        # "Brides 1866-1900.xml": certificate_types.MARRIAGE,
+        # "NYC Births 1901-1907.xml": certificate_types.BIRTH,
         "1868-1890 Deaths Manhattan.xml": certificate_types.DEATH  # TODO: check this
     }
     for file_, type_ in files_to_type.items():
