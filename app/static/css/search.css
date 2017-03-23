@@ -1,5 +1,9 @@
-#results .row:nth-child(even) {
-    background-color: #7ab5e0;
+#results a:nth-child(odd) .row {
+    background-color: #8fc8e0;
+}
+
+a:hover {
+    color: hotpink;
 }
 
 .error {
