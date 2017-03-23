@@ -11,7 +11,6 @@ from flask import (
     jsonify,
 )
 
-
 @app.route('/', methods=['GET', 'POST'])
 def main():
     """
@@ -75,7 +74,17 @@ def search():
     return render_template('search.html', form=form)
 
 
-@app.route('/edit', methods=['GET', 'POST'])
+# will be used later
+# @app.route('/edit/<int:cert_id>', methods=['GET'])
+# def edit(cert_id):
+#     """
+#     Return edit page
+#     """
+#     cert = Cert.query.filter_by(id=cert_id).one()
+#
+#     return render_template('edit.html', file_path=cert.filename)
+
+@app.route('/edit', methods=['GET'])
 def edit():
     """
     Return edit page
