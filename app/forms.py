@@ -31,3 +31,4 @@ class SearchForm(FlaskForm):
     first_name_sort = SelectSortField("First Name")
     last_name_sort = SelectSortField("Last Name")
     soundex_sort = SelectSortField("Soundex")
+    start = IntegerField("Start", default=0)

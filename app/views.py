@@ -33,6 +33,7 @@ def search():
     """
     Return search page
     """
+    limit = 20
     form = SearchForm()
     if request.method == "POST":
         if form.validate_on_submit():
@@ -63,9 +64,8 @@ def search():
                         base_query = base_query.order_by(col.asc())
                     else:
                         base_query = base_query.order_by(col.desc())
-
             rows = []
-            for cert in base_query.limit(10).all():
+            for cert in base_query.slice(form.start.data, limit + form.start.data).all():
                 rows.append(render_template('certificate_row.html', certificate=cert))
 
             return jsonify({"data": rows})
