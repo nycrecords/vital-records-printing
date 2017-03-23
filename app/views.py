@@ -1,3 +1,4 @@
+import os
 from app import app
 from app.forms import SearchForm
 from app.models import Cert
@@ -74,19 +75,10 @@ def search():
     return render_template('search.html', form=form)
 
 
-# will be used later
-# @app.route('/edit/<int:cert_id>', methods=['GET'])
-# def edit(cert_id):
-#     """
-#     Return edit page
-#     """
-#     cert = Cert.query.filter_by(id=cert_id).one()
-#
-#     return render_template('edit.html', file_path=cert.filename)
-
-@app.route('/edit', methods=['GET'])
-def edit():
+@app.route('/edit/<int:cert_id>', methods=['GET'])
+def edit(cert_id):
     """
     Return edit page
     """
-    return render_template('edit.html')
+    cert = Cert.query.get(cert_id)
+    return render_template('edit.html', file_path=url_for('static', filename=os.path.join('img', cert.filename)))
