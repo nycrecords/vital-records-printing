@@ -26,6 +26,9 @@ $(function () {
         if (!empty) {
             spinner.show();
         }
+        else {
+            $('#start').val(0);
+        }
         $.ajax({
             url: "/search",
             method: "post",
