@@ -27,10 +27,12 @@
 
 #brightness {
     width: 200px;
+    display: inline-block;
 }
 
 #contrast {
     width:200px;
+    display: inline-block;
 }
 
 input[type=range] {
@@ -118,5 +120,3 @@ input[type=range]:focus::-ms-fill-lower {
 input[type=range]:focus::-ms-fill-upper {
   background: #367ebd;
 }
-
-
