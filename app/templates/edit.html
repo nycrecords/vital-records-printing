@@ -1,11 +1,12 @@
 {% block custom_css %}
+    <link href="{{ url_for("static", filename="css/bootstrap.min.css") }}" rel="stylesheet">
     <link href="{{ url_for("static", filename="css/edit.css") }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
     <div class="row" id="cert-image-row">
         <div class="col-md-12">
-            <img id="cert-image" src="{{ file_path }}">
+            <img id="cert-image" src="{{ url_for("static", filename="img/bitcoin-1.png")}}">
         </div>
     </div>
 

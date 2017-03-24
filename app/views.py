@@ -75,10 +75,10 @@ def search():
     return render_template('search.html', form=form)
 
 
-@app.route('/edit/<int:cert_id>', methods=['GET'])
-def edit(cert_id):
+@app.route('/image/<int:cert_id>', methods=['GET'])
+def image(cert_id):
     """
     Return edit page
     """
     cert = Cert.query.get(cert_id)
-    return render_template('edit.html', file_path=url_for('static', filename=os.path.join('img', cert.filename)))
+    return jsonify({"data": url_for('static', filename=os.path.join('img', cert.filename))})

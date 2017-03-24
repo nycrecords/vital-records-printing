@@ -97,5 +97,16 @@ $(function () {
         });
         $("#search-form").submit();
     });
-});
 
+
+    $(".result-row").click(function (e) {
+        console.log("hello");
+        e.preventDefault();
+        $.ajax({
+            url: "/image/" + $(this).attr("id"),
+            success: function(response) {
+                $("#cert-image").attr("src", response.data);
+            }
+        });
+    })
+});

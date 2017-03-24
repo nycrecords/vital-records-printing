@@ -2,6 +2,7 @@
 
 {% block custom_css %}
     <link href="{{ url_for("static", filename="css/search.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/edit.css") }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -94,8 +95,57 @@
             <img id="spinner" src="{{ url_for('static', filename='img/spinner.gif') }}" height="30" />
         </div>
     </div>
+
+<div class="container">
+  <h2>Modal Example</h2>
+  <!-- Trigger the modal with a button -->
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+  <!-- Modal -->
+  <div style="max-height: 100%;" class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header image-modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Certificate Number goes here</h4>
+                            <p>County: </p>
+                        <div class="row" id="brightness-slider">
+                    <div class="col-md-6">
+                        <p>Brightness</p>
+                        <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0">
+                    </div>
+                    <div class="col-md-6">
+                        <p>Contrast</p>
+                        <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0">
+                    </div>
+            </div>
+        </div>
+        <div class="modal-body image-modal-body" style="-webkit-transition-duration: 0.8s;" id="modal-image">
+            <div class="row" id="cert-image-row">
+                <div class="col-md-12">
+                    <img id="cert-image" src="{{ url_for("static", filename="img/test200-0.png")}}">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="toggle-image-view-btn" class="btn btn-seconday">Toggle Image View</button>
+            <button id="resetbtn" class="btn btn-warning">Reset Photo</button>
+            &nbsp;
+            <button id="printbtn" class="btn btn-info">Print Photo</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
 {% endblock %}
 
 {% block custom_script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/search.js') }}"></script>
+        <script src="{{ url_for("static", filename="js/caman.full.min.js") }}"></script>
+    <script src="{{ url_for("static", filename="js/edit-image.js") }}"></script>
 {% endblock %}
