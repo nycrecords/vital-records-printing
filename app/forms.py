@@ -32,3 +32,7 @@ class SearchForm(FlaskForm):
     last_name_sort = SelectSortField("Last Name")
     soundex_sort = SelectSortField("Soundex")
     start = IntegerField("Start", default=0)
+
+
+class LoginForm(FlaskForm):
+    pass

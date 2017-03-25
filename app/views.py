@@ -3,32 +3,20 @@ from app import app
 from app.forms import SearchForm
 from app.models import Cert
 from flask import (
-    Flask,
     render_template,
     request,
-    flash,
-    redirect,
     url_for,
     jsonify,
 )
 
-@app.route('/', methods=['GET', 'POST'])
-def main():
-    """
-    Stuff
-    """
-    return render_template('index.html')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """
-    Return login page
-    """
-    return render_template('login.html')
+    pass
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
+@app.route('/search', methods=['POST'])
 def search():
     """
     Return search page
@@ -37,6 +25,7 @@ def search():
     form = SearchForm()
     if request.method == "POST":
         if form.validate_on_submit():
+            # set filters
             filters = {}
             for name, value in {
                 "type": form.type.data,
@@ -52,6 +41,7 @@ def search():
 
             base_query = Cert.query.filter_by(**filters)
 
+            # set ordering
             for field, col in [
                 (form.year_sort, Cert.year),
                 (form.number_sort, Cert.number),
@@ -64,6 +54,9 @@ def search():
                         base_query = base_query.order_by(col.asc())
                     else:
                         base_query = base_query.order_by(col.desc())
+                    break
+
+            # render rows
             rows = []
             for cert in base_query.slice(form.start.data, limit + form.start.data).all():
                 rows.append(render_template('certificate_row.html', certificate=cert))
@@ -72,13 +65,19 @@ def search():
         else:
             return jsonify({"errors": form.errors})
 
-    return render_template('search.html', form=form)
+    return render_template('index.html', form=form)
 
 
-@app.route('/image/<int:cert_id>', methods=['GET'])
+@app.route('/certificate/<int:cert_id>', methods=['GET'])
 def image(cert_id):
     """
-    Return edit page
+    Return certificate data.
     """
     cert = Cert.query.get(cert_id)
-    return jsonify({"data": url_for('static', filename=os.path.join('img', cert.filename))})
+    # TODO: assert associated file exists and if it doesn't return the path to a "Missing Certificate" png file
+    return jsonify({
+        "data": {
+            "src": url_for('static', filename=os.path.join('img', cert.filename)),
+            "number": cert.number
+        }
+    })
