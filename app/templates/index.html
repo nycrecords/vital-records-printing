@@ -1,5 +1,27 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <link href="{{ url_for("static", filename="css/bootstrap.min.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/search.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/edit.css") }}" rel="stylesheet">
+</head>
+<body>
 
-{% block content %}
-  <p>Home page that might be just replaced with the search page.</p>
-{% endblock %}
+<div class="container">
+    <!-- TODO: header bar with login popover -->
+    <h2>Search for Birth, Death, and Marriage Certificates</h2>
+    {% include("search_form.html") %}
+    {% include("search_results.html") %}
+    {% include("certificate_modal.html") %}
+</div>
+
+<script type="text/javascript" src="{{ url_for("static", filename="js/lib/jquery-3.1.1.min.js") }}"></script>
+<script type="text/javascript" src="{{ url_for("static", filename="js/lib/tether.min.js") }}"></script>
+<script type="text/javascript" src="{{ url_for("static", filename="js/lib/bootstrap.min.js") }}"></script>
+<script type="text/javascript" src="{{ url_for("static", filename="js/lib/caman.full.min.js") }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/search.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/edit.js') }}"></script>
+
+</body>
+</html>

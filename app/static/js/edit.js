@@ -26,7 +26,7 @@ $(function () {
             this.render(function () {
                 var finalImage = this.toBase64();
                 var printWindow = window.open();
-                printWindow.document.write('<html><body><img width=2000 src="');
+                printWindow.document.write('<html><body><img width=2000 src="');  // FIXME: printing issues
                 printWindow.document.write(finalImage);
                 printWindow.document.write('" /></body></html>');
                 printWindow.document.close();
@@ -40,7 +40,8 @@ $(function () {
         $('#modal-image').toggleClass("image-modal-body");
     });
 
-    $('#myModal').on('hidden.bs.modal', function () {
+    // reset brightness & contrast on hide modal
+    $('#cert-modal').on('hidden.bs.modal', function () {
         $('input[type=range]').val(0);
         Caman('#cert-image', function () {
             this.revert(false);

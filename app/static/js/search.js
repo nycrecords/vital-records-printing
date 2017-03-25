@@ -9,17 +9,20 @@ $(function () {
         search();
     });
 
-    window.onscroll = function () {
-        if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
-            // you're at the bottom of the page
-            var prevValue = parseInt($('#start').val());
+    var loadMoreBtn = $("#load-more");
+    loadMoreBtn.hide();
+    loadMoreBtn.click(function () {
+        if ($("#results").children().length > 0) {
+            var start = $("#start");
+            var prevValue = parseInt(start.val());
             var limit = 20;
-            $('#start').val(prevValue + limit);
+            $(start).val(prevValue + limit);
             search(false);
         }
-    };
+    });
 
     function search(empty) {
+        loadMoreBtn.hide();
         if (typeof empty === 'undefined') {
             empty = true;
         }
@@ -34,7 +37,7 @@ $(function () {
             method: "post",
             data: searchForm.serialize(),
             success: function (response) {
-                $(".type").text('');
+                $(".type").text('');  // TODO: make it obvious that this corresponds to errors
                 $(".county").text('');
                 $(".year").text('');
                 $(".soundex").text('');
@@ -47,11 +50,27 @@ $(function () {
                     $(".soundex").text(response.errors.soundex);
                 }
                 else {
+                    // show load more button
+                    if (response.data.length > 0) {
+                        loadMoreBtn.show();
+                    }
+                    // empty results if needed, and add new set
                     var results = $("#results");
                     empty && results.empty();
                     for (var i = 0; i < response.data.length; i++) {
                         results.append(response.data[i]);
                     }
+                    // bind click event for modal to result rows
+                    $(".result-row").click(function (e) {
+                        e.preventDefault();
+                        $.ajax({
+                            url: "/certificate/" + $(this).attr("id"),
+                            success: function (response) {
+                                $("#cert-image").attr("src", response.data.src);
+                                $("#cert-number").text(response.data.number)
+                            }
+                        });
+                    });
                 }
                 if (!empty) {
                     spinner.hide();
@@ -59,7 +78,6 @@ $(function () {
             }
         });
     }
-
 
     // Sorting
     var sortOrderToGlyphicon = {
@@ -98,15 +116,4 @@ $(function () {
         $("#search-form").submit();
     });
 
-
-    $(".result-row").click(function (e) {
-        console.log("hello");
-        e.preventDefault();
-        $.ajax({
-            url: "/image/" + $(this).attr("id"),
-            success: function(response) {
-                $("#cert-image").attr("src", response.data);
-            }
-        });
-    })
 });

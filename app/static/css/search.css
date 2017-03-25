@@ -1,5 +1,5 @@
-#results a:nth-child(odd) .row {
-    background-color: #8fc8e0;
+#results a:nth-child(even) .row {
+    background-color: rgba(123, 180, 203, 0.33);
 }
 
 a:hover {
@@ -22,6 +22,6 @@ a:hover {
 #spinner {
     margin-left: auto;
     margin-right: auto;
-    margin-top: 1em;
+    /*margin-top: 1em;*/
     display: block;
 }
