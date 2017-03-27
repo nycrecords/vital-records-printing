@@ -4,7 +4,6 @@ from wtforms.validators import Length, NumberRange, Optional
 
 
 class SelectSortField(SelectField):
-
     def __init__(self, *args, **kwargs):
         super().__init__(
             *args,
@@ -14,10 +13,29 @@ class SelectSortField(SelectField):
 
 class SearchForm(FlaskForm):
     # visible inputs
-    type = SelectField("Type of Certificate", choices=[('birth', 'Birth'), ('death', 'Death'), ('marriage', 'Marriage')])
-    county = SelectField("County", choices=[('kings', 'Brooklyn'), ('queens', 'Queens'), ('bronx', 'Bronx'), ('manhattan', 'Manhattan'),
-                                            ('richmond', 'Staten Island')])
-    year = IntegerField("Year", validators=[NumberRange(min=0, max=9999), Optional()])
+    type = SelectField(
+        "Type of Certificate",
+        choices=[
+            ('birth', 'Birth'),
+            ('death', 'Death'),
+            ('marriage', 'Marriage')
+        ])
+    county = SelectField(
+        "County",
+        choices=[
+            ('', 'All'),
+            ('kings', 'Brooklyn'),
+            ('queens', 'Queens'),
+            ('bronx', 'Bronx'),
+            ('manhattan', 'Manhattan'),
+            ('richmond', 'Staten Island')
+        ])
+    year = IntegerField(
+        "Year",
+        validators=[
+            NumberRange(min=0, max=9999),
+            Optional()
+        ])
     number = StringField("Certificate Number")
     first_name = StringField("First Name")
     last_name = StringField("Last Name")
