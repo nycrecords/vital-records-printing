@@ -2,10 +2,10 @@
     <form class="form-horizontal" id="search-form" method="post" action="{{ url_for("search") }}">
         {{ form.hidden_tag() }}
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-xs-12">
                 <div class="form-group">
-                    {{ form.type.label(class="col-sm-2 control-label") }}
-                    <div class="col-sm-10">
+                    {{ form.type.label(class="col-xs-2 control-label") }}
+                    <div class="col-xs-10">
                         {{ form.type(class="form-control") }}
                     </div>
                 </div>
@@ -13,37 +13,37 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-xs-6">
                 <div class="form-group">
-                    {{ form.first_name.label(class="col-sm-4 control-label text-left") }}
-                    <div class="col-sm-8">
+                    {{ form.first_name.label(class="col-xs-4 control-label text-left") }}
+                    <div class="col-xs-8">
                         {{ form.first_name(class="form-control") }}
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-xs-6">
                 <div class="form-group">
-                    {{ form.last_name.label(class="col-sm-4 control-label") }}
-                    <div class="col-sm-8">
+                    {{ form.last_name.label(class="col-xs-4 control-label") }}
+                    <div class="col-xs-8">
                         {{ form.last_name(class="form-control") }}
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-xs-6">
                 <div class="form-group">
-                    {{ form.county.label(class="col-sm-4 control-label") }}
-                    <div class="col-sm-8">
+                    {{ form.county.label(class="col-xs-4 control-label") }}
+                    <div class="col-xs-8">
                         {{ form.county(class="form-control") }}
                     </div>
                 </div>
                 <div class="error county"></div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-xs-6">
                 <div class="form-group">
-                    {{ form.year.label(class="col-sm-4 control-label") }}
-                    <div class="col-sm-8">
+                    {{ form.year.label(class="col-xs-4 control-label") }}
+                    <div class="col-xs-8">
                         {{ form.year(class="form-control", maxLength=4) }}
                     </div>
                 </div>
@@ -51,18 +51,18 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-xs-6">
                 <div class="form-group">
-                    {{ form.number.label(class="col-sm-4 control-label") }}
-                    <div class="col-sm-8">
+                    {{ form.number.label(class="col-xs-4 control-label") }}
+                    <div class="col-xs-8">
                         {{ form.number(class="form-control") }}
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-xs-6">
                 <div class="form-group">
-                    {{ form.soundex.label(class="col-sm-4 control-label") }}
-                    <div class="col-sm-8">
+                    {{ form.soundex.label(class="col-xs-4 control-label") }}
+                    <div class="col-xs-8">
                         {{ form.soundex(class="form-control", maxLength=4) }}
                     </div>
                 </div>
@@ -80,7 +80,7 @@
         <!-- result slice start position -->
         {{ form.start(hidden="true") }}
 
-        <button type="submit" class="btn btn-primary" style="width: 100%;">
+        <button type="submit" class="btn btn-primary center-block">
             Search ( click me or press ENTER )
         </button>
     </form>

@@ -37,7 +37,7 @@ $(function () {
             method: "post",
             data: searchForm.serialize(),
             success: function (response) {
-                $(".type").text('');  // TODO: make it obvious that this corresponds to errors
+                $(".type").text('');  // TODO: make it obvious that this pertains to errors
                 $(".county").text('');
                 $(".year").text('');
                 $(".soundex").text('');
@@ -67,7 +67,12 @@ $(function () {
                             url: "/certificate/" + $(this).attr("id"),
                             success: function (response) {
                                 $("#cert-image").attr("src", response.data.src);
-                                $("#cert-number").text(response.data.number)
+                                $("#cert-number").text(response.data.number);
+                                $("#cert-type").text(response.data.type);
+                                $("#cert-name").text(response.data.name);
+                                $("#cert-year").text(response.data.year);
+                                $("#cert-county").text(response.data.county);
+                                $("#cert-soundex").text(response.data.soundex);
                             }
                         });
                     });

@@ -8,8 +8,26 @@
 </head>
 <body>
 
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header pull-left">
+            <div class="navbar-brand">Vital Records Printing</div>
+        </div>
+        <div class="navbar-header pull-right">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#"
+                       data-toggle="popover"
+                       data-placement="bottom"
+                       data-content='{% include("login_form.html") %}'
+                    >Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 <div class="container">
-    <!-- TODO: header bar with login popover -->
     <h2>Search for Birth, Death, and Marriage Certificates</h2>
     {% include("search_form.html") %}
     {% include("search_results.html") %}
@@ -20,6 +38,7 @@
 <script type="text/javascript" src="{{ url_for("static", filename="js/lib/tether.min.js") }}"></script>
 <script type="text/javascript" src="{{ url_for("static", filename="js/lib/bootstrap.min.js") }}"></script>
 <script type="text/javascript" src="{{ url_for("static", filename="js/lib/caman.full.min.js") }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/search.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/edit.js') }}"></script>
 

@@ -74,10 +74,18 @@ def image(cert_id):
     Return certificate data.
     """
     cert = Cert.query.get(cert_id)
-    # TODO: assert associated file exists and if it doesn't return the path to a "Missing Certificate" png file
+    if not os.path.exists(cert.filename):  # TODO: use actual file path
+        src = url_for('static', filename=os.path.join('img', "missing.jpg"))
+    else:
+        src = url_for('static', filename=os.path.join('img', cert.filename))  # TODO: actual fle path
     return jsonify({
         "data": {
-            "src": url_for('static', filename=os.path.join('img', cert.filename)),
-            "number": cert.number
+            "src": src,
+            "number": cert.number,
+            "type": cert.type.title(),
+            "name": cert.name,
+            "year": cert.year,
+            "county": cert.county.title(),
+            "soundex": cert.soundex,
         }
     })
