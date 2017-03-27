@@ -1,4 +1,6 @@
 $(function () {
+    var RESULT_SET_LIMIT = 20;
+
     var spinner = $("#spinner");
     spinner.hide();
 
@@ -15,12 +17,42 @@ $(function () {
         if ($("#results").children().length > 0) {
             var start = $("#start");
             var prevValue = parseInt(start.val());
-            var limit = 20;
-            $(start).val(prevValue + limit);
+            $(start).val(prevValue + RESULT_SET_LIMIT);
             search(false);
         }
     });
 
+    // set year range on input change
+    var inputType = $("#type"),
+        inputCounty = $("#county"),
+        yearRange = $("#year-range");
+
+    [inputType, inputCounty].map(function (input) {
+        input.change(setYearRange);
+    });
+
+    function setYearRange() {
+        $.ajax({
+            url: "/years",
+            data: {
+                "type": inputType.val(),
+                "county": inputCounty.val()
+            },
+            success: function (response) {
+                if (response.data !== undefined) {
+                    yearRange.text(response.data.start + " - " + response.data.end);
+                }
+                else {
+                    yearRange.text('');
+                }
+            }
+        });
+    }
+
+    // set year range on page load
+    setYearRange();
+
+    /* TODO: fill me in! */
     function search(empty) {
         loadMoreBtn.hide();
         if (typeof empty === 'undefined') {
@@ -37,21 +69,35 @@ $(function () {
             method: "post",
             data: searchForm.serialize(),
             success: function (response) {
-                $(".type").text('');  // TODO: make it obvious that this pertains to errors
-                $(".county").text('');
-                $(".year").text('');
-                $(".soundex").text('');
+                var errType = $("#error-type"),
+                    errCounty = $("#error-county"),
+                    errYear = $("#error-year"),
+                    errSoundex = $("#error-soundex");
+
+                // clear errors
+                [errType, errCounty, errYear, errSoundex]
+                    .map(function (err) {
+                        err.text('');
+                        err.parents(".form-group").removeClass("has-error");
+                    });
 
                 if (response.hasOwnProperty('errors')) {
-                    console.log(response.errors);
-                    $(".type").text(response.errors.type);
-                    $(".county").text(response.errors.county);
-                    $(".year").text(response.errors.year);
-                    $(".soundex").text(response.errors.soundex);
+                    // display errors
+                    [
+                        [errType, response.errors.type],
+                        [errCounty, response.errors.county],
+                        [errYear, response.errors.year],
+                        [errSoundex, response.errors.soundex]
+                    ].map(function (errDataPair) {
+                        if (errDataPair[1]) {
+                            errDataPair[0].parents(".form-group").addClass("has-error");
+                            errDataPair[0].text(errDataPair[1][0]);  // only show first error in list
+                        }
+                    });
                 }
                 else {
                     // show load more button
-                    if (response.data.length > 0) {
+                    if (response.data.length === RESULT_SET_LIMIT) {
                         loadMoreBtn.show();
                     }
                     // empty results if needed, and add new set
