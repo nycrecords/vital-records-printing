@@ -36,7 +36,7 @@ def search():
                 "last_name": form.last_name.data.title(),
                 "soundex": form.soundex.data
             }.items():
-                if value:
+                if value:  # TODO: handle wildcards (http://stackoverflow.com/questions/3325467/elixir-sqlalchemy-equivalent-to-sql-like-statement)
                     filters[name] = value
 
             base_query = Cert.query.filter_by(**filters)
@@ -66,6 +66,30 @@ def search():
             return jsonify({"errors": form.errors})
 
     return render_template('index.html', form=form)
+
+
+@app.route("/years", methods=['GET'])
+def years():
+    filters = {
+        key: val for (key, val) in
+        dict(
+            type=request.args["type"],
+            county=request.args["county"]
+        ).items() if val
+    }
+    base_query = Cert.query.filter_by(**filters)
+    start = base_query.order_by(Cert.year.asc()).first()
+    end = base_query.order_by(Cert.year.desc()).first()
+    if start is not None and end is not None:
+        response_json = {
+            "data": {
+                "start": start.year,
+                "end": end.year
+            }
+        }
+    else:
+        response_json = {}
+    return jsonify(response_json)
 
 
 @app.route('/certificate/<int:cert_id>', methods=['GET'])

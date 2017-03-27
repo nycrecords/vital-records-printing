@@ -24,3 +24,13 @@ a:hover {
     margin-right: auto;
     display: block;
 }
+
+.has-error {
+    color: #a94442;
+}
+
+/* TODO: move to main.css */
+
+.container, .navbar {
+    min-width: 750px;
+}
