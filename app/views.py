@@ -1,4 +1,5 @@
 import os
+from sqlalchemy.exc import SQLAlchemyError
 from app import app
 from app.forms import SearchForm
 from app.models import Cert
@@ -78,16 +79,16 @@ def years():
         ).items() if val
     }
     base_query = Cert.query.filter_by(**filters)
-    start = base_query.order_by(Cert.year.asc()).first()
-    end = base_query.order_by(Cert.year.desc()).first()
-    if start is not None and end is not None:
+    try:
+        start = base_query.order_by(Cert.year.asc()).first()
+        end = base_query.order_by(Cert.year.desc()).first()
         response_json = {
             "data": {
                 "start": start.year,
                 "end": end.year
             }
         }
-    else:
+    except (SQLAlchemyError, AttributeError):
         response_json = {}
     return jsonify(response_json)
 
