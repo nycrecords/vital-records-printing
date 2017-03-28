@@ -81,3 +81,8 @@ class Cert(db.Model):
         self.last_name = last_name
         self.soundex = soundex
         self.filename = filename
+
+    @property
+    def name(self):
+        return "{} {}".format(self.first_name, self.last_name) \
+            if self.first_name is not None else self.last_name
