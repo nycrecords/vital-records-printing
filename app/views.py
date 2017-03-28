@@ -1,4 +1,5 @@
 import os
+from sqlalchemy import cast, String
 from sqlalchemy.exc import SQLAlchemyError
 from app import app
 from app.forms import SearchForm
@@ -11,6 +12,9 @@ from flask import (
 )
 
 
+RESULT_SET_LIMIT = 20
+WILDCARD_CHAR = "*"
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     pass
@@ -20,27 +24,34 @@ def login():
 @app.route('/search', methods=['POST'])
 def search():
     """
-    Return search page
+    Return search page or certificate row templates.
     """
-    limit = 20
     form = SearchForm()
     if request.method == "POST":
         if form.validate_on_submit():
             # set filters
-            filters = {}
-            for name, value in {
-                "type": form.type.data,
-                "county": form.county.data,
-                "year": form.year.data,
-                "number": form.number.data,
-                "first_name": form.first_name.data.title(),
-                "last_name": form.last_name.data.title(),
-                "soundex": form.soundex.data
-            }.items():
-                if value:  # TODO: handle wildcards (http://stackoverflow.com/questions/3325467/elixir-sqlalchemy-equivalent-to-sql-like-statement)
-                    filters[name] = value
+            filter_by_kwargs = {}
+            filter_args = []
+            for name, value, col in [
+                ("type", form.type.data, Cert.type),
+                ("county", form.county.data, Cert.county),
+                ("year", form.year.data, Cert.year),
+                ("number", form.number.data, Cert.number),
+                ("first_name", form.first_name.data, Cert.first_name),
+                ("last_name", form.last_name.data, Cert.last_name),
+                ("soundex", form.soundex.data, Cert.soundex)
+            ]:
+                if value:
+                    if WILDCARD_CHAR in value:
+                        filter_args.append(
+                            cast(col, String).like(
+                                value.replace(WILDCARD_CHAR, "%")
+                            )
+                        )
+                    else:
+                        filter_by_kwargs[name] = value
 
-            base_query = Cert.query.filter_by(**filters)
+            base_query = Cert.query.filter_by(**filter_by_kwargs).filter(*filter_args)
 
             # set ordering
             for field, col in [
@@ -59,7 +70,7 @@ def search():
 
             # render rows
             rows = []
-            for cert in base_query.slice(form.start.data, limit + form.start.data).all():
+            for cert in base_query.slice(form.start.data, RESULT_SET_LIMIT + form.start.data).all():
                 rows.append(render_template('certificate_row.html', certificate=cert))
 
             return jsonify({"data": rows})

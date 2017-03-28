@@ -52,8 +52,7 @@ $(function () {
     // set year range on page load
     setYearRange();
 
-    /* TODO: fill me in! */
-    function search(empty) {
+    function search(empty) {  // empty = true
         loadMoreBtn.hide();
         if (typeof empty === 'undefined') {
             empty = true;
