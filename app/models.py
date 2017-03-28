@@ -3,7 +3,16 @@ Models for Vital Records Printing
 """
 
 from app import db
-from app.constants import certificate_types, months, counties
+from app.constants import (
+    certificate_types,
+    months,
+    counties
+)
+from flask_login import UserMixin
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
 
 
 class Cert(db.Model):
@@ -86,3 +95,20 @@ class Cert(db.Model):
     def name(self):
         return "{} {}".format(self.first_name, self.last_name) \
             if self.first_name is not None else self.last_name
+
+
+class User(db.Model, UserMixin):
+    __tablename__ = "user"
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(32), unique=True)
+    password = db.Column(db.String(64))
+
+    def __init__(self, username, password):
+        self.username = username
+        self.set_password(password)
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)

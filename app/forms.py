@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import StringField, SubmitField, SelectField, IntegerField
+from wtforms.fields import StringField, SubmitField, SelectField, IntegerField, PasswordField
 from wtforms.validators import Length
 
 
@@ -73,4 +73,5 @@ class SearchForm(Form):
 
 
 class LoginForm(Form):
-    pass
+    username = StringField("Username")
+    password = PasswordField("Password")

@@ -1,23 +1,49 @@
 import os
 from sqlalchemy import cast, String
 from sqlalchemy.exc import SQLAlchemyError
-from app import app
-from app.forms import SearchForm
-from app.models import Cert
+from app import app, login_manager
+from app.forms import SearchForm, LoginForm
+from app.models import Cert, User
 from flask import (
     render_template,
+    redirect,
     request,
     url_for,
     jsonify,
+)
+from flask_login import (
+    login_user,
+    logout_user,
+    current_user,
+    login_required,
 )
 
 
 RESULT_SET_LIMIT = 20
 WILDCARD_CHAR = "*"
 
-@app.route('/login', methods=['GET', 'POST'])
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+
+@app.route('/login', methods=['POST'])
 def login():
-    pass
+    form = LoginForm(request.form)
+    if form.validate():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is not None and user.check_password(form.password.data):
+            login_user(user)  # TODO: remember me
+        # TODO: else flash
+    return redirect('/')
+
+
+@app.route("/logout", methods=["GET"])
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
 
 
 @app.route('/', methods=['GET'])
@@ -27,6 +53,7 @@ def search():
     Return search page or certificate row templates.
     """
     form = SearchForm()
+    login_form = LoginForm()
     if request.method == "POST":
         if form.validate_on_submit():
             # set filters
@@ -77,7 +104,7 @@ def search():
         else:
             return jsonify({"errors": form.errors})
 
-    return render_template('index.html', form=form)
+    return render_template('index.html', form=form, login_form=login_form)
 
 
 @app.route("/years", methods=['GET'])
@@ -109,6 +136,7 @@ def image(cert_id):
     """
     Return certificate data.
     """
+    # TODO: if current_user not authenticated, use watermarked image
     cert = Cert.query.get(cert_id)
     if not os.path.exists(cert.filename):  # TODO: use actual file path
         src = url_for('static', filename=os.path.join('img', "missing.jpg"))

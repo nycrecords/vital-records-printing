@@ -16,11 +16,17 @@
         <div class="navbar-header pull-right">
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="#"
-                       data-toggle="popover"
-                       data-placement="bottom"
-                       data-content='{% include("login_form.html") %}'
-                    >Login</a>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('logout') }}">
+                            Logout
+                        </a>
+                    {% else %}
+                        <a href="#"
+                           data-toggle="popover"
+                           data-placement="bottom"
+                           data-content='{% include("login_form.html") %}'
+                        >Login</a>
+                    {% endif %}
                 </li>
             </ul>
         </div>
