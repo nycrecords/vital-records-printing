@@ -1,5 +1,9 @@
-#results .row:nth-child(even) {
-    background-color: #7ab5e0;
+#results a:nth-child(even) .row {
+    background-color: rgba(123, 180, 203, 0.33);
+}
+
+a:hover {
+    color: hotpink;
 }
 
 .error {
@@ -18,6 +22,15 @@
 #spinner {
     margin-left: auto;
     margin-right: auto;
-    margin-top: 1em;
     display: block;
+}
+
+.has-error {
+    color: #a94442;
+}
+
+/* TODO: move to main.css */
+
+.container, .navbar {
+    min-width: 750px;
 }
