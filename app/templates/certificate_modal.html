@@ -31,14 +31,56 @@
                     </div>
                 </div>
             </div>
-            <!-- modal body -->
-            <div class="modal-body image-modal-body" style="-webkit-transition-duration: 0.8s;" id="modal-image">
-                <div class="row" id="cert-image-row">
-                    <div class="col-xs-12">
-                        <img id="cert-image" src="{{ url_for("static", filename="img/missing.jpg") }}">
+
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval="false">
+                <!-- Wrapper for slides -->
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="item active">
+                        <div class="modal-body image-modal-body" id="modal-image">
+                            <div class="row" id="cert-image-row">
+                                <div class="col-xs-12">
+                                    <img class="img-responsive cert-image current" src="{{ url_for("static", filename="img/test150-0.png") }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="modal-body image-modal-body" id="modal-image">
+                            <div class="row" id="cert-image-row">
+                                <div class="col-xs-12">
+                                    <img class="img-responsive cert-image" src="{{ url_for("static", filename="img/test150-0.png") }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="modal-body image-modal-body" id="modal-image">
+                            <div class="row" id="cert-image-row">
+                                <div class="col-xs-12">
+                                    <img class="img-responsive cert-image" src="{{ url_for("static", filename="img/test150-0.png") }}">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+
+                <!-- Controls -->
+                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                </a>
+                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                </a>
             </div>
+
             <div class="modal-footer">
                 <button id="toggle-image-view-btn" class="btn btn-seconday">Toggle Full View</button>
                 <button id="resetbtn" class="btn btn-warning">Reset</button>
