@@ -1,12 +1,5 @@
-#cert-image-row {
-    text-align: center;
-    padding-bottom: 20px;
-}
-
-#cert-image {
-    width: 100%;
-      overflow-y: auto;
-
+.cert-image {
+    margin: auto;
 }
 
 #brightness-slider {
@@ -17,18 +10,6 @@
 #contrast-slider {
     text-align: center;
     padding-bottom: 30px;
-}
-
-#interactive-mode-toggle {
-    text-align: center;
-}
-
-#interactive-mode {
-    margin-right: 5px;
-}
-
-#image-buttons {
-    text-align: center;
 }
 
 #brightness {
@@ -127,7 +108,6 @@ input[type=range]:focus::-ms-fill-upper {
   background: #367ebd;
 }
 
-
 /*modal css start*/
 .image-modal-body {
     max-height: calc(100vh - 300px);
@@ -138,7 +118,6 @@ input[type=range]:focus::-ms-fill-upper {
   padding-bottom: 0;
 }
 /*modal css end*/
-
 
 #toggle-image-view-btn {
   float: left;
