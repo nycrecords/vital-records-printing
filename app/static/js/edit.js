@@ -37,7 +37,7 @@ $(function () {
             this.render(function () {
                 var finalImage = this.toBase64();
                 var printWindow = window.open();
-                printWindow.document.write('<html><body><img src="');  // FIXME: printing issues
+                printWindow.document.write('<html><body><img src="');  // FIXME: printing issues, vertical align
                 printWindow.document.write(finalImage);
                 printWindow.document.write('" /></body></html>');
                 printWindow.document.close();

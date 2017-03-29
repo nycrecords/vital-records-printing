@@ -1,5 +1,5 @@
 <div style="max-height: 100%;" class="modal fade" id="cert-modal" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg" style="width: 90%;">
         <div class="modal-content">
             <!-- modal header -->
             <div class="modal-header image-modal-header">
@@ -39,38 +39,24 @@
                     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
                     <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
                 </ol>
-                <div class="carousel-inner">
-                    <div class="item active">
-                        <div class="modal-body image-modal-body" id="modal-image">
-                            <div class="row" id="cert-image-row">
-                                <div class="col-xs-12">
-                                    <img class="img-responsive cert-image current" src="{{ url_for("static", filename="img/test150-0.png") }}">
-                                </div>
-                            </div>
+                <div class="modal-body image-modal-body">
+                    <div class="carousel-inner">
+                        <div class="item active">
+                            <img class="img-responsive cert-image current"
+                                 src="{{ url_for("static", filename="img/test150-0.png") }}">
                         </div>
-                    </div>
 
-                    <div class="item">
-                        <div class="modal-body image-modal-body" id="modal-image">
-                            <div class="row" id="cert-image-row">
-                                <div class="col-xs-12">
-                                    <img class="img-responsive cert-image" src="{{ url_for("static", filename="img/test150-0.png") }}">
-                                </div>
-                            </div>
+                        <div class="item">
+                            <img class="img-responsive cert-image"
+                                 src="{{ url_for("static", filename="img/test150-0.png") }}">
                         </div>
-                    </div>
 
-                    <div class="item">
-                        <div class="modal-body image-modal-body" id="modal-image">
-                            <div class="row" id="cert-image-row">
-                                <div class="col-xs-12">
-                                    <img class="img-responsive cert-image" src="{{ url_for("static", filename="img/test150-0.png") }}">
-                                </div>
-                            </div>
+                        <div class="item">
+                            <img class="img-responsive cert-image"
+                                 src="{{ url_for("static", filename="img/test150-0.png") }}">
                         </div>
                     </div>
                 </div>
-
 
                 <!-- Controls -->
                 <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
