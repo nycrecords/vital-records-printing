@@ -1,11 +1,18 @@
 $(function () {
+    var values = [];
+    values[0] = {brightness: 0, contrast: 0};
+    values[1] = {brightness: 0, contrast: 0};
+    values[2] = {brightness: 0, contrast: 0};
     $('input[type=range]').change(applyFilters);
 
     function applyFilters() {
-        var brightness = parseInt($('#brightness').val());
-        var cntrst = parseInt($('#contrast').val());
+        var brightness = parseInt($('#brightness').val()),
+            cntrst = parseInt($('#contrast').val());
+        var current = values[parseInt($("li.active").attr("data-slide-to"))];
+        current.brightness = brightness;
+        current.contrast = cntrst;
 
-        Caman('#cert-image', function () {
+        Caman('.current', function () {
             this.revert(false);
             this.brightness(brightness);
             this.contrast(cntrst);
@@ -14,19 +21,23 @@ $(function () {
     }
 
     $('#resetbtn').on('click', function (e) {
+        var current = values[parseInt($("li.active").attr("data-slide-to"))];
+        current.brightness = 0;
+        current.contrast = 0;
+
         $('input[type=range]').val(0);
-        Caman('#cert-image', function () {
+        Caman('.current', function () {
             this.revert(false);
             this.render();
         });
     });
 
     $('#printbtn').on('click', function (e) {
-        Caman('#cert-image', function () {
+        Caman('.current', function () {
             this.render(function () {
                 var finalImage = this.toBase64();
                 var printWindow = window.open();
-                printWindow.document.write('<html><body><img width=2000 src="');  // FIXME: printing issues
+                printWindow.document.write('<html><body><img src="');  // FIXME: printing issues
                 printWindow.document.write(finalImage);
                 printWindow.document.write('" /></body></html>');
                 printWindow.document.close();
@@ -37,15 +48,27 @@ $(function () {
     });
 
     $('#toggle-image-view-btn').click(function () {
-        $('#modal-image').toggleClass("image-modal-body");
+        $('.modal-body').toggleClass("image-modal-body");
     });
 
     // reset brightness & contrast on hide modal
     $('#cert-modal').on('hidden.bs.modal', function () {
-        $('input[type=range]').val(0);
-        Caman('#cert-image', function () {
-            this.revert(false);
-            this.render();
+        $.each($(".item"), function (key, value) {
+            $(".current").removeClass("current");
+            $(value).find(".cert-image").addClass("current");
+            Caman('.current', function () {
+                this.revert(false);
+                this.render();
+            });
         });
+        $('input[type=range]').val(0);
+    });
+
+    $('#carousel-example-generic').bind('slid.bs.carousel', function (e) {
+        var current = values[parseInt($("li.active").attr("data-slide-to"))];
+        $("#brightness").val(current.brightness);
+        $("#contrast").val(current.contrast);
+        $(".current").removeClass("current");
+        $(".item.active").find(".cert-image").addClass("current");
     });
 });
