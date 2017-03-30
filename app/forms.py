@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms.fields import StringField, SubmitField, SelectField, IntegerField, PasswordField
-from wtforms.validators import Length
+from wtforms.validators import Length, Required
 
 
 class Form(FlaskForm):
@@ -75,3 +75,13 @@ class SearchForm(Form):
 class LoginForm(Form):
     username = StringField("Username")
     password = PasswordField("Password")
+
+
+class PasswordForm(Form):
+    new_password = StringField("New Password", validators=[Length(min=8, max=32)])
+
+    # def validate(self):
+    #     base_validate = super().validate()
+    #     check if new_password matches any in User.previous_password
+    #
+    #     self.new_password.errors.append("")

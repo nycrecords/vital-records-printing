@@ -1,8 +1,8 @@
 import os
 from sqlalchemy import cast, String
 from sqlalchemy.exc import SQLAlchemyError
-from app import app, login_manager
-from app.forms import SearchForm, LoginForm
+from app import app, login_manager, db
+from app.forms import SearchForm, LoginForm, PasswordForm
 from app.models import Cert, User
 from flask import (
     render_template,
@@ -44,6 +44,18 @@ def login():
 def logout():
     logout_user()
     return redirect('/')
+
+
+@app.route('/password', methods=['GET', 'POST'])
+@login_required
+def password():
+    password_form = PasswordForm()
+    if password_form.validate_on_submit():
+        new_password = password_form.new_password.data
+        current_user.set_password(new_password, commit=True)
+
+        return redirect('/')
+    return render_template('change_password.html', password_form=password_form)
 
 
 @app.route('/', methods=['GET'])
