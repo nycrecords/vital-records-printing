@@ -13,7 +13,10 @@ from werkzeug.security import (
     generate_password_hash,
     check_password_hash
 )
+from sqlalchemy.orm.attributes import flag_modified
+from datetime import datetime
 
+counter = 0
 
 class Cert(db.Model):
     """
@@ -100,15 +103,44 @@ class Cert(db.Model):
 class User(db.Model, UserMixin):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(32), unique=True)
-    password = db.Column(db.String(64))
+    username = db.Column(db.String(65), unique=True)
+    password = db.Column(db.String(256))
+    first_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
+    date_pass_changed = db.Column(db.DateTime())
+    previous_passwords = db.Column(db.ARRAY(db.String(256)))  # TODO: MAX_PREVIOUS_PASSWORDS = 3
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, first_name, last_name):
         self.username = username
-        self.set_password(password)
+        self.set_password(password, commit=True)
+        self.first_name = first_name
+        self.last_name = last_name
 
-    def set_password(self, password):
+    def set_password(self, password, commit=False):
+        # Update the date_pass_changed
+        self.date_pass_changed = datetime.now()
+        # Set the new password
         self.password = generate_password_hash(password)
+        # Store password in previous_passwords array
+        if self.previous_passwords is None:
+            # counter+=1
+            # self.previous_passwords = [str(counter) + ',' + self.password]
+            self.previous_passwords = [self.password]
+        else:
+            # size = 0
+            # for old_pass in self.previous_passwords:
+            #     size += 1
+            # if size < 3:
+            #     # self.previous_passwords.append(str(counter) + ',' + self.password)
+            #     self.previous_passwords.append(self.password)
+            #     flag_modified(self, 'previous_passwords')
+            # else:  # size >=3
+            #     pass
+            self.previous_passwords.append(self.password)
+            flag_modified(self, 'previous_passwords')
+
+        if commit:
+            db.session.commit()
 
     def check_password(self, password):
         return check_password_hash(self.password, password)

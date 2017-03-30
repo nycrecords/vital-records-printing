@@ -15,6 +15,15 @@
         </div>
         <div class="navbar-header pull-right">
             <ul class="nav navbar-nav navbar-right">
+
+                {% if current_user.is_authenticated %}
+                    <li>
+                        <a href="{{ url_for('password') }}">
+                            Change Password
+                        </a>
+                    </li>
+                {% endif %}
+
                 <li>
                     {% if current_user.is_authenticated %}
                         <a href="{{ url_for('logout') }}">
