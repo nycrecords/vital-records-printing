@@ -24,7 +24,7 @@ TO_VALID = {
     'de': DEC
 }
 
-ALL = [
+ALL = frozenset((
     JAN,
     FEB,
     MAR,
@@ -37,4 +37,4 @@ ALL = [
     OCT,
     NOV,
     DEC
-]
+))

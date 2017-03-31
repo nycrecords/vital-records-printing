@@ -170,9 +170,9 @@ $(function () {
     $("#year").bind({
         keydown: function (e) {
             if (e.shiftKey === true) {
-                return e.which == 9 || e.which == 56;
+                return e.which === 9 || e.which === 56;
             }
-            return !(e.which > 57 || e.which == 32);
+            return !(e.which > 57 || e.which === 32);
         }
     });
 
