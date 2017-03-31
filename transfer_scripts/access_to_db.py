@@ -15,6 +15,7 @@ from functools import wraps
 from multiprocessing import Pool
 from app.constants import counties, months, certificate_types
 
+# To mount: `sudo mount -t cifs -o username=<USERNAME>,password=<PASSWORD> //10.132.41.31/DVR /mnt/smb`
 DVR_MOUNT_POINT = "/mnt/smb"  # CHANGE THIS TO MATCH YOUR ENVIRONMENT!
 NUM_DVR_DIRS = 15
 
@@ -206,11 +207,12 @@ def _add_certificate(type_,
 
 def create_files(error_log_file=None):
     """
+    * USE `create_sql_to_create_files` INSTEAD *
+    
     Walks through the certificate files directory, searches for a corresponding 
     certificate record, creates a File record, and links it to the certificate record.
     
     Assumes `certificate` has already been populated and 'DVR' has been mounted.
-    To mount: `sudo mount -t cifs -o username=<USERNAME>,password=<PASSWORD> //10.132.41.31/DVR /mnt/smb`
     
     """
     def write_to_log(msg, path):
@@ -296,8 +298,24 @@ def create_files(error_log_file=None):
         CONN.commit()
 
 
-def create_sql_to_create_files():
-    # TODO: create index before running this
+def create_sql_to_create_files(log_file=None):
+    """
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    * It is strongly recommended you create a composite index for `certificate`             *
+    * (type, county, year, number) before running this.                                     *
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    
+    Walks through the certificate files directory and writes to a file, "add_files.sql", the 
+    SQL commands for INSERTing `file` records for every certificate PDF found and for UPDATEing
+    every corresponding `certificate` record.
+    
+    Assumes 'DVR' has been mounted.
+    
+    """
+    def write_to_log(msg, path):
+        if log_file is not None:
+            log_file.write("{path}{n}{msg}{n}{n}".format(path=path, msg=msg, n=os.linesep))
+
     with open("add_files.sql", "w") as sql:
         for root, dirs, files in os.walk(DVR_MOUNT_POINT):
             # certificate files are assumed to be in "Delivery*" directories
@@ -316,6 +334,7 @@ def create_sql_to_create_files():
                             number = parts[3].lstrip('0')
                         except Exception:
                             msg = "Could not parse file name: '{}'".format(name)
+                            write_to_log(msg, path)
                             print(msg)
                         else:
                             if len(number) <= 10:
@@ -335,7 +354,9 @@ def create_sql_to_create_files():
                                                 number=number,
                                                 newline=os.linesep))
                             else:
-                                print("Skipping: {}".format(name))
+                                msg = "Skipping: {}".format(name)
+                                write_to_log(msg, path)
+                                print(msg)
 
 
 def transfer_all():
@@ -361,14 +382,15 @@ def search_for_file(dvr_num, type, county, year, number):
     print("{}: {} seconds".format(dvr_num, time() - start))
 
 
+def multiprocess_file_search_example():
+    search_for_file(1, 'D', 'K', 1911, 65)
+    start = time()
+    with Pool(processes=NUM_DVR_DIRS) as pool:
+        pool.starmap(search_for_file, [(i, 'D', 'K', 1911, 65) for i in range(1, NUM_DVR_DIRS + 1)])
+    print("Total: {} seconds".format(time() - start))
+
+
 if __name__ == "__main__":
-    create_sql_to_create_files()
-
-    # search_for_file(1, 'D', 'K', 1911, 65)
-    # start = time()
-    # with Pool(processes=NUM_DVR_DIRS) as pool:
-    #     pool.starmap(search_for_file, [(i, 'D', 'K', 1911, 65) for i in range(1, NUM_DVR_DIRS + 1)])
-    # print("Total: {} seconds".format(time() - start))
-
-    # with open("create_files_error_log.txt", "w") as flog:
-    #     create_files(flog)
+    # transfer_all()
+    with open("create_sql_log.txt", "w") as flog:
+        create_sql_to_create_files(flog)

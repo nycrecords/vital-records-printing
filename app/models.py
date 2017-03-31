@@ -46,8 +46,8 @@ class Cert(db.Model):
           database: "15 y", "9 m". A better way of handling this (if it were worth it)
           would be to use two columns: `age` (integer) and `age_unit` (varchar).
         - The `day` column is of type varchar instead of integer. Why? Here is an example 
-          of existing day data: "21'15". What is the significance of the apostrophe and 
-          why is it included in only some records is something we may never truly know.
+          of existing day data: "21'15". What the significance of the apostrophe is and 
+          why it is included in only some records is something we may never truly know.
           I suspect what is on the lhs of the apostrophe is the hour of that day.
         
     """
