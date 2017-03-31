@@ -125,3 +125,8 @@ def image(cert_id):
             "soundex": cert.soundex,
         }
     })
+
+
+@app.route('/pic', methods=['GET'])
+def pic():
+    return render_template("pic.html")

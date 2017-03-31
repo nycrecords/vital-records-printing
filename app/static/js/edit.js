@@ -37,7 +37,7 @@ $(function () {
             this.render(function () {
                 var finalImage = this.toBase64();
                 var printWindow = window.open();
-                printWindow.document.write('<html><body><img src="');  // FIXME: printing issues, vertical align
+                printWindow.document.write('<html><body><img class="test" src="');  // FIXME: printing issues, vertical align
                 printWindow.document.write(finalImage);
                 printWindow.document.write('" /></body></html>');
                 printWindow.document.close();
@@ -71,4 +71,21 @@ $(function () {
         $(".current").removeClass("current");
         $(".item.active").find(".cert-image").addClass("current");
     });
+
+
+    var imgH = $('#test').height();
+    var _docHeight = $(window).height();
+    // var _docHeight = 1300;
+    console.log(imgH);
+    console.log(_docHeight);
+    var difference = Math.abs(_docHeight-imgH);
+    console.log(difference);
+    var paddingTop = difference / 2;
+    console.log(paddingTop);
+
+    $("#padTop").css("padding-top", paddingTop);
+
+    console.log($(window).height());
 });
+
+
