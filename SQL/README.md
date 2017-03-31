@@ -1,9 +1,9 @@
 #### Before running `run.sh`, ensure the following:
 
 - `standard_conforming_strings = off` in `postgresql.conf`
-  - This will allow values with escaped quotes (`\'`) to be inserted
-  - An alternative to this would be to change every instance of `\'` to `''` (two single quotes) 
-  within the `*_add.sql` files
+    - This will allow values with escaped quotes (`\'`) to be inserted
+    - An alternative to this would be to change every instance of `\'` to `''` (two single quotes) 
+    within the `*_add.sql` files
    
 - The directory structure of `SQL/` looks like this:
 
