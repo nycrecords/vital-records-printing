@@ -11,6 +11,7 @@ FROM_FILE_IDENTIFIER = {
     'Q': QUEENS,
     'B': BRONX,
     'M': MANHATTAN,
-    'R': RICHMOND
-    # TODO: 'S': RICHMOND needed?
+    'R': RICHMOND,
+    'S': RICHMOND,
+    # TODO: 'X': ?
 }
