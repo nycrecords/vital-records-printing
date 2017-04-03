@@ -89,7 +89,7 @@ def years():
             county=request.args["county"]
         ).items() if val
     }
-    base_query = Cert.query.filter_by(**filters)
+    base_query = Cert.query.filter_by(**filters).filter(Cert.year != None)
     try:
         start = base_query.order_by(Cert.year.asc()).first()
         end = base_query.order_by(Cert.year.desc()).first()
@@ -110,10 +110,12 @@ def image(cert_id):
     Return certificate data.
     """
     cert = Cert.query.get(cert_id)
-    if not os.path.exists(cert.filename):  # TODO: use actual file path
+    if cert.file_id is None:
         src = url_for('static', filename=os.path.join('img', "missing.jpg"))
     else:
-        src = url_for('static', filename=os.path.join('img', cert.filename))  # TODO: actual fle path
+        # TODO: if Cert.file.converted:
+        # TODO: convert to tiff, store in static (in seprarate file system), set 'converted'
+        src = os.path.join('/mnt/smb', cert.file.path)
     return jsonify({
         "data": {
             "src": src,

@@ -49,11 +49,11 @@ class SearchForm(Form):
         "County",
         choices=[
             ('', 'All'),
-            ('kings', 'Brooklyn'),
+            ('kings', 'Kings / Brooklyn'),
             ('queens', 'Queens'),
             ('bronx', 'Bronx'),
             ('manhattan', 'Manhattan'),
-            ('richmond', 'Staten Island')
+            ('richmond', 'Richmond / Staten Island')
         ])
     year = StringField("Year", validators=[Length(max=4)])
     number = StringField("Certificate Number")
