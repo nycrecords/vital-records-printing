@@ -207,7 +207,7 @@ def _add_certificate(type_,
 
 def create_files(error_log_file=None):
     """
-    * USE `create_sql_to_create_files` INSTEAD *
+    * Use `create_sql_to_create_files` instead. *
     
     Walks through the certificate files directory, searches for a corresponding 
     certificate record, creates a File record, and links it to the certificate record.
