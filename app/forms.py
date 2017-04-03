@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms.fields import StringField, SubmitField, SelectField, IntegerField, PasswordField
-from wtforms.validators import Length, Required
-
+from wtforms.validators import Length
+from flask_login import current_user
 
 class Form(FlaskForm):
     class Meta:
@@ -49,11 +49,11 @@ class SearchForm(Form):
         "County",
         choices=[
             ('', 'All'),
-            ('kings', 'Brooklyn'),
+            ('kings', 'Kings / Brooklyn'),
             ('queens', 'Queens'),
             ('bronx', 'Bronx'),
             ('manhattan', 'Manhattan'),
-            ('richmond', 'Staten Island')
+            ('richmond', 'Richmond / Staten Island')
         ])
     year = StringField("Year", validators=[Length(max=4)])
     number = StringField("Certificate Number")
@@ -80,8 +80,12 @@ class LoginForm(Form):
 class PasswordForm(Form):
     new_password = StringField("New Password", validators=[Length(min=8, max=32)])
 
-    # def validate(self):
-    #     base_validate = super().validate()
-    #     check if new_password matches any in User.previous_password
-    #
-    #     self.new_password.errors.append("")
+    def validate(self):
+        base_validation = super().validate()
+        is_valid_password = current_user.is_valid_password(self.new_password.data)
+
+        if not is_valid_password:
+            self.new_password.errors.append(
+                "Your new password cannot be the same as your current password or your last 3 passwords.")
+
+        return base_validation and is_valid_password
