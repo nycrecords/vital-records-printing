@@ -300,10 +300,10 @@ def create_files(error_log_file=None):
 
 def create_sql_to_create_files(log_file=None):
     """
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    * It is strongly recommended you create a composite index for `certificate`             *
-    * (type, county, year, number) before running this.                                     *
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    * It is strongly recommended you create a composite index for `certificate`               *
+    * (type, county, year, number) before running this... unless you have a lifetime to spare *
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     
     Walks through the certificate files directory and writes to a file, "add_files.sql", the 
     SQL commands for INSERTing `file` records for every certificate PDF found and for UPDATEing
@@ -316,6 +316,7 @@ def create_sql_to_create_files(log_file=None):
         if log_file is not None:
             log_file.write("{path}{n}{msg}{n}{n}".format(path=path, msg=msg, n=os.linesep))
 
+    file_count = 0
     with open("add_files.sql", "w") as sql:
         for root, dirs, files in os.walk(DVR_MOUNT_POINT):
             # certificate files are assumed to be in "Delivery*" directories
@@ -337,6 +338,7 @@ def create_sql_to_create_files(log_file=None):
                             write_to_log(msg, path)
                             print(msg)
                         else:
+                            file_count += 1
                             if len(number) <= 10:
                                 sql.write(
                                     "INSERT INTO file (name, path, converted) "
@@ -357,6 +359,8 @@ def create_sql_to_create_files(log_file=None):
                                 msg = "Skipping: {}".format(name)
                                 write_to_log(msg, path)
                                 print(msg)
+    print("{} files to add. Run 'psql -d vital_records_printing -f add_files.sql' and go grab a coffee or something"
+          "because that is going to take a while.".format(file_count))  # at least 5,787,832 expected
 
 
 def transfer_all():
