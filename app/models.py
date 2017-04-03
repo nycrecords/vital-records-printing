@@ -34,7 +34,7 @@ class Cert(db.Model):
     last_name   varchar(50), last name of individual pertaining to the certificate
     age         varchar(10), age of individual pertaining to the certificate
     soundex     varchar(4), certificate soundex
-    file_id     integer, foreign key to File
+    file_id     integer, foreign key to `file`
     
     idx_year_county_type        year, county, type
     idx_first_county_type       first_name, county, type
@@ -140,6 +140,7 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
     
     """
     __tablename__ = "user"
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(65), unique=True)
     password = db.Column(db.String(256))
@@ -149,7 +150,7 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
 
     history = db.relationship("History", backref="user", lazy="dynamic")
 
-    MAX_PREV_PASS = 3
+    MAX_PREV_PASS = 3  # number of previous passwords to check against
 
     def __init__(self, username, password, first_name, last_name):
         self.username = username
@@ -186,6 +187,15 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
 
 
 class History(db.Model):
+    """
+    Define the History class for the `history` table with the following columns:
+    
+    id          integer, primary key
+    user_id     integer, foreign key to `users`
+    timestamp   datetime, time when record created
+    password    varchar(256), hashed password
+    
+    """
     __tablename__ = "history"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))

@@ -36,6 +36,7 @@ def login():
         if user is not None and user.check_password(form.password.data):
             login_user(user)  # TODO: remember me
         # TODO: else flash
+        # TODO: check date_pass_changed and redirect to '/password' if necessary
     return redirect('/')
 
 
