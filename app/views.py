@@ -18,7 +18,6 @@ from flask_login import (
     login_required,
 )
 
-
 RESULT_SET_LIMIT = 20
 WILDCARD_CHAR = "*"
 
@@ -35,8 +34,8 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user is not None and user.check_password(form.password.data):
             login_user(user)  # TODO: remember me
-        # TODO: else flash
-        # TODO: check date_pass_changed and redirect to '/password' if necessary
+            # TODO: else flash
+            # TODO: check date_pass_changed and redirect to '/password' if necessary
     return redirect('/')
 
 
@@ -52,9 +51,8 @@ def logout():
 def password():
     password_form = PasswordForm()
     if password_form.validate_on_submit():
-        new_password = password_form.new_password.data
-        current_user.set_password(new_password)
-
+        current_user.update_password(password_form.old_password.data,
+                                     password_form.new_password.data)
         return redirect('/')
     return render_template('change_password.html', password_form=password_form)
 
@@ -128,7 +126,7 @@ def years():
             type=request.args["type"],
             county=request.args["county"]
         ).items() if val
-    }
+        }
     base_query = Cert.query.filter_by(**filters).filter(Cert.year != None)
     try:
         start = base_query.order_by(Cert.year.asc()).first()
