@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms.fields import StringField, SubmitField, SelectField, IntegerField, PasswordField
-from wtforms.validators import Length
+from wtforms.validators import Length, DataRequired
 from flask_login import current_user
 
 class Form(FlaskForm):
@@ -78,14 +78,20 @@ class LoginForm(Form):
 
 
 class PasswordForm(Form):
-    new_password = StringField("New Password", validators=[Length(min=8, max=32)])
+    old_password = PasswordField("Old Password", validators=[DataRequired()])
+    new_password = PasswordField("New Password", validators=[Length(min=8, max=32)])
 
     def validate(self):
         base_validation = super().validate()
         is_valid_password = current_user.is_valid_password(self.new_password.data)
+        check_old_password = current_user.check_password(self.old_password.data)
 
         if not is_valid_password:
             self.new_password.errors.append(
                 "Your new password cannot be the same as your current password or your last 3 passwords.")
+        if not check_old_password:
+            self.old_password.errors.append(
+                "Wrong password"
+            )
 
-        return base_validation and is_valid_password
+        return base_validation and is_valid_password and check_old_password

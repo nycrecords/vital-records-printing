@@ -170,7 +170,7 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
         if self.is_valid_password(password):
             if update_history:
                 # update previous passwords
-                if  self.history.count() >= self.MAX_PREV_PASS:
+                if self.history.count() >= self.MAX_PREV_PASS:
                     # remove oldest password
                     self.history.filter_by(  # can't call delete() when using order_by()
                         id=self.history.order_by(History.timestamp.asc()).first().id
@@ -181,6 +181,10 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
             self.password = generate_password_hash(password)
 
             db.session.commit()
+
+    def update_password(self, old_password, new_password):
+        if self.check_password(old_password):
+            self.set_password(new_password)
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
