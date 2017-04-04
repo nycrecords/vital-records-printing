@@ -298,7 +298,7 @@ def create_files(error_log_file=None):
         CONN.commit()
 
 
-def create_sql_to_create_files(log_file=None):
+def create_add_files_sql_file(log_file=None):
     """
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     * It is strongly recommended you create a composite index for `certificate`               *
@@ -387,14 +387,16 @@ def search_for_file(dvr_num, type, county, year, number):
 
 
 def multiprocess_file_search_example():
+    """ Search for Death in Kings county in the year 1911 with certificate number: 65 """
     search_for_file(1, 'D', 'K', 1911, 65)
     start = time()
     with Pool(processes=NUM_DVR_DIRS) as pool:
         pool.starmap(search_for_file, [(i, 'D', 'K', 1911, 65) for i in range(1, NUM_DVR_DIRS + 1)])
     print("Total: {} seconds".format(time() - start))
+    # TODO: once found, stop workers
 
 
 if __name__ == "__main__":
     # transfer_all()
-    with open("create_sql_log.txt", "w") as flog:
-        create_sql_to_create_files(flog)
+    with open("create_add_files_log.txt", "w") as flog:
+        create_add_files_sql_file(flog)
