@@ -1,3 +1,4 @@
+import string
 from flask_wtf import FlaskForm
 from wtforms.fields import StringField, SubmitField, SelectField, IntegerField, PasswordField
 from wtforms.validators import Length, DataRequired
@@ -78,20 +79,40 @@ class LoginForm(Form):
 
 
 class PasswordForm(Form):
-    old_password = PasswordField("Old Password", validators=[DataRequired()])
+    current_password = PasswordField("Current Password", validators=[DataRequired()])
     new_password = PasswordField("New Password", validators=[Length(min=8, max=32)])
 
     def validate(self):
         base_validation = super().validate()
-        is_valid_password = current_user.is_valid_password(self.new_password.data)
-        check_old_password = current_user.check_password(self.old_password.data)
+        is_valid_current_password = current_user.check_password(self.current_password.data)
+        is_valid_new_password = current_user.is_new_password(self.new_password.data)
+        specials = set(string.punctuation)
+        has_num = any(c.isdigit() for c in self.new_password.data)
+        has_upper = any(c.isupper() for c in self.new_password.data)
+        has_lower = any(c.islower() for c in self.new_password.data)
+        has_special = any(c in specials for c in self.new_password.data)
 
-        if not is_valid_password:
+        if not has_num:
+            self.new_password.errors.append("Your new password must contain at least 1 number.")
+        if not has_upper:
+            self.new_password.errors.append("Your new password must contain at least 1 capital letter.")
+        if not has_lower:
+            self.new_password.errors.append("Your new password must contain at least 1 lower case letter.")
+        if not has_special:
+            self.new_password.errors.append("Your new password must contain at least 1 special character.")
+
+        if not is_valid_new_password:
             self.new_password.errors.append(
                 "Your new password cannot be the same as your current password or your last 3 passwords.")
-        if not check_old_password:
-            self.old_password.errors.append(
-                "Wrong password"
-            )
+        if not is_valid_current_password:
+            self.old_password.errors.append("Incorrect password.")
 
-        return base_validation and is_valid_password and check_old_password
+        return (
+            base_validation and
+            is_valid_current_password and
+            is_valid_new_password and
+            has_num and
+            has_upper and
+            has_lower and
+            has_special
+        )

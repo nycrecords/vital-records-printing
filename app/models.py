@@ -158,7 +158,7 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
         self.first_name = first_name
         self.last_name = last_name
 
-    def is_valid_password(self, password):
+    def is_new_password(self, password):
         """
         Returns whether the supplied password is not the same as the current 
         or previous passwords (True) or not (False). 
@@ -167,7 +167,7 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
         return not existing_passwords or all(not check_password_hash(p, password) for p in existing_passwords)
 
     def set_password(self, password, update_history=True):
-        if self.is_valid_password(password):
+        if self.is_new_password(password):
             if update_history:
                 # update previous passwords
                 if self.history.count() >= self.MAX_PREV_PASS:
