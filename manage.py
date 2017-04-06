@@ -11,8 +11,44 @@ DB_INDEX_ARGS = frozenset((
     ("idx_last_county_type", Cert.last_name, Cert.county, Cert.type),
     ("idx_soundex_county_type", Cert.soundex, Cert.county, Cert.type),
     ("idx_number_county_type", Cert.number, Cert.county, Cert.type),
+
+    # nCr n=7 r=1
+    ("idx_type", Cert.type),
+    # nCr n=7 r=2
+    ("idx_type_county", Cert.type, Cert.county),
+    ("idx_type_year", Cert.type, Cert.year),
+    ("idx_type_number", Cert.type, Cert.number),
+    ("idx_type_first", Cert.type, Cert.first_name),
+    ("idx_type_last", Cert.type, Cert.last_name),
+    ("idx_type_soundex", Cert.type, Cert.soundex),
+    # nCr n=7 r=3
 ))
 
+Combination = {
+    "type": Cert.type,
+    "county": Cert.county,
+    "year": Cert.year,
+    "number": Cert.number,
+    "first": Cert.first_name,
+    "last": Cert.last_name,
+    "soundex": Cert.soundex,
+}
+
+from itertools import combinations
+
+@manager.command
+def combination():
+    for i in range(1, len(Combination)+1):
+        bunchaCombs = list(combinations(Combination, i))
+        print('---------------------------------')
+        for comb in bunchaCombs:
+            for search_field in comb:
+                if search_field == 'type':
+                    print(comb)
+                    # base = "idx" + ("_{}" * i)
+                    # for a_search_field in comb:
+                    #     base.format(a_search_field)
+                    # print(base)
 
 @manager.command
 def create_user(first_name, last_name, username=None):
