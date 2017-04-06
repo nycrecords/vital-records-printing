@@ -127,9 +127,9 @@ class File(db.Model):
         return self.pngs
 
 
-class User(db.Model, UserMixin):  # TODO: write tests for this
+class User(db.Model, UserMixin):
     """
-    Define the User class for the `user` table with the following columns:
+    Define the User class for the `auth_user` table with the following columns:
     
     id                  integer, primary key
     username            varchar(65), human-readable user identifier
@@ -138,7 +138,7 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
     expiration_date     datetime, timestamp of when user's password will expire
     
     """
-    __tablename__ = "user"
+    __tablename__ = "auth_user"
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(65), unique=True)
@@ -202,7 +202,7 @@ class History(db.Model):
     """
     __tablename__ = "history"
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("auth_user.id"))
     timestamp = db.Column(db.DateTime)
     password = db.Column(db.String(256))
 
