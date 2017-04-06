@@ -31,18 +31,21 @@ def load_user(user_id):
 
 @app.route('/login', methods=['POST'])
 def login():
+    """
+    Log in a user or flash an error message.
+    If the user's password has expired, proceed with logging in
+    but redirect to the change password page.
+    """
     form = LoginForm(request.form)
     if form.validate():
         user = User.query.filter_by(username=form.username.data).first()
         if user is not None and user.check_password(form.password.data):
-            # print(request.form.get('remember') is not None)
             login_user(user, remember=(request.form.get('remember') is not None))
-
-            # Check date_pass_changed and redirect to '/password' if necessary
+            # check if password has expired
             if datetime.utcnow() > current_user.expiration_date:
                 return redirect(url_for('password'))
         else:
-            flash('Wrong username and/or password')
+            flash('Wrong username and/or password.')
     return redirect('/')
 
 
@@ -56,6 +59,10 @@ def logout():
 @app.route('/password', methods=['GET', 'POST'])
 @login_required
 def password():
+    """
+    Return the change password page and redirect to the home page
+    if password change is successful.
+    """
     password_form = PasswordForm()
     if password_form.validate_on_submit():
         current_user.update_password(password_form.current_password.data,
@@ -68,7 +75,7 @@ def password():
 @app.route('/search', methods=['POST'])
 def search():
     """
-    Return search page or certificate row templates.
+    Return the search page or certificate row templates.
     """
     form = SearchForm()
     login_form = LoginForm()
@@ -127,6 +134,9 @@ def search():
 
 @app.route("/years", methods=['GET'])
 def years():
+    """
+    Return a range of available years to search by based on "type" and "county".
+    """
     filters = {
         key: val for (key, val) in
         dict(
@@ -160,7 +170,7 @@ def image(cert_id):
         src = url_for('static', filename=os.path.join('img', "missing.jpg"))
     else:
         # TODO: if Cert.file.converted:
-        # TODO: convert to tiff, store in static (in seprarate file system), set 'converted'
+        # TODO: convert to png, store in static (in seprarate file system), set 'converted'
         src = os.path.join('/mnt/smb', cert.file.path)
     return jsonify({
         "data": {
