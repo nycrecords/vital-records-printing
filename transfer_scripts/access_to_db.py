@@ -298,12 +298,12 @@ def create_files(error_log_file=None):
         CONN.commit()
 
 
-def create_sql_to_create_files(log_file=None):
+def create_add_files_sql_file(log_file=None):
     """
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-    * It is strongly recommended you create a composite index for `certificate`             *
-    * (type, county, year, number) before running this.                                     *
-    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    * It is strongly recommended you create a composite index for `certificate`               *
+    * (type, county, year, number) before running this... unless you have a lifetime to spare *
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     
     Walks through the certificate files directory and writes to a file, "add_files.sql", the 
     SQL commands for INSERTing `file` records for every certificate PDF found and for UPDATEing
@@ -316,6 +316,7 @@ def create_sql_to_create_files(log_file=None):
         if log_file is not None:
             log_file.write("{path}{n}{msg}{n}{n}".format(path=path, msg=msg, n=os.linesep))
 
+    file_count = 0
     with open("add_files.sql", "w") as sql:
         for root, dirs, files in os.walk(DVR_MOUNT_POINT):
             # certificate files are assumed to be in "Delivery*" directories
@@ -337,6 +338,7 @@ def create_sql_to_create_files(log_file=None):
                             write_to_log(msg, path)
                             print(msg)
                         else:
+                            file_count += 1
                             if len(number) <= 10:
                                 sql.write(
                                     "INSERT INTO file (name, path, converted) "
@@ -357,6 +359,8 @@ def create_sql_to_create_files(log_file=None):
                                 msg = "Skipping: {}".format(name)
                                 write_to_log(msg, path)
                                 print(msg)
+    print("{} files to add. Run 'psql -d vital_records_printing -f add_files.sql' and go grab a coffee or something"
+          "because that is going to take a while.".format(file_count))  # at least 5,787,832 expected
 
 
 def transfer_all():
@@ -383,14 +387,16 @@ def search_for_file(dvr_num, type, county, year, number):
 
 
 def multiprocess_file_search_example():
+    """ Search for Death in Kings county in the year 1911 with certificate number: 65 """
     search_for_file(1, 'D', 'K', 1911, 65)
     start = time()
     with Pool(processes=NUM_DVR_DIRS) as pool:
         pool.starmap(search_for_file, [(i, 'D', 'K', 1911, 65) for i in range(1, NUM_DVR_DIRS + 1)])
     print("Total: {} seconds".format(time() - start))
+    # TODO: once found, stop workers
 
 
 if __name__ == "__main__":
     # transfer_all()
-    with open("create_sql_log.txt", "w") as flog:
-        create_sql_to_create_files(flog)
+    with open("create_add_files_log.txt", "w") as flog:
+        create_add_files_sql_file(flog)
