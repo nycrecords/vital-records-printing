@@ -1,0 +1,36 @@
+#results a:nth-child(even) .row {
+    background-color: rgba(123, 180, 203, 0.33);
+}
+
+a:hover {
+    color: hotpink;
+}
+
+.error {
+    color: red;
+}
+
+.sort-field {
+    color: #2165ff;
+}
+
+.sort-field:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#spinner {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.has-error {
+    color: #a94442;
+}
+
+/* TODO: move to main.css */
+
+.container, .navbar {
+    min-width: 750px;
+}

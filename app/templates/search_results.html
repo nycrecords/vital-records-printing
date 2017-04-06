@@ -1,0 +1,39 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-xs-2">
+                County
+            </div>
+            <div class="col-xs-1">
+                Month
+            </div>
+            <div class="col-xs-1">
+                Day
+            </div>
+            <div class="col-xs-1 sort-field" data-sort-order="none" data-target="year_sort">
+                Year <span class="glyphicon" aria-hidden="true"></span>
+            </div>
+            <div class="col-xs-1">
+                Age
+            </div>
+            <div class="col-xs-1 sort-field" data-sort-order="none" data-target="number_sort">
+                Number <span class="glyphicon" aria-hidden="true"></span>
+            </div>
+            <div class="col-xs-1 sort-field" data-sort-order="none" data-target="soundex_sort">
+                Soundex <span class="glyphicon" aria-hidden="true"></span>
+            </div>
+            <div class="col-xs-2 sort-field" data-sort-order="none" data-target="first_name_sort">
+                First Name <span class="glyphicon" aria-hidden="true"></span>
+            </div>
+            <div class="col-xs-2 sort-field" data-sort-order="none" data-target="last_name_sort">
+                Last Name <span class="glyphicon" aria-hidden="true"></span>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div id="results"></div>
+        <br>
+        <button id="load-more" type="button" class="center-block btn btn-default">Load More</button>
+        <img id="spinner" src="{{ url_for('static', filename='img/spinner.gif') }}" height="34" />
+    </div>
+</div>

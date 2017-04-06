@@ -1,0 +1,49 @@
+<div style="max-height: 100%;" class="modal fade" id="cert-modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- modal header -->
+            <div class="modal-header image-modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <!-- certificate info -->
+                <p class="modal-title">
+                    <span style="font-size: 1.5em; font-weight: bold;">
+                        #<span id="cert-number"></span>
+                    </span>
+                    &nbsp;
+                    <span id="cert-type" style="font-weight: bold"></span>:
+                    <span id="cert-name"></span>,
+                    <span id="cert-year"></span>,
+                    <span id="cert-county"></span>
+                    &nbsp;
+                    <strong>Soundex:</strong>
+                    <span id="cert-soundex"></span>
+                </p>
+                <hr/>
+                <!-- sliders -->
+                <div class="row" id="brightness-slider">
+                    <div class="col-xs-6">
+                        <p>Brightness</p>
+                        <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0">
+                    </div>
+                    <div class="col-xs-6">
+                        <p>Contrast</p>
+                        <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0">
+                    </div>
+                </div>
+            </div>
+            <!-- modal body -->
+            <div class="modal-body image-modal-body" style="-webkit-transition-duration: 0.8s;" id="modal-image">
+                <div class="row" id="cert-image-row">
+                    <div class="col-xs-12">
+                        <img id="cert-image" src="{{ url_for("static", filename="img/missing.jpg") }}">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="toggle-image-view-btn" class="btn btn-seconday">Toggle Full View</button>
+                <button id="resetbtn" class="btn btn-warning">Reset</button>
+                <button id="printbtn" class="btn btn-info">Print</button>
+            </div>
+        </div>
+    </div>
+</div>
