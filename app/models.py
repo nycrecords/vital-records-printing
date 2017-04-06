@@ -14,8 +14,7 @@ from werkzeug.security import (
     generate_password_hash,
     check_password_hash
 )
-from sqlalchemy.orm.attributes import flag_modified
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Cert(db.Model):
@@ -24,9 +23,9 @@ class Cert(db.Model):
     and indices:
 
     id          integer, primary key
-    type        enum, type of certificate (e.g. "birth")
-    county      enum, certificate county (e.g. "queens")
-    month       enum, month certificate was issued (e.g. "jan")
+    type        certificate_type, type of certificate (e.g. "birth")
+    county      county, certificate county (e.g. "queens")
+    month       month, month certificate was issued (e.g. "jan")
     day         varchar(10), day certificate was issued
     year        integer, year certificate was issued
     number      varchar(10), certificate number
@@ -136,7 +135,7 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
     username            varchar(65), human-readable user identifier
     first_name          varchar(64), user's first name
     last_name           varchar(64), user's last name
-    time_pass_changed   datetime, timestamp of when user's password was last changed
+    expiration_date     datetime, timestamp of when user's password will expire
     
     """
     __tablename__ = "user"
@@ -146,11 +145,12 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
     password = db.Column(db.String(256))
     first_name = db.Column(db.String(64))
     last_name = db.Column(db.String(64))
-    date_pass_changed = db.Column(db.DateTime())
+    expiration_date = db.Column(db.DateTime())
 
     history = db.relationship("History", backref="user", lazy="dynamic")
 
     MAX_PREV_PASS = 3  # number of previous passwords to check against
+    DAYS_UNTIL_EXPIRATION = 90  # number of days until password expires
 
     def __init__(self, username, password, first_name, last_name):
         self.username = username
@@ -177,13 +177,13 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
                     ).delete()
                 db.session.add(History(self.id, self.password))
 
-            self.date_pass_changed = datetime.utcnow()
+            self.expiration_date = datetime.utcnow() + timedelta(days=self.DAYS_UNTIL_EXPIRATION)
             self.password = generate_password_hash(password)
 
             db.session.commit()
 
-    def update_password(self, old_password, new_password):
-        if self.check_password(old_password):
+    def update_password(self, current_password, new_password):
+        if self.check_password(current_password):
             self.set_password(new_password)
 
     def check_password(self, password):
