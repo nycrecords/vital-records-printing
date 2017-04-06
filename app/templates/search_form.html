@@ -1,0 +1,121 @@
+<div class="well">
+    <form class="form-horizontal" id="search-form" method="post" action="{{ url_for("search") }}">
+        {{ form.hidden_tag() }}
+        <div class="row">
+            <div class="col-xs-12">
+                <p>
+                    Use an asterisk (<strong>*</strong>) to represent 0 or more characters.
+                </p>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+
+            <!-- Type of Certificate -->
+            <div class="col-xs-6">
+                <div class="form-group">
+                    {{ form.type.label(class="col-xs-4 control-label") }}
+                    <div class="col-xs-8">
+                        {{ form.type(class="form-control") }}
+                        <div id="error-type"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- First Name -->
+            <div class="col-xs-6">
+                <div class="form-group">
+                    {{ form.first_name.label(class="col-xs-4 control-label text-left") }}
+                    <div class="col-xs-8">
+                        {{ form.first_name(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+
+            <!-- County -->
+            <div class="col-xs-6">
+                <div class="form-group">
+                    {{ form.county.label(class="col-xs-4 control-label") }}
+                    <div class="col-xs-8">
+                        {{ form.county(class="form-control") }}
+                        <div id="error-county"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="col-xs-6">
+                <div class="form-group">
+                    {{ form.last_name.label(class="col-xs-4 control-label") }}
+                    <div class="col-xs-8">
+                        {{ form.last_name(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+
+            <!-- Year -->
+            <div class="col-xs-6">
+                <div class="form-group">
+                    {{ form.year.label(class="col-xs-4 control-label") }}
+                    <div class="col-xs-8">
+                        {{ form.year(class="form-control", maxLength=4) }}
+                        <div id="error-year"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- year range -->
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label id="year-range" class="control-label"></label>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+
+            <!-- Certificate Number -->
+            <div class="col-xs-6">
+                <div class="form-group">
+                    {{ form.number.label(class="col-xs-4 control-label") }}
+                    <div class="col-xs-8">
+                        {{ form.number(class="form-control") }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Soundex -->
+            <div class="col-xs-6">
+                <div class="form-group">
+                    {{ form.soundex.label(class="col-xs-4 control-label") }}
+                    <div class="col-xs-8">
+                        {{ form.soundex(class="form-control", maxLength=4) }}
+                        <div id="error-soundex"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- sort fields -->
+        {{ form.year_sort(hidden="true") }}
+        {{ form.number_sort(hidden="true") }}
+        {{ form.first_name_sort(hidden="true") }}
+        {{ form.last_name_sort(hidden="true") }}
+        {{ form.soundex_sort(hidden="true") }}
+
+        <!-- result slice start position -->
+        {{ form.start(hidden="true") }}
+
+        <button type="submit" class="btn btn-primary center-block">
+            Search ( click me or press ENTER )
+        </button>
+        <small class="pull-right">Database updated on 4/1/2016</small>
+    </form>
+</div>

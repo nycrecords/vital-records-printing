@@ -1,60 +1,186 @@
-from app import app
-from app.forms import SearchForm
-from app.models import Cert
-from flask import (
-    Flask,
-    render_template,
-    request,
-    flash,
-    redirect,
-    url_for
-)
+import os
+from sqlalchemy import cast, String
+from sqlalchemy.exc import SQLAlchemyError
+from app import app, login_manager, db
+from app.forms import SearchForm, LoginForm, PasswordForm
+from app.models import Cert, User
 from app.utils import pdf_to_png
+from flask import (
+    render_template,
+    redirect,
+    request,
+    url_for,
+    jsonify,
+    flash,
+)
+from flask_login import (
+    login_user,
+    logout_user,
+    current_user,
+    login_required,
+)
+from datetime import datetime
 
-@app.route('/', methods=['GET', 'POST'])
-def main():
-    """
-    Stuff
-    """
-    pdf_to_png(input_file_path="app/static/pdf/bitcoin.pdf")
-    return render_template('index.html')
+RESULT_SET_LIMIT = 20
+WILDCARD_CHAR = "*"
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+
+@app.route('/login', methods=['POST'])
 def login():
     """
-    Return login page
+    Log in a user or flash an error message.
+    If the user's password has expired, proceed with logging in
+    but redirect to the change password page.
     """
-    return render_template('login.html')
+    form = LoginForm(request.form)
+    if form.validate():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is not None and user.check_password(form.password.data):
+            login_user(user, remember=(request.form.get('remember') is not None))
+            # check if password has expired
+            if datetime.utcnow() > current_user.expiration_date:
+                return redirect(url_for('password'))
+        else:
+            flash('Wrong username and/or password.')
+    return redirect('/')
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route("/logout", methods=["GET"])
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
+
+
+@app.route('/password', methods=['GET', 'POST'])
+@login_required
+def password():
+    """
+    Return the change password page and redirect to the home page
+    if password change is successful.
+    """
+    password_form = PasswordForm()
+    if password_form.validate_on_submit():
+        current_user.update_password(password_form.current_password.data,
+                                     password_form.new_password.data)
+        return redirect('/')
+    return render_template('change_password.html', password_form=password_form)
+
+
+@app.route('/', methods=['GET'])
+@app.route('/search', methods=['POST'])
 def search():
     """
-    Return search page
+    Return the search page or certificate row templates.
     """
     form = SearchForm()
+    login_form = LoginForm()
     if request.method == "POST":
-        # form = SearchForm(request.form)
-        # if form.validate()
         if form.validate_on_submit():
-            return redirect(url_for("main"))
-    return render_template('search.html', form=form)
+            # set filters
+            filter_by_kwargs = {}
+            filter_args = []
+            for name, value, col in [
+                ("type", form.type.data, Cert.type),
+                ("county", form.county.data, Cert.county),
+                ("year", form.year.data, Cert.year),
+                ("number", form.number.data, Cert.number),
+                ("first_name", form.first_name.data, Cert.first_name),
+                ("last_name", form.last_name.data, Cert.last_name),
+                ("soundex", form.soundex.data, Cert.soundex)
+            ]:
+                if value:
+                    if WILDCARD_CHAR in value:
+                        filter_args.append(
+                            cast(col, String).like(
+                                value.replace(WILDCARD_CHAR, "%")
+                            )
+                        )
+                    else:
+                        filter_by_kwargs[name] = value
+
+            base_query = Cert.query.filter_by(**filter_by_kwargs).filter(*filter_args)
+
+            # set ordering
+            for field, col in [
+                (form.year_sort, Cert.year),
+                (form.number_sort, Cert.number),
+                (form.first_name_sort, Cert.first_name),
+                (form.last_name_sort, Cert.last_name),
+                (form.soundex_sort, Cert.soundex)
+            ]:
+                if field.data != 'none':
+                    if field.data == 'asc':
+                        base_query = base_query.order_by(col.asc())
+                    else:
+                        base_query = base_query.order_by(col.desc())
+                    break
+
+            # render rows
+            rows = []
+            for cert in base_query.slice(form.start.data, RESULT_SET_LIMIT + form.start.data).all():
+                rows.append(render_template('certificate_row.html', certificate=cert))
+
+            return jsonify({"data": rows})
+        else:
+            return jsonify({"errors": form.errors})
+
+    return render_template('index.html', form=form, login_form=login_form)
 
 
-# will be used later
-# @app.route('/edit/<int:cert_id>', methods=['GET'])
-# def edit(cert_id):
-#     """
-#     Return edit page
-#     """
-#     cert = Cert.query.filter_by(id=cert_id).one()
-#
-#     return render_template('edit.html', file_path=cert.filename)
-
-@app.route('/edit', methods=['GET'])
-def edit():
+@app.route("/years", methods=['GET'])
+def years():
     """
-    Return edit page
+    Return a range of available years to search by based on "type" and "county".
     """
-    return render_template('edit.html')
+    filters = {
+        key: val for (key, val) in
+        dict(
+            type=request.args["type"],
+            county=request.args["county"]
+        ).items() if val
+        }
+    base_query = Cert.query.filter_by(**filters).filter(Cert.year != None)
+    try:
+        start = base_query.order_by(Cert.year.asc()).first()
+        end = base_query.order_by(Cert.year.desc()).first()
+        response_json = {
+            "data": {
+                "start": start.year,
+                "end": end.year
+            }
+        }
+    except (SQLAlchemyError, AttributeError):
+        response_json = {}
+    return jsonify(response_json)
+
+
+@app.route('/certificate/<int:cert_id>', methods=['GET'])
+def image(cert_id):
+    """
+    Return certificate data.
+    """
+    # TODO: if current_user not authenticated, use watermarked image
+    cert = Cert.query.get(cert_id)
+    if cert.file_id is None:
+        src = url_for('static', filename=os.path.join('img', "missing.jpg"))
+    else:
+        # TODO: if Cert.file.converted:
+        # TODO: convert to png, store in static (in seprarate file system), set 'converted'
+        src = os.path.join('/mnt/smb', cert.file.path)
+    return jsonify({
+        "data": {
+            "src": src,
+            "number": cert.number,
+            "type": cert.type.title(),
+            "name": cert.name,
+            "year": cert.year,
+            "county": cert.county.title(),
+            "soundex": cert.soundex,
+        }
+    })
