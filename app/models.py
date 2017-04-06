@@ -4,7 +4,17 @@ Models for Vital Records Printing
 
 import os
 from app import db
-from app.constants import certificate_types, months, counties
+from app.constants import (
+    certificate_types,
+    months,
+    counties
+)
+from flask_login import UserMixin
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
+from datetime import datetime, timedelta
 
 
 class Cert(db.Model):
@@ -13,9 +23,9 @@ class Cert(db.Model):
     and indices:
 
     id          integer, primary key
-    type        enum, type of certificate (e.g. "birth")
-    county      enum, certificate county (e.g. "queens")
-    month       enum, month certificate was issued (e.g. "jan")
+    type        certificate_type, type of certificate (e.g. "birth")
+    county      county, certificate county (e.g. "queens")
+    month       month, month certificate was issued (e.g. "jan")
     day         varchar(10), day certificate was issued
     year        integer, year certificate was issued
     number      varchar(10), certificate number
@@ -23,7 +33,7 @@ class Cert(db.Model):
     last_name   varchar(50), last name of individual pertaining to the certificate
     age         varchar(10), age of individual pertaining to the certificate
     soundex     varchar(4), certificate soundex
-    file_id     integer, foreign key to File
+    file_id     integer, foreign key to `file`
     
     idx_year_county_type        year, county, type
     idx_first_county_type       first_name, county, type
@@ -86,12 +96,12 @@ class Cert(db.Model):
 class File(db.Model):
     """
     Define the File class for the `file` table with the following columns:
-    
+
     id          integer, primary key
     name        varchar, name of certificate PDF file
     path        varchar, path to where file is located
     converted   boolean, has the PDF file been converted to PNG(s)?
-    
+
     """
     __tablename__ = "file"
 
@@ -115,3 +125,88 @@ class File(db.Model):
         self.converted = True
         db.commit()
         return self.pngs
+
+
+class User(db.Model, UserMixin):
+    """
+    Define the User class for the `auth_user` table with the following columns:
+    
+    id                  integer, primary key
+    username            varchar(65), human-readable user identifier
+    first_name          varchar(64), user's first name
+    last_name           varchar(64), user's last name
+    expiration_date     datetime, timestamp of when user's password will expire
+    
+    """
+    __tablename__ = "auth_user"
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(65), unique=True)
+    password = db.Column(db.String(256))
+    first_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
+    expiration_date = db.Column(db.DateTime())
+
+    history = db.relationship("History", backref="user", lazy="dynamic")
+
+    MAX_PREV_PASS = 3  # number of previous passwords to check against
+    DAYS_UNTIL_EXPIRATION = 90  # number of days until password expires
+
+    def __init__(self, username, password, first_name, last_name):
+        self.username = username
+        self.set_password(password, update_history=False)  # only update on password resets
+        self.first_name = first_name
+        self.last_name = last_name
+
+    def is_new_password(self, password):
+        """
+        Returns whether the supplied password is not the same as the current 
+        or previous passwords (True) or not (False). 
+        """
+        existing_passwords = list(filter(None, [self.password] + [h.password for h in self.history.all()]))
+        return not existing_passwords or all(not check_password_hash(p, password) for p in existing_passwords)
+
+    def set_password(self, password, update_history=True):
+        if self.is_new_password(password):
+            if update_history:
+                # update previous passwords
+                if self.history.count() >= self.MAX_PREV_PASS:
+                    # remove oldest password
+                    self.history.filter_by(  # can't call delete() when using order_by()
+                        id=self.history.order_by(History.timestamp.asc()).first().id
+                    ).delete()
+                db.session.add(History(self.id, self.password))
+
+            self.expiration_date = datetime.utcnow() + timedelta(days=self.DAYS_UNTIL_EXPIRATION)
+            self.password = generate_password_hash(password)
+
+            db.session.commit()
+
+    def update_password(self, current_password, new_password):
+        if self.check_password(current_password):
+            self.set_password(new_password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+
+class History(db.Model):
+    """
+    Define the History class for the `history` table with the following columns:
+    
+    id          integer, primary key
+    user_id     integer, foreign key to `users`
+    timestamp   datetime, time when record created
+    password    varchar(256), hashed password
+    
+    """
+    __tablename__ = "history"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("auth_user.id"))
+    timestamp = db.Column(db.DateTime)
+    password = db.Column(db.String(256))
+
+    def __init__(self, user_id, password):
+        self.user_id = user_id
+        self.password = password
+        self.timestamp = datetime.utcnow()
