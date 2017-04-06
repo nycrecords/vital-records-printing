@@ -9,6 +9,8 @@ from app.constants import (
     months,
     counties
 )
+from app.utils import certificate_pdf_to_png
+from flask import current_app
 from flask_login import UserMixin
 from werkzeug.security import (
     generate_password_hash,
@@ -116,15 +118,20 @@ class File(db.Model):
 
     @property
     def pngs(self):
-        if not self.converted:
-            self.convert()
-        return [png for png in png_dir]  # TODO
+        """ TODO: docstring """
+        if self.converted:
+            png_path = os.path.join(current_app.config["PNGS_DIRECTORY"], self.name)
+            return [os.path.join(png_path, png) for png in os.listdir(png_path)]  # FIXME: path for src
 
     def convert(self):
-        # TODO: try, and call conversion function here
-        self.converted = True
-        db.commit()
-        return self.pngs
+        """ TODO: docstring """
+        try:
+            certificate_pdf_to_png(self.path)
+        except Exception:
+            pass  # TODO: log it!
+        else:
+            self.converted = True
+            db.session.commit()
 
 
 class User(db.Model, UserMixin):

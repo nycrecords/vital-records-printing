@@ -11,7 +11,7 @@ class Config(object):
     SECRET_KEY = "secrets"
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = 'postgresql://vital_records_printing_db@10.0.0.2:5432/vital_records_printing'  # TODO: vagrant->actual user
-    PNGS_DIRECTORY = os.environ.get('PNGS_DIRECTORY') or os.path.join(BASEDIR, "app", "png")
+    PNGS_DIRECTORY = os.environ.get('PNGS_DIRECTORY') or os.path.join(BASEDIR, "pngs")
 
 
 class DevelopmentConfig(Config):
