@@ -11,6 +11,16 @@
 {% include("navbar.html") %}
 
 <div class="container">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-danger">
+                {% for message in messages %}
+                    <div>{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
     <h2>Search for <u>Birth</u>, <u>Death</u>, and <u>Marriage</u> Certificates</h2>
     {% include("search_form.html") %}
     {% include("search_results.html") %}

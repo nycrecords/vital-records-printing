@@ -15,12 +15,6 @@ DB_INDEX_ARGS = frozenset((
 
 
 @manager.command
-def recreate_db():
-    db.drop_all()
-    db.create_all()
-
-
-@manager.command
 def create_user(first_name, last_name, username=None):
     """
     Create a new user with password 'password'.

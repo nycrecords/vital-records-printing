@@ -10,6 +10,7 @@ from flask import (
     request,
     url_for,
     jsonify,
+    flash,
 )
 from flask_login import (
     login_user,
@@ -17,6 +18,7 @@ from flask_login import (
     current_user,
     login_required,
 )
+from datetime import datetime
 
 RESULT_SET_LIMIT = 20
 WILDCARD_CHAR = "*"
@@ -33,9 +35,14 @@ def login():
     if form.validate():
         user = User.query.filter_by(username=form.username.data).first()
         if user is not None and user.check_password(form.password.data):
-            login_user(user)  # TODO: remember me
-            # TODO: else flash
-            # TODO: check date_pass_changed and redirect to '/password' if necessary
+            # print(request.form.get('remember') is not None)
+            login_user(user, remember=(request.form.get('remember') is not None))
+
+            # Check date_pass_changed and redirect to '/password' if necessary
+            if datetime.utcnow() > current_user.expiration_date:
+                return redirect(url_for('password'))
+        else:
+            flash('Wrong username and/or password')
     return redirect('/')
 
 
@@ -51,7 +58,7 @@ def logout():
 def password():
     password_form = PasswordForm()
     if password_form.validate_on_submit():
-        current_user.update_password(password_form.old_password.data,
+        current_user.update_password(password_form.current_password.data,
                                      password_form.new_password.data)
         return redirect('/')
     return render_template('change_password.html', password_form=password_form)

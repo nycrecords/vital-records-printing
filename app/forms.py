@@ -1,6 +1,13 @@
 import string
 from flask_wtf import FlaskForm
-from wtforms.fields import StringField, SubmitField, SelectField, IntegerField, PasswordField
+from wtforms.fields import (
+    StringField,
+    SubmitField,
+    SelectField,
+    IntegerField,
+    PasswordField,
+    BooleanField,
+)
 from wtforms.validators import Length, DataRequired
 from flask_login import current_user
 
@@ -76,6 +83,7 @@ class SearchForm(Form):
 class LoginForm(Form):
     username = StringField("Username")
     password = PasswordField("Password")
+    remember = BooleanField("Remember me")
 
 
 class PasswordForm(Form):
@@ -105,7 +113,7 @@ class PasswordForm(Form):
             self.new_password.errors.append(
                 "Your new password cannot be the same as your current password or your last 3 passwords.")
         if not is_valid_current_password:
-            self.old_password.errors.append("Incorrect password.")
+            self.current_password.errors.append("Incorrect password.")
 
         return (
             base_validation and
