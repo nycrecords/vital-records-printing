@@ -4,7 +4,6 @@ from sqlalchemy.exc import SQLAlchemyError
 from app import app, login_manager, db
 from app.forms import SearchForm, LoginForm, PasswordForm
 from app.models import Cert, User
-from app.utils import pdf_to_png
 from flask import (
     render_template,
     redirect,
@@ -165,13 +164,12 @@ def image(cert_id):
     """
     Return certificate data.
     """
-    # TODO: if current_user not authenticated, use watermarked image
+    # TODO: if current_user not authenticated, use watermarked image?
     cert = Cert.query.get(cert_id)
     if cert.file_id is None:
         src = url_for('static', filename=os.path.join('img', "missing.jpg"))
     else:
-        # TODO: if Cert.file.converted:
-        # TODO: convert to png, store in static (in seprarate file system), set 'converted'
+        # TODO: if Cert.file.converted return list of png paths (Cert.file.pngs), else Cert.file.convert first
         src = os.path.join('/mnt/smb', cert.file.path)
     return jsonify({
         "data": {

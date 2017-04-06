@@ -1,22 +1,33 @@
-from flask import current_app
-import subprocess
 import os
+import subprocess
+from flask import current_app
 
 
-def pdf_to_png(input_file_path):
+def certificate_pdf_to_png(pdf_path):
     """
-    Util function used to convert a pdf file to png and create its own folder for them
-    :param input_file_path: the path of where the pdf is stored
+    Saves a PNG version of the supplied certificate PDF in to the PNG directory.
+    
+    Example:
+        
+        Given "certificate_name.pdf" with 3 pages, creates 3 PNG files and stores them like so:
+        
+        pngs_directory/
+            certificate_name/
+                0.png
+                1.png
+                2.png
+                
     """
-    new_file_name = os.path.basename(input_file_path)
-    new_file_name = os.path.splitext(new_file_name)[0]
-    new_directory_path = os.path.join(current_app.config['OUTPUT_FILE_PATH'], new_file_name)
-    try:
-        os.mkdir(new_directory_path)
-    except:
-        print("{} already exists".format(new_directory_path))
+    pdf_path_extensionless, _ = os.path.splitext(pdf_path)
+    png_path = os.path.join(
+        current_app.config['PNGS_DIRECTORY'],
+        os.path.basename(pdf_path_extensionless)
+    )
+    if not os.path.exists(png_path):
+        os.mkdir(png_path)
     subprocess.call([
         "convert",
-        input_file_path,
-        os.path.join(new_directory_path, ''.join((new_file_name, ".png")))
+        pdf_path,
+        # TODO: set appropriate DPI (?)
+        os.path.join(png_path, ''.join(("%d", os.extsep, "png")))
     ])
