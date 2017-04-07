@@ -71,3 +71,22 @@
     height: 100%;
     vertical-align: middle;
 }
+
+
+.wraptocenter {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  width: 1700px;
+  height: 1000px;
+  background-color: #999;
+}
+.wraptocenter * {
+  vertical-align: middle;
+}
+
+.tabletest {
+    text-align: center;
+    width: 8.5in;
+    height: 11in;
+}

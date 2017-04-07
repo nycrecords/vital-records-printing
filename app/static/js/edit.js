@@ -39,7 +39,13 @@ $(function () {
                 var printWindow = window.open();
                 printWindow.document.write('<html><body><img class="test" src="');  // FIXME: printing issues, vertical align
                 printWindow.document.write(finalImage);
-                printWindow.document.write('" /></body></html>');
+                printWindow.document.write('" /> <img class="test" src="');
+                printWindow.document.write(finalImage);
+                               printWindow.document.write('" /> <img class="test" src="');
+                printWindow.document.write(finalImage);
+                               printWindow.document.write('" /> <img class="test" src="');
+                printWindow.document.write(finalImage);
+                printWindow.document.write('"/></body></html>');
                 printWindow.document.close();
                 printWindow.print();
                 printWindow.close();
@@ -74,8 +80,9 @@ $(function () {
 
 
     var imgH = $('#test').height();
-    var _docHeight = $(window).height();
+    // var _docHeight = $(window).height();
     // var _docHeight = 1300;
+    var _docHeight = screen.height;
     console.log(imgH);
     console.log(_docHeight);
     var difference = Math.abs(_docHeight-imgH);
@@ -83,7 +90,7 @@ $(function () {
     var paddingTop = difference / 2;
     console.log(paddingTop);
 
-    $("#padTop").css("padding-top", paddingTop);
+    $("#padTop").css("padding-top", paddingTop + 'px');
 
     console.log($(window).height());
 });
