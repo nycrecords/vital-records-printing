@@ -32,12 +32,58 @@ $(function () {
         });
     });
 
+
+    var printHTMLtop = "<html>" +
+        "               <body>" +
+        "               <table style='text-align: center; width: 8.5in; height: 11in;'" +
+        "               <tr>" +
+        "               <td>" +
+        "               <img src='";
+    var printHTMLbot = "'/>" +
+        "               </td>" +
+        "               </tr>" +
+        "               </table>" +
+        "               </body>" +
+        "               </html>";
+
     $('#printbtn').on('click', function (e) {
         Caman('.current', function () {
             this.render(function () {
                 var finalImage = this.toBase64();
                 var printWindow = window.open();
-                printWindow.document.write('<html><body><img class="test" src="');  // FIXME: printing issues, vertical align
+                printWindow.document.write(printHTMLtop);
+                printWindow.document.write(finalImage);
+                printWindow.document.write(printHTMLbot);
+                printWindow.document.close();
+                printWindow.print();
+                // printWindow.close();
+            });
+        });
+    });
+
+    // $('#printbtn').on('click', function (e) {
+    //     Caman('.current', function () {
+    //         this.render(function () {
+    //             var finalImage = this.toBase64();
+    //             var printWindow = window.open();
+    //             printWindow.document.write('<html><body><img class="test" src="');
+    //             printWindow.document.write(finalImage);
+    //             printWindow.document.write('" /> <img class="test" src="');
+    //             printWindow.document.write(finalImage);
+    //             printWindow.document.write('"/></body></html>');
+    //             printWindow.document.close();
+    //             printWindow.print();
+    //             printWindow.close();
+    //         });
+    //     });
+    // });
+
+    $('#print-all-btn').on('click', function (e) {
+        Caman('.current', function () {
+            this.render(function () {
+                var finalImage = this.toBase64();
+                var printWindow = window.open();
+                printWindow.document.write('<html><body><img class="test" src="');
                 printWindow.document.write(finalImage);
                 printWindow.document.write('" /> <img class="test" src="');
                 printWindow.document.write(finalImage);
@@ -77,22 +123,6 @@ $(function () {
         $(".current").removeClass("current");
         $(".item.active").find(".cert-image").addClass("current");
     });
-
-
-    var imgH = $('#test').height();
-    // var _docHeight = $(window).height();
-    // var _docHeight = 1300;
-    var _docHeight = screen.height;
-    console.log(imgH);
-    console.log(_docHeight);
-    var difference = Math.abs(_docHeight-imgH);
-    console.log(difference);
-    var paddingTop = difference / 2;
-    console.log(paddingTop);
-
-    $("#padTop").css("padding-top", paddingTop + 'px');
-
-    console.log($(window).height());
 });
 
 

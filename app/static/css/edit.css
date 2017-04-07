@@ -124,56 +124,9 @@ input[type=range]:focus::-ms-fill-upper {
   color: white;
 }
 
-.test{
-  /*width: 100px;*/
-	/*height: 100px;*/
-	/*background-color: red;*/
-
-	/*position: absolute;*/
-	/*top:0;*/
-	/*bottom: 0;*/
-	/*left: 0;*/
-	/*right: 0;*/
-
-	/*margin: auto;*/
-  margin-top: 10%;
-  margin-bottom: 10%
+.cert-image-table {
+    text-align: center;
+    width: 8.5in;
+    height: 11in;
 }
-
-
-/*.parent {*/
-  /*background: yellow;*/
-  /*margin: 20px;*/
-  /*border: 1px solid black;*/
-  /*position: relative;*/
-  /*height: 500px;*/
-/*}*/
-
-/*.center {*/
-    /*position: absolute;*/
-    /*margin: auto;*/
-    /*top: 0;*/
-    /*left: 0;*/
-    /*right: 0;*/
-    /*bottom: 0;*/
-/*}*/
-
-
-/*.frame {*/
-    /*height: 1000px; !*can be anything*!*/
-    /*width: 1000px; !*can be anything*!*/
-    /*position: relative;*/
-/*}*/
-/*img {*/
-    /*max-height: 100%;*/
-    /*max-width: 100%;*/
-    /*width: auto;*/
-    /*height: auto;*/
-    /*position: absolute;*/
-    /*top: 0;*/
-    /*bottom: 0;*/
-    /*left: 0;*/
-    /*right: 0;*/
-    /*margin: auto;*/
-/*}*/
 
