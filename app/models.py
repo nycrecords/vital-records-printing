@@ -78,7 +78,7 @@ class Cert(db.Model):
     soundex = db.Column(db.String(4))
     file_id = db.Column(db.Integer, db.ForeignKey("file.id"))
 
-    file = db.relationship("File", backref=db.backref("certificate", uselist=False))
+    file = db.relationship("File", backref="certificates")  # there can be 2 certificates for 1 marriage file
 
     __table_args__ = (
         db.Index("idx_year_county_type", "year", "county", "type"),
