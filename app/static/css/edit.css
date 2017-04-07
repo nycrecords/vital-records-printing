@@ -123,3 +123,12 @@ input[type=range]:focus::-ms-fill-upper {
   float: left;
   color: white;
 }
+
+
+.glyphicon.glyphicon-chevron-left, .glyphicon.glyphicon-chevron-right {
+   color: black;
+}
+
+.carousel-control.right, .carousel-control.left {
+  background-image:none;
+}

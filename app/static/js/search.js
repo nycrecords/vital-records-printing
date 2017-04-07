@@ -52,6 +52,8 @@ $(function () {
     // set year range on page load
     setYearRange();
 
+    var numImages;
+
     function search(empty) {  // empty = true
         loadMoreBtn.hide();
         if (typeof empty === 'undefined') {
@@ -111,7 +113,41 @@ $(function () {
                         $.ajax({
                             url: "/certificate/" + $(this).attr("id"),
                             success: function (response) {
-                                $("#cert-image").attr("src", response.data.src);
+                                var indicators = $(".carousel-indicators");
+                                var certImages = $(".carousel-inner");
+                                var controls = $("#arrow-controls");
+                                numImages = response.data.urls.length;
+                                console.log(numImages);
+                                indicators.empty();
+                                certImages.empty();
+                                if (numImages > 1) {
+                                    controls.append("<a class='left carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
+                                        "<span class='glyphicon glyphicon-chevron-left'></span>" +
+                                        "</a>"
+                                    )
+                                    controls.append("<a class='right carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
+                                        "<span class='glyphicon glyphicon-chevron-right'></span>" +
+                                        "</a>"
+                                    )
+                                }
+
+
+                                for (var i = 0; i < response.data.urls.length; i++) {
+                                    if (numImages > 1) {
+                                        indicators.append("<li data-slide-to='" +
+                                            response.data.urls[i] + "' class='" +
+                                            (i === 0 ? " active" : "") +
+                                            "'></li>"
+                                        );
+                                    }
+                                    certImages.append(
+                                        "<div class='item" +
+                                        (i === 0 ? " active" : "") +
+                                        "'><img class='img-responsive cert-image' src='" +
+                                        response.data.urls[i] +
+                                        "'></div>"
+                                    );
+                                }
                                 $("#cert-number").text(response.data.number);
                                 $("#cert-type").text(response.data.type);
                                 $("#cert-name").text(response.data.name);
@@ -127,6 +163,8 @@ $(function () {
                 }
             }
         });
+        
+        
     }
 
     // Sorting
@@ -175,5 +213,4 @@ $(function () {
             return !(e.which > 57 || e.which === 32);
         }
     });
-
 });
