@@ -34,6 +34,9 @@ $(function () {
 
 
     var printHTMLtop = "<html>" +
+        "               <head>" +
+        "               <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>" +
+        "               </head>" +
         "               <body>" +
         "               <table style='text-align: center; width: 8.5in; height: 11in;'" +
         "               <tr>" +
@@ -55,28 +58,13 @@ $(function () {
                 printWindow.document.write(finalImage);
                 printWindow.document.write(printHTMLbot);
                 printWindow.document.close();
-                printWindow.print();
-                // printWindow.close();
+                setTimeout(function(){
+                    printWindow.print();
+                    printWindow.close();
+                }, 100);
             });
         });
     });
-
-    // $('#printbtn').on('click', function (e) {
-    //     Caman('.current', function () {
-    //         this.render(function () {
-    //             var finalImage = this.toBase64();
-    //             var printWindow = window.open();
-    //             printWindow.document.write('<html><body><img class="test" src="');
-    //             printWindow.document.write(finalImage);
-    //             printWindow.document.write('" /> <img class="test" src="');
-    //             printWindow.document.write(finalImage);
-    //             printWindow.document.write('"/></body></html>');
-    //             printWindow.document.close();
-    //             printWindow.print();
-    //             printWindow.close();
-    //         });
-    //     });
-    // });
 
     $('#print-all-btn').on('click', function (e) {
         Caman('.current', function () {
