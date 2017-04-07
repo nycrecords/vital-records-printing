@@ -166,15 +166,14 @@ def image(cert_id):
     """
     cert = Cert.query.get(cert_id)
     if cert.file_id is None:
-        src = url_for('static', filename=os.path.join('img', "missing.jpg"))
+        urls = [url_for('static', filename=os.path.join('img', "missing.jpg"))]
     else:
         if not cert.file.converted:
             cert.file.convert()
-            # TODO: handle multiple (cert.file.pngs)
-        src = cert.file.pngs[0]
+        urls = cert.file.pngs
     return jsonify({
         "data": {
-            "src": src,
+            "urls": urls,
             "number": cert.number,
             "type": cert.type.title(),
             "name": cert.name,

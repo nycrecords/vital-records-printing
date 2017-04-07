@@ -104,7 +104,7 @@ $(function () {
         $('input[type=range]').val(0);
     });
 
-    $('#carousel-example-generic').bind('slid.bs.carousel', function (e) {
+    $('#cert-carousel').bind('slid.bs.carousel', function (e) {
         var current = values[parseInt($("li.active").attr("data-slide-to"))];
         $("#brightness").val(current.brightness);
         $("#contrast").val(current.contrast);
