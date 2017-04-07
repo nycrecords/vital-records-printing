@@ -1,32 +1,84 @@
 import os
 from sqlalchemy import cast, String
 from sqlalchemy.exc import SQLAlchemyError
-from app import app
-from app.forms import SearchForm
-from app.models import Cert
+from app import app, login_manager, db
+from app.forms import SearchForm, LoginForm, PasswordForm
+from app.models import Cert, User
 from flask import (
     render_template,
+    redirect,
     request,
     url_for,
     jsonify,
+    flash,
 )
-
+from flask_login import (
+    login_user,
+    logout_user,
+    current_user,
+    login_required,
+)
+from datetime import datetime
 
 RESULT_SET_LIMIT = 20
 WILDCARD_CHAR = "*"
 
-@app.route('/login', methods=['GET', 'POST'])
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+
+@app.route('/login', methods=['POST'])
 def login():
-    pass
+    """
+    Log in a user or flash an error message.
+    If the user's password has expired, proceed with logging in
+    but redirect to the change password page.
+    """
+    form = LoginForm(request.form)
+    if form.validate():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is not None and user.check_password(form.password.data):
+            login_user(user, remember=(request.form.get('remember') is not None))
+            # check if password has expired
+            if datetime.utcnow() > current_user.expiration_date:
+                return redirect(url_for('password'))
+        else:
+            flash('Wrong username and/or password.')
+    return redirect('/')
+
+
+@app.route("/logout", methods=["GET"])
+@login_required
+def logout():
+    logout_user()
+    return redirect('/')
+
+
+@app.route('/password', methods=['GET', 'POST'])
+@login_required
+def password():
+    """
+    Return the change password page and redirect to the home page
+    if password change is successful.
+    """
+    password_form = PasswordForm()
+    if password_form.validate_on_submit():
+        current_user.update_password(password_form.current_password.data,
+                                     password_form.new_password.data)
+        return redirect('/')
+    return render_template('change_password.html', password_form=password_form)
 
 
 @app.route('/', methods=['GET'])
 @app.route('/search', methods=['POST'])
 def search():
     """
-    Return search page or certificate row templates.
+    Return the search page or certificate row templates.
     """
     form = SearchForm()
+    login_form = LoginForm()
     if request.method == "POST":
         if form.validate_on_submit():
             # set filters
@@ -77,19 +129,22 @@ def search():
         else:
             return jsonify({"errors": form.errors})
 
-    return render_template('index.html', form=form)
+    return render_template('index.html', form=form, login_form=login_form)
 
 
 @app.route("/years", methods=['GET'])
 def years():
+    """
+    Return a range of available years to search by based on "type" and "county".
+    """
     filters = {
         key: val for (key, val) in
         dict(
             type=request.args["type"],
             county=request.args["county"]
         ).items() if val
-    }
-    base_query = Cert.query.filter_by(**filters)
+        }
+    base_query = Cert.query.filter_by(**filters).filter(Cert.year != None)
     try:
         start = base_query.order_by(Cert.year.asc()).first()
         end = base_query.order_by(Cert.year.desc()).first()
@@ -109,11 +164,14 @@ def image(cert_id):
     """
     Return certificate data.
     """
+    # TODO: if current_user not authenticated, use watermarked image
     cert = Cert.query.get(cert_id)
-    if not os.path.exists(cert.filename):  # TODO: use actual file path
+    if cert.file_id is None:
         src = url_for('static', filename=os.path.join('img', "missing.jpg"))
     else:
-        src = url_for('static', filename=os.path.join('img', cert.filename))  # TODO: actual fle path
+        # TODO: if Cert.file.converted:
+        # TODO: convert to png, store in static (in seprarate file system), set 'converted'
+        src = os.path.join('/mnt/smb', cert.file.path)
     return jsonify({
         "data": {
             "src": src,
