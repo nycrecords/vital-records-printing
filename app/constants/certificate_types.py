@@ -6,8 +6,10 @@ ALL = frozenset((BIRTH, DEATH, MARRIAGE))
 
 FROM_FILE_IDENTIFIER = {
     'B': BIRTH,
+    'SB': BIRTH,  # special
+    'DB': BIRTH,  # delayed
+
     'M': MARRIAGE,
+
     'D': DEATH
-    # TODO: 'SB': ? still birth?
-    # TODO: 'DB': ? dead babies?
 }
