@@ -15,8 +15,9 @@ from functools import wraps
 from multiprocessing import Pool
 from app.constants import counties, months, certificate_types
 
-# To mount: `sudo mount -t cifs -o username=<USERNAME>,password=<PASSWORD> //10.132.41.31/DVR /mnt/smb`
-DVR_MOUNT_POINT = "/mnt/smb"  # CHANGE THIS TO MATCH YOUR ENVIRONMENT!
+# To mount, using CSC credentials:
+#   sudo mount -t cifs -o username=<USERNAME>,password=<PASSWORD> //10.132.41.31/DVR /mnt/smb
+DVR_MOUNT_POINT = "/mnt/smb"  # CHANGE THIS TO MATCH YOUR ENVIRONMENT
 NUM_DVR_DIRS = 15
 
 CHUNKSIZE = 500  # Bump it up if you got the RAM
