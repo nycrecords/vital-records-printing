@@ -9,6 +9,8 @@ from app.constants import (
     months,
     counties
 )
+from app.utils import certificate_pdf_to_png
+from flask import current_app, url_for
 from flask_login import UserMixin
 from werkzeug.security import (
     generate_password_hash,
@@ -76,7 +78,7 @@ class Cert(db.Model):
     soundex = db.Column(db.String(4))
     file_id = db.Column(db.Integer, db.ForeignKey("file.id"))
 
-    file = db.relationship("File", backref=db.backref("certificate", uselist=False))
+    file = db.relationship("File", backref="certificates")  # there can be 2 certificates for 1 marriage file
 
     __table_args__ = (
         db.Index("idx_year_county_type", "year", "county", "type"),
@@ -116,15 +118,34 @@ class File(db.Model):
 
     @property
     def pngs(self):
-        if not self.converted:
-            self.convert()
-        return [png for png in png_dir]  # TODO
+        """ TODO: docstring """
+        if self.converted:
+            return [
+                url_for(
+                    "static",
+                    filename=os.path.join(
+                        current_app.config["CERT_IMAGE_STATIC_DIRECTORY"],
+                        self.name,
+                        png
+                    )
+                )
+                for png in os.listdir(
+                    os.path.join(
+                        current_app.config["CERT_IMAGE_DIRECTORY"],
+                        self.name
+                    )
+                )
+            ]
 
     def convert(self):
-        # TODO: try, and call conversion function here
-        self.converted = True
-        db.commit()
-        return self.pngs
+        """ TODO: docstring """
+        try:
+            certificate_pdf_to_png(self.path)
+        except Exception:
+            pass  # TODO: log it!
+        else:
+            self.converted = True
+            db.session.commit()
 
 
 class User(db.Model, UserMixin):
