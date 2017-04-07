@@ -164,13 +164,14 @@ def image(cert_id):
     """
     Return certificate data.
     """
-    # TODO: if current_user not authenticated, use watermarked image?
     cert = Cert.query.get(cert_id)
     if cert.file_id is None:
         src = url_for('static', filename=os.path.join('img', "missing.jpg"))
     else:
-        # TODO: if Cert.file.converted return list of png paths (Cert.file.pngs), else Cert.file.convert first
-        src = os.path.join('/mnt/smb', cert.file.path)
+        if not cert.file.converted:
+            cert.file.convert()
+            # TODO: handle multiple (cert.file.pngs)
+        src = cert.file.pngs[0]
     return jsonify({
         "data": {
             "src": src,

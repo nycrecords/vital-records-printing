@@ -21,7 +21,7 @@ def certificate_pdf_to_png(pdf_path):
     """
     pdf_path_extensionless, _ = os.path.splitext(pdf_path)
     png_path = os.path.join(
-        current_app.config['PNGS_DIRECTORY'],
+        current_app.config['CERT_IMAGE_DIRECTORY'],
         os.path.basename(pdf_path_extensionless)
     )
     if not os.path.exists(png_path):

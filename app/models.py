@@ -10,7 +10,7 @@ from app.constants import (
     counties
 )
 from app.utils import certificate_pdf_to_png
-from flask import current_app
+from flask import current_app, url_for
 from flask_login import UserMixin
 from werkzeug.security import (
     generate_password_hash,
@@ -120,8 +120,22 @@ class File(db.Model):
     def pngs(self):
         """ TODO: docstring """
         if self.converted:
-            png_path = os.path.join(current_app.config["PNGS_DIRECTORY"], self.name)
-            return [os.path.join(png_path, png) for png in os.listdir(png_path)]  # FIXME: path for src
+            return [
+                url_for(
+                    "static",
+                    filename=os.path.join(
+                        current_app.config["CERT_IMAGE_STATIC_DIRECTORY"],
+                        self.name,
+                        png
+                    )
+                )
+                for png in os.listdir(
+                    os.path.join(
+                        current_app.config["CERT_IMAGE_DIRECTORY"],
+                        self.name
+                    )
+                )
+            ]
 
     def convert(self):
         """ TODO: docstring """
