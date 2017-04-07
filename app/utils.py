@@ -16,6 +16,7 @@ def certificate_pdf_to_png(pdf_path):
                 0.png
                 1.png
                 2.png
+                ...
                 
     """
     pdf_path_extensionless, _ = os.path.splitext(pdf_path)
@@ -27,7 +28,7 @@ def certificate_pdf_to_png(pdf_path):
         os.mkdir(png_path)
     subprocess.call([
         "convert",
+        "-density", "150",
         pdf_path,
-        # TODO: set appropriate DPI (?)
         os.path.join(png_path, ''.join(("%d", os.extsep, "png")))
     ])
