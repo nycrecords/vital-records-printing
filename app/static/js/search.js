@@ -119,16 +119,16 @@ $(function () {
                                 certImages.empty();
                                 indicators.empty();
 
-                                // if (numImages > 1) {
-                                //     controls.append("<a class='left carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
-                                //         "<span class='glyphicon glyphicon-chevron-left'></span>" +
-                                //         "</a>"
-                                //     )
-                                //     controls.append("<a class='right carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
-                                //         "<span class='glyphicon glyphicon-chevron-right'></span>" +
-                                //         "</a>"
-                                //     )
-                                // }
+                                if (numImages > 1) {
+                                    controls.append("<a class='left carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
+                                        "<span class='glyphicon glyphicon-chevron-left'></span>" +
+                                        "</a>"
+                                    )
+                                    controls.append("<a class='right carousel-control' href='#cert-carousel' role='button' data-slide='next'>" +
+                                        "<span class='glyphicon glyphicon-chevron-right'></span>" +
+                                        "</a>"
+                                    )
+                                }
                                 console.log(response.data.urls);
                                 for (var i = 0; i < response.data.urls.length; i++) {
                                     indicators.append("<li data-slide-to='"+ i +"' class='" + (i === 0 ? "active" : "") + "'></li>");
