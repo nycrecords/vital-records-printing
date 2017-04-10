@@ -35,7 +35,7 @@ $(function () {
     });
 
 
-    var printHTMLtop = "<html>" +
+    var printSingleTop = "<html>" +
         "               <head>" +
         "               <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>" +
         "               </head>" +
@@ -44,21 +44,27 @@ $(function () {
         "               <tr>" +
         "               <td>" +
         "               <img src='";
-    var printHTMLbot = "'/>" +
+    var printSingleBot = "'/>" +
         "               </td>" +
         "               </tr>" +
         "               </table>" +
         "               </body>" +
         "               </html>";
 
+    var printAllTop = "<html><head><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'></head><body>";
+    var tableTop = "<table style='text-align: center; width: 8.5in; height: 11in; page-break-before: always;'><tr><td><img src='";
+    var tableBot = "'/></td></tr></table>";
+    var printAllBot = "</body></html>";
+
+
     $('#printbtn').on('click', function (e) {
         Caman('.current', function () {
             this.render(function () {
                 var finalImage = this.toBase64();
                 var printWindow = window.open();
-                printWindow.document.write(printHTMLtop);
+                printWindow.document.write(printSingleTop);
                 printWindow.document.write(finalImage);
-                printWindow.document.write(printHTMLbot);
+                printWindow.document.write(printSingleBot);
                 printWindow.document.close();
                 setTimeout(function(){
                     printWindow.print();
@@ -81,13 +87,14 @@ $(function () {
             if( printAll.length === $(".cert-image").length) {
                 console.log(printAll);
                 clearInterval(convertTimer);
-
                 var printWindow = window.open();
-                printWindow.document.write('<html><body><img class="test" src="');
-                printWindow.document.write(printAll[0]);
-                printWindow.document.write('" /> <img class="test" src="');
-                printWindow.document.write(printAll[1]);
-                printWindow.document.write('"/></body></html>');
+                printWindow.document.write(printAllTop);
+                for (var i = 0; i < printAll.length; i++) {
+                    printWindow.document.write(tableTop);
+                    printWindow.document.write(printAll[i]);
+                    printWindow.document.write(tableBot);
+                }
+                printWindow.document.write(printAllBot);
                 printWindow.document.close();
                 setTimeout(function(){
                     printWindow.print();
@@ -95,51 +102,7 @@ $(function () {
                 }, 100);
             }
         }, 1000);
-
-        // var printWindow = window.open();
-        // printWindow.document.write(printHTMLtop);
-        // printWindow.document.write(printAll[1]);
-        // printWindow.document.write(printHTMLbot);
-        // printWindow.document.close();
-        // setTimeout(function(){
-        //     printWindow.print();
-        //     printWindow.close();
-        // }, 100);
-
-                // var printWindow = window.open();
-                // printWindow.document.write('<html><body><img class="test" src="');
-                // printWindow.document.write(printAll[0]);
-                // printWindow.document.write('" /> <img class="test" src="');
-                // printWindow.document.write(printAll[1]);
-                // printWindow.document.write('"/></body></html>');
-                // printWindow.document.close();
-                // setTimeout(function(){
-                //     printWindow.print();
-                //     printWindow.close();
-                // }, 1000);
-
-
-
-
         printAll = [];
-        // Caman('.current', function () {
-        //     this.render(function () {
-        //         var finalImage = this.toBase64();
-        //         var printWindow = window.open();
-        //         printWindow.document.write('<html><body><img class="test" src="');
-        //         printWindow.document.write(finalImage);
-        //         printWindow.document.write('" /> <img class="test" src="');
-        //         printWindow.document.write(finalImage);
-        //                        printWindow.document.write('" /> <img class="test" src="');
-        //         printWindow.document.write(finalImage);
-        //                        printWindow.document.write('" /> <img class="test" src="');
-        //         printWindow.document.write(finalImage);
-        //         printWindow.document.write('"/></body></html>');
-        //         printWindow.document.close();
-        //         printWindow.print();
-        //         printWindow.close();
-        //     });
-        // });
     });
 
     $('#toggle-image-view-btn').click(function () {
