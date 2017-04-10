@@ -128,7 +128,6 @@ $(function () {
                                         "</a>"
                                     )
                                 }
-                                console.log(response.data.urls);
                                 for (var i = 0; i < response.data.urls.length; i++) {
                                     indicators.append("<li data-slide-to='"+ i +"' class='" + (i === 0 ? "active" : "") + "'></li>");
                                     certImages.append(
