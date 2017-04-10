@@ -2,7 +2,9 @@ $(function () {
     var values = [];
     values[0] = {brightness: 0, contrast: 0};
     values[1] = {brightness: 0, contrast: 0};
-    // values[2] = {brightness: 0, contrast: 0};
+    values[2] = {brightness: 0, contrast: 0};
+    values[3] = {brightness: 0, contrast: 0};
+    var printAll = [];
     $('input[type=range]').change(applyFilters);
 
     function applyFilters() {
@@ -102,8 +104,9 @@ $(function () {
             });
         });
         $('input[type=range]').val(0);
+        $(".carousel-indicators").empty();
         $(".carousel-inner").empty();
-        $(".carousel-inner").append("<img src='/static/img/spinner.gif' style='width:100px;height:100px;'>");
+        $(".carousel-inner").append("<img src='/static/img/spinner.gif' style='width:200px;height:200px;'>");
     });
 
     $('#cert-carousel').bind('slid.bs.carousel', function (e) {
