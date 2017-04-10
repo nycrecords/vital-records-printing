@@ -53,7 +53,6 @@ $(function () {
     setYearRange();
 
     var numImages;
-
     function search(empty) {  // empty = true
         loadMoreBtn.hide();
         if (typeof empty === 'undefined') {
@@ -113,40 +112,37 @@ $(function () {
                         $.ajax({
                             url: "/certificate/" + $(this).attr("id"),
                             success: function (response) {
+                                var controls = $("#arrow-controls");
                                 var indicators = $(".carousel-indicators");
                                 var certImages = $(".carousel-inner");
-                                var controls = $("#arrow-controls");
                                 numImages = response.data.urls.length;
-                                console.log(numImages);
-                                indicators.empty();
                                 certImages.empty();
-                                if (numImages > 1) {
-                                    controls.append("<a class='left carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
-                                        "<span class='glyphicon glyphicon-chevron-left'></span>" +
-                                        "</a>"
-                                    )
-                                    controls.append("<a class='right carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
-                                        "<span class='glyphicon glyphicon-chevron-right'></span>" +
-                                        "</a>"
-                                    )
-                                }
+                                indicators.empty();
 
-
+                                // if (numImages > 1) {
+                                //     controls.append("<a class='left carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
+                                //         "<span class='glyphicon glyphicon-chevron-left'></span>" +
+                                //         "</a>"
+                                //     )
+                                //     controls.append("<a class='right carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
+                                //         "<span class='glyphicon glyphicon-chevron-right'></span>" +
+                                //         "</a>"
+                                //     )
+                                // }
+                                console.log(response.data.urls);
                                 for (var i = 0; i < response.data.urls.length; i++) {
-                                    if (numImages > 1) {
-                                        indicators.append("<li data-slide-to='" +
-                                            response.data.urls[i] + "' class='" +
-                                            (i === 0 ? " active" : "") +
-                                            "'></li>"
-                                        );
-                                    }
+                                    indicators.append("<li data-slide-to='"+ i +"' class='" + (i === 0 ? "active" : "") + "'></li>");
                                     certImages.append(
                                         "<div class='item" +
                                         (i === 0 ? " active" : "") +
-                                        "'><img class='img-responsive cert-image' src='" +
-                                        response.data.urls[i] +
-                                        "'></div>"
+                                        "'><img class='img-responsive cert-image" +
+                                        (i === 0 ? " current" : "") + "' src='" +
+                                        response.data.urls[i] + "'></div>"
                                     );
+                                }
+                                if (numImages == 1){
+                                    $("li.active").css("display", "none");
+
                                 }
                                 $("#cert-number").text(response.data.number);
                                 $("#cert-type").text(response.data.type);
@@ -163,8 +159,6 @@ $(function () {
                 }
             }
         });
-        
-        
     }
 
     // Sorting
@@ -213,4 +207,5 @@ $(function () {
             return !(e.which > 57 || e.which === 32);
         }
     });
+
 });
