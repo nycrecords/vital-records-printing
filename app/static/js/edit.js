@@ -69,24 +69,77 @@ $(function () {
     });
 
     $('#print-all-btn').on('click', function (e) {
-        Caman('.current', function () {
-            this.render(function () {
-                var finalImage = this.toBase64();
+        $.each($(".cert-image"), function (key, value) {
+            Caman(this, function () {
+                var image = this.toBase64();
+                printAll.push(image);
+            });
+
+        });
+
+        var convertTimer = setInterval(function () {
+            if( printAll.length === $(".cert-image").length) {
+                console.log(printAll);
+                clearInterval(convertTimer);
+
                 var printWindow = window.open();
                 printWindow.document.write('<html><body><img class="test" src="');
-                printWindow.document.write(finalImage);
+                printWindow.document.write(printAll[0]);
                 printWindow.document.write('" /> <img class="test" src="');
-                printWindow.document.write(finalImage);
-                               printWindow.document.write('" /> <img class="test" src="');
-                printWindow.document.write(finalImage);
-                               printWindow.document.write('" /> <img class="test" src="');
-                printWindow.document.write(finalImage);
+                printWindow.document.write(printAll[1]);
                 printWindow.document.write('"/></body></html>');
                 printWindow.document.close();
-                printWindow.print();
-                printWindow.close();
-            });
-        });
+                setTimeout(function(){
+                    printWindow.print();
+                    printWindow.close();
+                }, 100);
+            }
+        }, 1000);
+
+        // var printWindow = window.open();
+        // printWindow.document.write(printHTMLtop);
+        // printWindow.document.write(printAll[1]);
+        // printWindow.document.write(printHTMLbot);
+        // printWindow.document.close();
+        // setTimeout(function(){
+        //     printWindow.print();
+        //     printWindow.close();
+        // }, 100);
+
+                // var printWindow = window.open();
+                // printWindow.document.write('<html><body><img class="test" src="');
+                // printWindow.document.write(printAll[0]);
+                // printWindow.document.write('" /> <img class="test" src="');
+                // printWindow.document.write(printAll[1]);
+                // printWindow.document.write('"/></body></html>');
+                // printWindow.document.close();
+                // setTimeout(function(){
+                //     printWindow.print();
+                //     printWindow.close();
+                // }, 1000);
+
+
+
+
+        printAll = [];
+        // Caman('.current', function () {
+        //     this.render(function () {
+        //         var finalImage = this.toBase64();
+        //         var printWindow = window.open();
+        //         printWindow.document.write('<html><body><img class="test" src="');
+        //         printWindow.document.write(finalImage);
+        //         printWindow.document.write('" /> <img class="test" src="');
+        //         printWindow.document.write(finalImage);
+        //                        printWindow.document.write('" /> <img class="test" src="');
+        //         printWindow.document.write(finalImage);
+        //                        printWindow.document.write('" /> <img class="test" src="');
+        //         printWindow.document.write(finalImage);
+        //         printWindow.document.write('"/></body></html>');
+        //         printWindow.document.close();
+        //         printWindow.print();
+        //         printWindow.close();
+        //     });
+        // });
     });
 
     $('#toggle-image-view-btn').click(function () {
