@@ -2,7 +2,7 @@ $(function () {
     var values = [];
     values[0] = {brightness: 0, contrast: 0};
     values[1] = {brightness: 0, contrast: 0};
-    values[2] = {brightness: 0, contrast: 0};
+    // values[2] = {brightness: 0, contrast: 0};
     $('input[type=range]').change(applyFilters);
 
     function applyFilters() {
