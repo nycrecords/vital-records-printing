@@ -102,6 +102,8 @@ $(function () {
             });
         });
         $('input[type=range]').val(0);
+        $(".carousel-inner").empty();
+        $(".carousel-inner").append("<img src='/static/img/spinner.gif' style='width:100px;height:100px;'>");
     });
 
     $('#cert-carousel').bind('slid.bs.carousel', function (e) {

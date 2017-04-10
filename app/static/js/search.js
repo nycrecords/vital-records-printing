@@ -118,7 +118,6 @@ $(function () {
                                 numImages = response.data.urls.length;
                                 certImages.empty();
                                 indicators.empty();
-
                                 if (numImages > 1) {
                                     controls.append("<a class='left carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
                                         "<span class='glyphicon glyphicon-chevron-left'></span>" +
