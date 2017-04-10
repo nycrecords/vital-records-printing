@@ -132,3 +132,12 @@ input[type=range]:focus::-ms-fill-upper {
 .carousel-control.right, .carousel-control.left {
   background-image:none;
 }
+
+.carousel-indicators li {
+  background-color: #999;
+  background-color: rgba(70,70,70,.25);
+}
+
+.carousel-indicators .active {
+  background-color: #444;
+}
