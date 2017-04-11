@@ -339,8 +339,17 @@ $(function () {
         printAll = [];
     });
 
+    var toggleFlag = true;
     $('#toggle-image-view-btn').click(function () {
-        $('.modal-body').toggleClass("image-modal-body");
+        // $('.modal-body').toggleClass("image-modal-body");
+        if (toggleFlag){
+            $('.current').css({'max-height': '40%', 'max-width': '40%'});
+            toggleFlag = false;
+        }
+        else{
+            $('.current').css({'max-height': '100%', 'max-width': '100%'});
+            toggleFlag = true;
+        }
     });
 
     // reset brightness & contrast on hide modal
