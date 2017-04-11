@@ -137,11 +137,6 @@ input[type=range]:focus::-ms-fill-upper {
     color: white;
 }
 
-#rotate-btn {
-    float: left;
-    color: white;
-}
-
 #rotate-left-btn {
     float: left;
     color: white;
