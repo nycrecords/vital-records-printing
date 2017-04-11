@@ -236,7 +236,7 @@ $(function () {
         });
     }
 
-    $('#resetbtn').on('click', function (e) {
+    $('#reset-btn').on('click', function (e) {
         var current = values[parseInt($("li.active").attr("data-slide-to"))];
         current.brightness = 0;
         current.contrast = 0;
@@ -258,6 +258,15 @@ $(function () {
         "               <tr>" +
         "               <td>" +
         "               <img src='";
+    var printSingleRotatedTop = "<html>" +
+    "               <head>" +
+    "               <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>" +
+    "               </head>" +
+    "               <body>" +
+    "               <table style='text-align: center; width: 8.5in; height: 11in;'" +
+    "               <tr>" +
+    "               <td>" +
+    "               <img style='-webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg); -ms-transform: rotate(90deg); transform: rotate(90deg);' src='";
     var printSingleBot = "'/>" +
         "               </td>" +
         "               </tr>" +
@@ -267,16 +276,22 @@ $(function () {
 
     var printAllTop = "<html><head><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'></head><body>";
     var tableTop = "<table style='text-align: center; width: 8.5in; height: 11in; page-break-before: always;'><tr><td><img src='";
+    var tableTopRotated = "<table style='text-align: center; width: 8.5in; height: 11in; page-break-before: always;'><tr><td><img style='-webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg); -ms-transform: rotate(90deg); transform: rotate(90deg);' src='";
     var tableBot = "'/></td></tr></table>";
     var printAllBot = "</body></html>";
 
 
-    $('#printbtn').on('click', function (e) {
+    $('#print-btn').on('click', function (e) {
         Caman('.current', function () {
             this.render(function () {
                 var finalImage = this.toBase64();
                 var printWindow = window.open();
-                printWindow.document.write(printSingleTop);
+                if ($('.current').hasClass('rotate')){
+                    printWindow.document.write(printSingleRotatedTop);
+                }
+                else{
+                    printWindow.document.write(printSingleTop);
+                }
                 printWindow.document.write(finalImage);
                 printWindow.document.write(printSingleBot);
                 printWindow.document.close();
@@ -292,20 +307,26 @@ $(function () {
         $.each($(".cert-image"), function (key, value) {
             Caman(this, function () {
                 var image = this.toBase64();
-                printAll.push(image);
+                var rotated = $(value).hasClass('rotate');
+                var imageJSON = {image: image, rotated: rotated};
+                printAll.push(imageJSON);
             });
 
         });
 
         var convertTimer = setInterval(function () {
             if( printAll.length === $(".cert-image").length) {
-                console.log(printAll);
                 clearInterval(convertTimer);
                 var printWindow = window.open();
                 printWindow.document.write(printAllTop);
                 for (var i = 0; i < printAll.length; i++) {
-                    printWindow.document.write(tableTop);
-                    printWindow.document.write(printAll[i]);
+                    if (printAll[i].rotated) {
+                        printWindow.document.write(tableTopRotated);
+                    }
+                    else{
+                        printWindow.document.write(tableTop);
+                    }
+                    printWindow.document.write(printAll[i].image);
                     printWindow.document.write(tableBot);
                 }
                 printWindow.document.write(printAllBot);
@@ -345,6 +366,10 @@ $(function () {
         $("#contrast").val(current.contrast);
         $(".current").removeClass("current");
         $(".item.active").find(".cert-image").addClass("current");
+    });
+
+    $('#rotate-btn').click(function () {
+        $('.current').toggleClass("rotate");
     });
     // end of camanJS functionality
 });
