@@ -292,7 +292,7 @@ $(function () {
             this.render(function () {
                 var finalImage = this.toBase64();
                 var printWindow = window.open();
-                printWindow.document.write(printSingleGeneral);
+                printWindow.document.write(printSingleTop);
                 printWindow.document.write(rotationStyles);
                 printWindow.document.write(finalImage);
                 printWindow.document.write(printSingleBot);
@@ -370,21 +370,6 @@ $(function () {
         var index = parseInt($("li.active").attr("data-slide-to"));
         deg = rotationValues[index];
         rotate = '';
-    });
-
-    $('#rotate-btn').click(function () {
-        deg = deg + 90;
-        if (deg === 360) deg = 0;
-        rotate = 'rotate(' + deg + 'deg)'
-        $('.current').css({
-        '-webkit-transform': rotate,
-        '-moz-transform': rotate,
-        '-o-transform': rotate,
-        '-ms-transform': rotate,
-        'transform': rotate
-        });
-        var index = parseInt($("li.active").attr("data-slide-to"));
-        rotationValues[index] = deg;
     });
 
     $('#rotate-right-btn').click(function () {
