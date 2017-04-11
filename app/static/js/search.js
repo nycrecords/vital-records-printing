@@ -385,6 +385,12 @@ $(function () {
         });
         var index = parseInt($("li.active").attr("data-slide-to"));
         rotationValues[index] = deg;
+        
+        // add padding to top and bottom of rotated image
+        var modalHeight = $('.carousel-inner').height();
+        var imageHeight = $('.current').height();
+        var rotationPadding = Math.ceil((imageHeight - modalHeight) / 2);
+        $('.carousel-inner').css({'padding-top': rotationPadding + 'px', 'padding-bottom': rotationPadding + 'px'});
     });
 
     $('#rotate-left-btn').click(function () {
@@ -400,6 +406,12 @@ $(function () {
         });
         var index = parseInt($("li.active").attr("data-slide-to"));
         rotationValues[index] = deg;
+        
+        // add padding to top and bottom of rotated image
+        var modalHeight = $('.carousel-inner').height();
+        var imageHeight = $('.current').height();
+        var rotationPadding = Math.ceil((imageHeight - modalHeight) / 2);
+        $('.carousel-inner').css({'padding-top': rotationPadding + 'px', 'padding-bottom': rotationPadding + 'px'});
     });
     // end of camanJS functionality
 });
