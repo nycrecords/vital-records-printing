@@ -53,6 +53,7 @@ $(function () {
     setYearRange();
 
     var values = [];
+    var rotationValues = [];
     var numImages;
 
     function setNumImages(len) {
@@ -157,6 +158,7 @@ $(function () {
                             complete: function () {
                                 for (var i = 0; i < numImages; i++) {
                                     values[i] = {brightness: 0, contrast: 0};
+                                    rotationValues[i] = 0;
                                 }
                             }
                         });
@@ -219,6 +221,8 @@ $(function () {
 
     // start of camanJS functionality
     var printAll = [];
+    var deg = 0;
+    var rotate;
     $('input[type=range]').change(applyFilters);
 
     function applyFilters() {
@@ -246,19 +250,21 @@ $(function () {
             this.revert(false);
             this.render();
         });
+
+        var index = parseInt($("li.active").attr("data-slide-to"));
+        var rotate = 'rotate(' + 360 + 'deg)';
+        $('.current').css({
+        '-webkit-transform': rotate,
+        '-moz-transform': rotate,
+        '-o-transform': rotate,
+        '-ms-transform': rotate,
+        'transform': rotate
+        });
+        rotationValues[index] = 0;
+        deg = 0;
     });
 
-
     var printSingleTop = "<html>" +
-        "               <head>" +
-        "               <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>" +
-        "               </head>" +
-        "               <body>" +
-        "               <table style='text-align: center; width: 8.5in; height: 11in;'" +
-        "               <tr>" +
-        "               <td>" +
-        "               <img src='";
-    var printSingleRotatedTop = "<html>" +
     "               <head>" +
     "               <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>" +
     "               </head>" +
@@ -266,7 +272,7 @@ $(function () {
     "               <table style='text-align: center; width: 8.5in; height: 11in;'" +
     "               <tr>" +
     "               <td>" +
-    "               <img style='-webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg); -ms-transform: rotate(90deg); transform: rotate(90deg);' src='";
+    "               <img ";
     var printSingleBot = "'/>" +
         "               </td>" +
         "               </tr>" +
@@ -275,23 +281,19 @@ $(function () {
         "               </html>";
 
     var printAllTop = "<html><head><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'></head><body>";
-    var tableTop = "<table style='text-align: center; width: 8.5in; height: 11in; page-break-before: always;'><tr><td><img src='";
-    var tableTopRotated = "<table style='text-align: center; width: 8.5in; height: 11in; page-break-before: always;'><tr><td><img style='-webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg); -ms-transform: rotate(90deg); transform: rotate(90deg);' src='";
+    var tableTop = "<table style='text-align: center; width: 8.5in; height: 11in; page-break-before: always;'><tr><td><img ";
     var tableBot = "'/></td></tr></table>";
     var printAllBot = "</body></html>";
 
 
     $('#print-btn').on('click', function (e) {
+        var rotationStyles = "style='-webkit-transform: rotate(" + rotationValues[0] + "deg); -moz-transform: rotate(" + rotationValues[0] + "deg); -o-transform: rotate(" + rotationValues[0] + "deg); -ms-transform: rotate(" + rotationValues[0] + "deg); transform: rotate(" + rotationValues[0] + "deg);' src='";
         Caman('.current', function () {
             this.render(function () {
                 var finalImage = this.toBase64();
                 var printWindow = window.open();
-                if ($('.current').hasClass('rotate')){
-                    printWindow.document.write(printSingleRotatedTop);
-                }
-                else{
-                    printWindow.document.write(printSingleTop);
-                }
+                printWindow.document.write(printSingleGeneral);
+                printWindow.document.write(rotationStyles);
                 printWindow.document.write(finalImage);
                 printWindow.document.write(printSingleBot);
                 printWindow.document.close();
@@ -313,19 +315,16 @@ $(function () {
             });
 
         });
-
+        var rotationStyles;
         var convertTimer = setInterval(function () {
             if( printAll.length === $(".cert-image").length) {
                 clearInterval(convertTimer);
                 var printWindow = window.open();
                 printWindow.document.write(printAllTop);
                 for (var i = 0; i < printAll.length; i++) {
-                    if (printAll[i].rotated) {
-                        printWindow.document.write(tableTopRotated);
-                    }
-                    else{
-                        printWindow.document.write(tableTop);
-                    }
+                    rotationStyles = "style='-webkit-transform: rotate(" + rotationValues[i] + "deg); -moz-transform: rotate(" + rotationValues[i] + "deg); -o-transform: rotate(" + rotationValues[i] + "deg); -ms-transform: rotate(" + rotationValues[i] + "deg); transform: rotate(" + rotationValues[i] + "deg);' src='";
+                    printWindow.document.write(tableTop);
+                    printWindow.document.write(rotationStyles);
                     printWindow.document.write(printAll[i].image);
                     printWindow.document.write(tableBot);
                 }
@@ -358,6 +357,8 @@ $(function () {
         $(".carousel-indicators").empty();
         $(".carousel-inner").empty();
         $(".carousel-inner").append("<img src='/static/img/spinner.gif' style='width:200px;height:200px;'>");
+        deg = 0;
+        rotate = '';
     });
 
     $('#cert-carousel').bind('slid.bs.carousel', function (e) {
@@ -366,10 +367,54 @@ $(function () {
         $("#contrast").val(current.contrast);
         $(".current").removeClass("current");
         $(".item.active").find(".cert-image").addClass("current");
+        var index = parseInt($("li.active").attr("data-slide-to"));
+        deg = rotationValues[index];
+        rotate = '';
     });
 
     $('#rotate-btn').click(function () {
-        $('.current').toggleClass("rotate");
+        deg = deg + 90;
+        if (deg === 360) deg = 0;
+        rotate = 'rotate(' + deg + 'deg)'
+        $('.current').css({
+        '-webkit-transform': rotate,
+        '-moz-transform': rotate,
+        '-o-transform': rotate,
+        '-ms-transform': rotate,
+        'transform': rotate
+        });
+        var index = parseInt($("li.active").attr("data-slide-to"));
+        rotationValues[index] = deg;
+    });
+
+    $('#rotate-right-btn').click(function () {
+        deg = deg + 90;
+        if (deg === 360) deg = 0;
+        rotate = 'rotate(' + deg + 'deg)'
+        $('.current').css({
+        '-webkit-transform': rotate,
+        '-moz-transform': rotate,
+        '-o-transform': rotate,
+        '-ms-transform': rotate,
+        'transform': rotate
+        });
+        var index = parseInt($("li.active").attr("data-slide-to"));
+        rotationValues[index] = deg;
+    });
+
+    $('#rotate-left-btn').click(function () {
+        deg = deg - 90;
+        if (deg === -360) deg = 0;
+        rotate = 'rotate(' + deg + 'deg)'
+        $('.current').css({
+        '-webkit-transform': rotate,
+        '-moz-transform': rotate,
+        '-o-transform': rotate,
+        '-ms-transform': rotate,
+        'transform': rotate
+        });
+        var index = parseInt($("li.active").attr("data-slide-to"));
+        rotationValues[index] = deg;
     });
     // end of camanJS functionality
 });
