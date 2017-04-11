@@ -52,7 +52,12 @@ $(function () {
     // set year range on page load
     setYearRange();
 
+    var values = [];
     var numImages;
+
+    function setNumImages(len) {
+        numImages = len;
+    }
 
     function search(empty) {  // empty = true
         loadMoreBtn.hide();
@@ -116,7 +121,7 @@ $(function () {
                                 var controls = $("#arrow-controls");
                                 var indicators = $(".carousel-indicators");
                                 var certImages = $(".carousel-inner");
-                                numImages = response.data.urls.length;
+                                setNumImages(response.data.urls.length);
                                 certImages.empty();
                                 indicators.empty();
                                 if (numImages > 1) {
@@ -129,7 +134,7 @@ $(function () {
                                         "</a>"
                                     )
                                 }
-                                for (var i = 0; i < response.data.urls.length; i++) {
+                                for (var i = 0; i < numImages; i++) {
                                     indicators.append("<li data-slide-to='" + i + "' class='" + (i === 0 ? "active" : "") + "'></li>");
                                     certImages.append(
                                         "<div class='item" +
@@ -148,139 +153,11 @@ $(function () {
                                 $("#cert-year").text(response.data.year);
                                 $("#cert-county").text(response.data.county);
                                 $("#cert-soundex").text(response.data.soundex);
-
-                                // start of CamanJS functionality
-                                var values = [];
+                            },
+                            complete: function () {
                                 for (var i = 0; i < numImages; i++) {
                                     values[i] = {brightness: 0, contrast: 0};
                                 }
-                                var printAll = [];
-                                $('input[type=range]').change(applyFilters);
-
-                                function applyFilters() {
-                                    var brightness = parseInt($('#brightness').val()),
-                                        cntrst = parseInt($('#contrast').val());
-                                    var current = values[parseInt($("li.active").attr("data-slide-to"))];
-                                    current.brightness = brightness;
-                                    current.contrast = cntrst;
-
-                                    Caman('.current', function () {
-                                        this.revert(false);
-                                        this.brightness(brightness);
-                                        this.contrast(cntrst);
-                                        this.render();
-                                    });
-                                }
-
-                                $('#resetbtn').on('click', function (e) {
-                                    var current = values[parseInt($("li.active").attr("data-slide-to"))];
-                                    current.brightness = 0;
-                                    current.contrast = 0;
-
-                                    $('input[type=range]').val(0);
-                                    Caman('.current', function () {
-                                        this.revert(false);
-                                        this.render();
-                                    });
-                                });
-
-                                var printSingleTop = "<html>" +
-                                    "               <head>" +
-                                    "               <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>" +
-                                    "               </head>" +
-                                    "               <body>" +
-                                    "               <table style='text-align: center; width: 8.5in; height: 11in;'" +
-                                    "               <tr>" +
-                                    "               <td>" +
-                                    "               <img src='";
-                                var printSingleBot = "'/>" +
-                                    "               </td>" +
-                                    "               </tr>" +
-                                    "               </table>" +
-                                    "               </body>" +
-                                    "               </html>";
-
-                                var printAllTop = "<html><head><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'></head><body>";
-                                var tableTop = "<table style='text-align: center; width: 8.5in; height: 11in; page-break-before: always;'><tr><td><img src='";
-                                var tableBot = "'/></td></tr></table>";
-                                var printAllBot = "</body></html>";
-
-
-                                $('#printbtn').on('click', function (e) {
-                                    Caman('.current', function () {
-                                        this.render(function () {
-                                            var finalImage = this.toBase64();
-                                            var printWindow = window.open();
-                                            printWindow.document.write(printSingleTop);
-                                            printWindow.document.write(finalImage);
-                                            printWindow.document.write(printSingleBot);
-                                            printWindow.document.close();
-                                            setTimeout(function () {
-                                                printWindow.print();
-                                                printWindow.close();
-                                            }, 100);
-                                        });
-                                    });
-                                });
-
-                                $('#print-all-btn').on('click', function (e) {
-                                    $.each($(".cert-image"), function (key, value) {
-                                        Caman(this, function () {
-                                            var image = this.toBase64();
-                                            printAll.push(image);
-                                        });
-
-                                    });
-
-                                    var convertTimer = setInterval(function () {
-                                        if (printAll.length === $(".cert-image").length) {
-                                            clearInterval(convertTimer);
-                                            var printWindow = window.open();
-                                            printWindow.document.write(printAllTop);
-                                            for (var i = 0; i < printAll.length; i++) {
-                                                printWindow.document.write(tableTop);
-                                                printWindow.document.write(printAll[i]);
-                                                printWindow.document.write(tableBot);
-                                            }
-                                            printWindow.document.write(printAllBot);
-                                            printWindow.document.close();
-                                            setTimeout(function () {
-                                                printWindow.print();
-                                                printWindow.close();
-                                            }, 100);
-                                        }
-                                    }, 1000);
-                                    printAll = [];
-                                });
-
-                                $('#toggle-image-view-btn').click(function () {
-                                    $('.modal-body').toggleClass("image-modal-body");
-                                });
-
-                                // reset brightness & contrast on hide modal
-                                $('#cert-modal').on('hidden.bs.modal', function () {
-                                    $.each($(".item"), function (key, value) {
-                                        $(".current").removeClass("current");
-                                        $(value).find(".cert-image").addClass("current");
-                                        Caman('.current', function () {
-                                            this.revert(false);
-                                            this.render();
-                                        });
-                                    });
-                                    $('input[type=range]').val(0);
-                                    $(".carousel-indicators").empty();
-                                    $(".carousel-inner").empty();
-                                    $(".carousel-inner").append("<img src='/static/img/spinner.gif' style='width:200px;height:200px;'>");
-                                });
-
-                                $('#cert-carousel').bind('slid.bs.carousel', function (e) {
-                                    var current = values[parseInt($("li.active").attr("data-slide-to"))];
-                                    $("#brightness").val(current.brightness);
-                                    $("#contrast").val(current.contrast);
-                                    $(".current").removeClass("current");
-                                    $(".item.active").find(".cert-image").addClass("current");
-                                });
-                                // end of CamanJS functionality
                             }
                         });
                     });
@@ -338,5 +215,136 @@ $(function () {
             return !(e.which > 57 || e.which === 32);
         }
     });
+    
 
+    // start of camanJS functionality
+    var printAll = [];
+    $('input[type=range]').change(applyFilters);
+
+    function applyFilters() {
+        var brightness = parseInt($('#brightness').val()),
+            cntrst = parseInt($('#contrast').val());
+        var current = values[parseInt($("li.active").attr("data-slide-to"))];
+        current.brightness = brightness;
+        current.contrast = cntrst;
+
+        Caman('.current', function () {
+            this.revert(false);
+            this.brightness(brightness);
+            this.contrast(cntrst);
+            this.render();
+        });
+    }
+
+    $('#resetbtn').on('click', function (e) {
+        var current = values[parseInt($("li.active").attr("data-slide-to"))];
+        current.brightness = 0;
+        current.contrast = 0;
+
+        $('input[type=range]').val(0);
+        Caman('.current', function () {
+            this.revert(false);
+            this.render();
+        });
+    });
+
+
+    var printSingleTop = "<html>" +
+        "               <head>" +
+        "               <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>" +
+        "               </head>" +
+        "               <body>" +
+        "               <table style='text-align: center; width: 8.5in; height: 11in;'" +
+        "               <tr>" +
+        "               <td>" +
+        "               <img src='";
+    var printSingleBot = "'/>" +
+        "               </td>" +
+        "               </tr>" +
+        "               </table>" +
+        "               </body>" +
+        "               </html>";
+
+    var printAllTop = "<html><head><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'></head><body>";
+    var tableTop = "<table style='text-align: center; width: 8.5in; height: 11in; page-break-before: always;'><tr><td><img src='";
+    var tableBot = "'/></td></tr></table>";
+    var printAllBot = "</body></html>";
+
+
+    $('#printbtn').on('click', function (e) {
+        Caman('.current', function () {
+            this.render(function () {
+                var finalImage = this.toBase64();
+                var printWindow = window.open();
+                printWindow.document.write(printSingleTop);
+                printWindow.document.write(finalImage);
+                printWindow.document.write(printSingleBot);
+                printWindow.document.close();
+                setTimeout(function(){
+                    printWindow.print();
+                    printWindow.close();
+                }, 100);
+            });
+        });
+    });
+
+    $('#print-all-btn').on('click', function (e) {
+        $.each($(".cert-image"), function (key, value) {
+            Caman(this, function () {
+                var image = this.toBase64();
+                printAll.push(image);
+            });
+
+        });
+
+        var convertTimer = setInterval(function () {
+            if( printAll.length === $(".cert-image").length) {
+                console.log(printAll);
+                clearInterval(convertTimer);
+                var printWindow = window.open();
+                printWindow.document.write(printAllTop);
+                for (var i = 0; i < printAll.length; i++) {
+                    printWindow.document.write(tableTop);
+                    printWindow.document.write(printAll[i]);
+                    printWindow.document.write(tableBot);
+                }
+                printWindow.document.write(printAllBot);
+                printWindow.document.close();
+                setTimeout(function(){
+                    printWindow.print();
+                    printWindow.close();
+                }, 100);
+            }
+        }, 1000);
+        printAll = [];
+    });
+
+    $('#toggle-image-view-btn').click(function () {
+        $('.modal-body').toggleClass("image-modal-body");
+    });
+
+    // reset brightness & contrast on hide modal
+    $('#cert-modal').on('hidden.bs.modal', function () {
+        $.each($(".item"), function (key, value) {
+            $(".current").removeClass("current");
+            $(value).find(".cert-image").addClass("current");
+            Caman('.current', function () {
+                this.revert(false);
+                this.render();
+            });
+        });
+        $('input[type=range]').val(0);
+        $(".carousel-indicators").empty();
+        $(".carousel-inner").empty();
+        $(".carousel-inner").append("<img src='/static/img/spinner.gif' style='width:200px;height:200px;'>");
+    });
+
+    $('#cert-carousel').bind('slid.bs.carousel', function (e) {
+        var current = values[parseInt($("li.active").attr("data-slide-to"))];
+        $("#brightness").val(current.brightness);
+        $("#contrast").val(current.contrast);
+        $(".current").removeClass("current");
+        $(".item.active").find(".cert-image").addClass("current");
+    });
+    // end of camanJS functionality
 });
