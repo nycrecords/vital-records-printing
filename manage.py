@@ -12,6 +12,8 @@ def create_certificate_indices():
     """
     Create db indices for table 'certificate'.
     
+    This should be run *after* table population and is expected to take a while to complete.
+    
     Indices are *almost* all the possible combinations of the certificate 
     columns that correspond to searchable fields:
         type, county, year, first_name, last_name, number, soundex
