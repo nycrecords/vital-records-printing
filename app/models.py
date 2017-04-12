@@ -9,6 +9,8 @@ from app.constants import (
     months,
     counties
 )
+from app.utils import certificate_pdf_to_png
+from flask import current_app, url_for
 from flask_login import UserMixin
 from werkzeug.security import (
     generate_password_hash,
@@ -69,7 +71,7 @@ class Cert(db.Model):
     soundex = db.Column(db.String(4))
     file_id = db.Column(db.Integer, db.ForeignKey("file.id"))
 
-    file = db.relationship("File", backref=db.backref("certificate", uselist=False))
+    file = db.relationship("File", backref="certificates")  # there can be 2 certificates for 1 marriage file
 
     @property
     def name(self):
@@ -100,20 +102,39 @@ class File(db.Model):
 
     @property
     def pngs(self):
-        if not self.converted:
-            self.convert()
-        return [png for png in png_dir]  # TODO
+        """ TODO: docstring """
+        if self.converted:
+            return [
+                url_for(
+                    "static",
+                    filename=os.path.join(
+                        current_app.config["CERT_IMAGE_STATIC_DIRECTORY"],
+                        self.name,
+                        png
+                    )
+                )
+                for png in os.listdir(
+                    os.path.join(
+                        current_app.config["CERT_IMAGE_DIRECTORY"],
+                        self.name
+                    )
+                )
+            ]
 
     def convert(self):
-        # TODO: try, and call conversion function here
-        self.converted = True
-        db.commit()
-        return self.pngs
+        """ TODO: docstring """
+        try:
+            certificate_pdf_to_png(self.path)
+        except Exception:
+            pass  # TODO: log it!
+        else:
+            self.converted = True
+            db.session.commit()
 
 
-class User(db.Model, UserMixin):  # TODO: write tests for this
+class User(db.Model, UserMixin):
     """
-    Define the User class for the `user` table with the following columns:
+    Define the User class for the `auth_user` table with the following columns:
     
     id                  integer, primary key
     username            varchar(65), human-readable user identifier
@@ -122,7 +143,7 @@ class User(db.Model, UserMixin):  # TODO: write tests for this
     expiration_date     datetime, timestamp of when user's password will expire
     
     """
-    __tablename__ = "user"
+    __tablename__ = "auth_user"
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(65), unique=True)
@@ -186,7 +207,7 @@ class History(db.Model):
     """
     __tablename__ = "history"
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("auth_user.id"))
     timestamp = db.Column(db.DateTime)
     password = db.Column(db.String(256))
 
