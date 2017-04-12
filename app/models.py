@@ -34,11 +34,11 @@ class Cert(db.Model):
     soundex     varchar(4), certificate soundex
     file_id     integer, foreign key to `file`
     
-    To create the indices for the `certificate` table, use the "create_certificate_indices" 
-    manager command. This command will create 64 indices which will make make READing/SELECTing 
+    To create the indexes for the `certificate` table, use the "create_certificate_indexes" 
+    manager command. This command will create 64 indexes which will make make READing/SELECTing 
     and, by extension, searching for certificates fast given the inputs (columns) available on the
     search form, but will come at the cost of slow WRITEs (INSERTs, UPDATEs, and DELETEs).
-    For this reason, indices have not been included in this model and it is probably a good idea 
+    For this reason, indexes have not been included in this model and it is probably a good idea 
     to postpone index creation until after initial population (the access-to-postgresql transfer)
     has been completed.
     
