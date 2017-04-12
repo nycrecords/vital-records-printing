@@ -8,7 +8,7 @@ manager = Manager(app)
 
 
 @manager.command
-def create_certificate_indexes():
+def create_certificate_indexes(check_existing=False):
     """
     Create db indexes for table 'certificate'.
     
@@ -28,7 +28,13 @@ def create_certificate_indexes():
         type, county, year
         type, county, soundex
         ...
+    
+    :param check_existing: Check for and skip existing indices
     """
+    if check_existing:
+        from sqlalchemy.engine import reflection
+        insp = reflection.Inspector.from_engine(db.engine)
+
     Col = namedtuple("Col", ["string", "attr"])
     cols = {
         Col("type", Cert.type),
@@ -39,14 +45,19 @@ def create_certificate_indexes():
         Col("last", Cert.last_name),
         Col("soundex", Cert.soundex),
     }
-    count = 1
+    count = 0
     for length in range(1, len(cols) + 1):
         for comb in combinations(cols, length):
             if Col('type', Cert.type) in comb:
-                index_name = "idx_{}".format("_".join((c.string for c in comb)))
-                print("{}\t{}".format(count, index_name))
-                db.Index(index_name, *(c.attr for c in comb)).create(db.engine)
+                index_name = "idx_{}".format("_".join((col.string for col in comb)))
                 count += 1
+                if check_existing and set(col.attr.key for col in comb) in (
+                    set(index["column_names"]) for index in insp.get_indexes(Cert.__tablename__)
+                ):
+                    print("{}\tSKIPPING\t{}".format(count, index_name))
+                    continue
+                print("{}\t{}".format(count, index_name))
+                db.Index(index_name, *(col.attr for col in comb)).create(db.engine)
 
 
 @manager.command

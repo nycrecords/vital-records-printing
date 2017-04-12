@@ -29,11 +29,10 @@ CREATE TABLE Grooms_1866_1900
      );
 
 
--- CREATE TABLE Totals
---      (
---      Field1               varchar(50),
---      Field3               int8,
---      County               varchar(50),
---      Count                int8 DEFAULT 0
---      );
-
+CREATE TABLE Totals
+     (
+     Field1               varchar(50),
+     Field3               int8,
+     County               varchar(50),
+     Count                int8 DEFAULT 0
+     );
