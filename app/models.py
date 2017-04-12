@@ -19,8 +19,7 @@ from datetime import datetime, timedelta
 
 class Cert(db.Model):
     """
-    Define the Cert class for the `certificate` table with the following columns
-    and indices:
+    Define the Cert class for the `certificate` table with the following columns:
 
     id          integer, primary key
     type        certificate_type, type of certificate (e.g. "birth")
@@ -35,19 +34,13 @@ class Cert(db.Model):
     soundex     varchar(4), certificate soundex
     file_id     integer, foreign key to `file`
     
-    idx_year_county_type        year, county, type
-    idx_first_county_type       first_name, county, type
-    idx_last_county_type        last_name, county, type
-    idx_soundex_county_type     soundex, county, type
-    idx_number_county_type      number, county, type
-    
-    This high amount of indices will make READing/SELECTing and, by extension, 
-    searching for certificates fast given the inputs (columns) available on the
+    To create the indices for the `certificate` table, use the "create_certificate_indices" 
+    manager command. This command will create 64 indices which will make make READing/SELECTing 
+    and, by extension, searching for certificates fast given the inputs (columns) available on the
     search form, but will come at the cost of slow WRITEs (INSERTs, UPDATEs, and DELETEs).
-    Therefore, it is probably a good idea to postpone index creation until after the
-    the access-to-postgresql transfer has completed. This means you should comment out 
-    the __table_args__ below and, after initial population, run 
-    `python manage.py create_certificate_indices`.
+    For this reason, indices have not been included in this model and it is probably a good idea 
+    to postpone index creation until after initial population (the access-to-postgresql transfer)
+    has been completed.
     
     MISC: 
         The structure of this table is largely determined by a preexisting, 
@@ -77,15 +70,6 @@ class Cert(db.Model):
     file_id = db.Column(db.Integer, db.ForeignKey("file.id"))
 
     file = db.relationship("File", backref=db.backref("certificate", uselist=False))
-
-    __table_args__ = (
-        db.Index("idx_year_county_type", "year", "county", "type"),
-        db.Index("idx_first_county_type", "first_name", "county", "type"),
-        db.Index("idx_last_county_type", "last_name", "county", "type"),
-        db.Index("idx_soundex_county_type", "soundex", "county", "type"),
-        db.Index("idx_number_county_type", "number", "county", "type"),
-        # TODO: more combos!
-    )
 
     @property
     def name(self):
