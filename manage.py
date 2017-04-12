@@ -43,7 +43,7 @@ def create_certificate_indices():
             if Col('type', Cert.type) in comb:
                 index_name = "idx_{}".format("_".join((c.string for c in comb)))
                 print("{}\t{}".format(count, index_name))
-                # db.Index(index_name, *(c.attr for c in comb)).create(db.engine)
+                db.Index(index_name, *(c.attr for c in comb)).create(db.engine)
                 count += 1
 
 
