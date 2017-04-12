@@ -8,10 +8,14 @@ ALL = frozenset((KINGS, QUEENS, BRONX, MANHATTAN, RICHMOND))
 
 FROM_FILE_IDENTIFIER = {
     'K': KINGS,
+
     'Q': QUEENS,
-    'B': BRONX,
+
+    'B': BRONX,  # FIXME: or brooklyn?
+    'X': BRONX,
+
     'M': MANHATTAN,
+
     'R': RICHMOND,
     'S': RICHMOND,
-    # TODO: 'X': ?
 }
