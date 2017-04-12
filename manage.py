@@ -37,17 +37,13 @@ def create_certificate_indices():
         Col("last", Cert.last_name),
         Col("soundex", Cert.soundex),
     }
-    # create first and only single-column index
-    print("1\tidx_type")
-    db.Index("idx_type", Cert.type).create(db.engine)
-    # create remaining indices
-    count = 2
-    for length in range(2, len(cols) + 1):
+    count = 1
+    for length in range(1, len(cols) + 1):
         for comb in combinations(cols, length):
             if Col('type', Cert.type) in comb:
                 index_name = "idx_{}".format("_".join((c.string for c in comb)))
                 print("{}\t{}".format(count, index_name))
-                db.Index(index_name, *(c.attr for c in comb))
+                # db.Index(index_name, *(c.attr for c in comb)).create(db.engine)
                 count += 1
 
 
