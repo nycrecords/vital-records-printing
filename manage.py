@@ -1,62 +1,54 @@
+from collections import namedtuple
+from itertools import combinations
 from flask_script import Manager, Shell
-
 from app import app, db
 from app.models import Cert, File, User, History
 
 manager = Manager(app)
 
-# DB_INDEX_ARGS = frozenset((
-#     ("idx_year_county_type", Cert.year, Cert.county, Cert.type),
-#     ("idx_first_county_type", Cert.first_name, Cert.county, Cert.type),
-#     ("idx_last_county_type", Cert.last_name, Cert.county, Cert.type),
-#     ("idx_soundex_county_type", Cert.soundex, Cert.county, Cert.type),
-#     ("idx_number_county_type", Cert.number, Cert.county, Cert.type),
-# ))
-
-Combination = {
-    "type": Cert.type,
-    "county": Cert.county,
-    "year": Cert.year,
-    "number": Cert.number,
-    "first": Cert.first_name,
-    "last": Cert.last_name,
-    "soundex": Cert.soundex,
-}
-
-from itertools import combinations
 
 @manager.command
-def combination():
-    DB_INDEX_ARGS = set()
-
-    for i in range(1, len(Combination)+1):
-        bunchaCombs = list(combinations(Combination, i))
-        print('---------------------------------')
-        for comb in bunchaCombs:
-            for search_field in comb:
-                if search_field == 'type':
-                    base = "idx" + ("_{}" * (len(comb)))
-                    base = base.format(*comb)
-                    # print(base)
-                    an_index = []
-                    an_index.append(base)
-                    for field in comb:
-                        an_index.append({
-                            'type': Cert.type,
-                            'first': Cert.first_name,
-                            'last': Cert.last_name,
-                            'number': Cert.number,
-                            'year': Cert.number,
-                            'soundex': Cert.soundex,
-                            'county': Cert.county,
-                        }.get(field))
-                    print(an_index)
-                    DB_INDEX_ARGS.add(tuple(an_index))
-    # print('***********************************')
-    # print(DB_INDEX_ARGS)
-    for args in DB_INDEX_ARGS:
-        print("Creating '{}' ...".format(args[0]))
-        db.Index(*args).create(bind=db.engine)
+def create_certificate_indices():
+    """
+    Create db indices for table 'certificate'.
+    
+    Indices are *almost* all the possible combinations of the certificate 
+    columns that correspond to searchable fields:
+        type, county, year, first_name, last_name, number, soundex
+    for a total of 64 indices.
+    
+    Since 'type' is always included in the search query, it will always be part
+    of every combination:
+        type
+        type, county
+        type, year
+        ...
+        type, county, year
+        type, county, soundex
+        ...
+    """
+    Col = namedtuple("Col", ["string", "attr"])
+    cols = {
+        Col("type", Cert.type),
+        Col("county", Cert.county),
+        Col("year", Cert.year),
+        Col("number", Cert.number),
+        Col("first", Cert.first_name),
+        Col("last", Cert.last_name),
+        Col("soundex", Cert.soundex),
+    }
+    # create first and only single-column index
+    print("1\tidx_type")
+    db.Index("idx_type", Cert.type).create(db.engine)
+    # create remaining indices
+    count = 2
+    for length in range(2, len(cols) + 1):
+        for comb in combinations(cols, length):
+            if Col('type', Cert.type) in comb:
+                index_name = "idx_{}".format("_".join((c.string for c in comb)))
+                print("{}\t{}".format(count, index_name))
+                db.Index(index_name, *(c.attr for c in comb))
+                count += 1
 
 
 @manager.command
@@ -78,22 +70,6 @@ def create_user(first_name, last_name, username=None):
         )
     )
     db.session.commit()
-
-
-# @manager.command
-# def create_certificate_indices():
-#     """ Create db indices for table `certificate`. """
-#     for args in DB_INDEX_ARGS:
-#         print("Creating '{}' ...".format(args[0]))
-#         db.Index(*args).create(bind=db.engine)
-
-
-@manager.command
-def drop_certificate_indices():
-    """ Drop db indices for table `certificate`. """
-    for args in DB_INDEX_ARGS:
-        print("Dropping '{}' ...".format(args[0]))
-        db.Index(*args).drop(bind=db.engine)
 
 
 def make_shell_context():
