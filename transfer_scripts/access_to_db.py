@@ -208,7 +208,7 @@ def _add_certificate(type_,
 
 def create_files(error_log_file=None):
     """
-    * Use `create_sql_to_create_files` instead. *
+    * Use `create_insert_files_sql_file` instead. *
     
     Walks through the certificate files directory, searches for a corresponding 
     certificate record, creates a File record, and links it to the certificate record.
@@ -299,7 +299,7 @@ def create_files(error_log_file=None):
         CONN.commit()
 
 
-def create_add_files_sql_file(log_file=None):
+def create_insert_files_sql_file(log_file=None):
     """
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     * It is strongly recommended you create a composite index for `certificate`               *
@@ -398,6 +398,6 @@ def multiprocess_file_search_example():
 
 
 if __name__ == "__main__":
-    # transfer_all()
-    with open("create_add_files_log.txt", "w") as flog:
-        create_add_files_sql_file(flog)
+    transfer_all()
+    with open("create_insert_files_log.txt", "w") as flog:
+        create_insert_files_sql_file(flog)

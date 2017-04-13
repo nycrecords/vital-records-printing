@@ -1,17 +1,42 @@
+from collections import namedtuple
+from itertools import combinations
 from flask_script import Manager, Shell
-
 from app import app, db
 from app.models import Cert, File, User, History
 
 manager = Manager(app)
 
-DB_INDEX_ARGS = frozenset((
-    ("idx_year_county_type", Cert.year, Cert.county, Cert.type),
-    ("idx_first_county_type", Cert.first_name, Cert.county, Cert.type),
-    ("idx_last_county_type", Cert.last_name, Cert.county, Cert.type),
-    ("idx_soundex_county_type", Cert.soundex, Cert.county, Cert.type),
-    ("idx_number_county_type", Cert.number, Cert.county, Cert.type),
-))
+
+@manager.command
+def create_certificate_indexes():
+    """
+    Create db indexes (7) for table 'certificate'.
+    This should be run *after* table population.
+    Existing indexes will not be recreated.
+    """
+    from sqlalchemy.engine import reflection
+    insp = reflection.Inspector.from_engine(db.engine)
+
+    Index = namedtuple("Index", ["name_suffix", "attributes"])
+    indexes = (
+        Index("type_county_year", (Cert.type, Cert.county, Cert.year)),
+        Index("type_year", (Cert.type, Cert.year)),
+        Index("year", (Cert.year, )),
+        Index("county", (Cert.county, )),
+        Index("firstname", (Cert.first_name, )),
+        Index("lastname", (Cert.last_name, )),
+        Index("number", (Cert.number, )),
+        Index("soundex", (Cert.soundex, ))
+    )
+    for i, index in enumerate(indexes):
+        index_name = "idx_{}".format(index.name_suffix)
+        if set(attr.key for attr in index.attributes) in (
+            set(index["column_names"]) for index in insp.get_indexes(Cert.__tablename__)
+        ):
+            print("{}\tAlready Created, Skipping\t{}".format(i, index_name))
+            continue
+        print("{}\t{}".format(i, index_name))
+        db.Index(index_name, *index.attributes).create(db.engine)
 
 
 @manager.command
@@ -33,22 +58,6 @@ def create_user(first_name, last_name, username=None):
         )
     )
     db.session.commit()
-
-
-@manager.command
-def create_certificate_indices():
-    """ Create db indices for table `certificate`. """
-    for args in DB_INDEX_ARGS:
-        print("Creating '{}' ...".format(args[0]))
-        db.Index(*args).create(bind=db.engine)
-
-
-@manager.command
-def drop_certificate_indices():
-    """ Drop db indices for table `certificate`. """
-    for args in DB_INDEX_ARGS:
-        print("Dropping '{}' ...".format(args[0]))
-        db.Index(*args).drop(bind=db.engine)
 
 
 def make_shell_context():
