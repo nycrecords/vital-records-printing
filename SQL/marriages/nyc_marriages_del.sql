@@ -5,4 +5,4 @@ DROP TABLE Brides_1866_1900;
 
 DROP TABLE Grooms_1866_1900;
 
--- DROP TABLE Totals;
+DROP TABLE Totals;
