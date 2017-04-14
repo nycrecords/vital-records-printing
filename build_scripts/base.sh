@@ -17,6 +17,6 @@ sudo /etc/init.d/vboxadd setup
 echo "cd /vagrant" >> /home/vagrant/.bash_profile
 
 # setup auto-mounting DVR
-sudo mkdir /mnt/dvr && sudo mkdir /etc/samba
+sudo mkdir /mnt/dvr /etc/samba
 sudo printf "username=$1\npassword=$2\n" > /etc/samba/passwd
 sudo printf "//10.132.41.31/DVR\t/mnt/dvr\tcifs\t_netdev,credentials=/etc/samba/passwd\t0 0\n" >> /etc/fstab
