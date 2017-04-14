@@ -64,4 +64,4 @@ else
 fi
 
 # vagrant up with RedHat and DVR mounting credentials as environment variables
-RH_USER=$rh_username RH_PASS=$rh_password DVR_USER=$dvr_username DVR_PASS=$dvr_username vagrant up
+RH_USER=$rh_username RH_PASS=$rh_password DVR_USER=$dvr_username DVR_PASS=$dvr_password vagrant up

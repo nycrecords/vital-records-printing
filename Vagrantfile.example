@@ -3,8 +3,8 @@
 
 REDHAT_USERNAME = ENV['RH_USER'] || ""
 REDHAT_PASSWORD = ENV['RH_PASS'] || ""
-DVR_USERNAME = ENV["DVR_USER"]
-DVR_PASSWORD = ENV["DVR_PASS"]
+DVR_USERNAME = ENV["DVR_USER"] || ""
+DVR_PASSWORD = ENV["DVR_PASS"] || ""
 
 Vagrant.configure("2") do |config|
   config.vm.box = "rhel-6.8-5.1.18"
