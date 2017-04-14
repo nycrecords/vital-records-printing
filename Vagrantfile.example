@@ -1,10 +1,10 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$redhat_username = ENV["RH_USER"]
-$redhat_password = ENV["RH_PASS"]
-$dvr_username = ENV["DVR_USER"]
-$dvr_password = ENV["DVR_PASS"]
+REDHAT_USERNAME = ENV['RH_USER'] || ""
+REDHAT_PASSWORD = ENV['RH_PASS'] || ""
+DVR_USERNAME = ENV["DVR_USER"]
+DVR_PASSWORD = ENV["DVR_PASS"]
 
 Vagrant.configure("2") do |config|
   config.vm.box = "rhel-6.8-5.1.18"
@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
   # RedHat Subscription Management
   config.vm.provision "shell" do |s|
     s.path = "build_scripts/subscription_manager.sh"
-    s.args = [$redhat_username, $redhat_password]
+    s.args = [REDHAT_USERNAME, REDHAT_PASSWORD]
   end
 
   config.vm.provision :reload
@@ -35,10 +35,10 @@ Vagrant.configure("2") do |config|
     # setup virtualbox guest additions after updating
     s.inline = 'sudo /etc/init.d/vboxadd setup'
     # auto-cd to /vagrant
-    s.inline 'echo "cd /vagrant" >> /home/vagrant/.bash_profile'
+    s.inline = 'echo "cd /vagrant" >> /home/vagrant/.bash_profile'
     # setup auto-mounting DVR
     s.inline = 'sudo mkdir /mnt/dvr && sudo mkdir /etc/samba'
-    s.inline = 'sudo printf "username=#{dvr_username}\npassword=#{dvr_password}" > /etc/samba/passwd'
+    s.inline = 'sudo printf "username=#{DVR_USERNAME}\npassword=#{DVR_PASSWORD}" > /etc/samba/passwd'
     s.inline = 'sudo printf "//10.132.41.31/DVR\t/mnt/dvr\tcifs\t_netdev,credentials=/etc/samba/passwd\t0 0" >> /etc/fstab'
   end
 
@@ -83,7 +83,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Unsubscribe and unregister from RedHat before destroying
-  config.trigger.before :destroy, :vm => ["default"] do  # add more VMs if necessary
+  config.trigger.before :destroy, :force => true, :vm => ["default"] do  # add more VMs if necessary
     run_remote "subscription-manager unsubscribe --all"
     run_remote "subscription-manager unregister"
   end
