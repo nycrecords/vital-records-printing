@@ -29,17 +29,10 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :reload
 
+  # Post-Proxy/RedHat Base Setup
   config.vm.provision "shell" do |s|
-    # install packages (Development Tools, kernel-devel, cifs-utils)
-    s.inline = 'sudo yum -y groupinstall "Development Tools" && sudo yum -y install kernel-devel cifs-utils'
-    # setup virtualbox guest additions after updating
-    s.inline = 'sudo /etc/init.d/vboxadd setup'
-    # auto-cd to /vagrant
-    s.inline = 'echo "cd /vagrant" >> /home/vagrant/.bash_profile'
-    # setup auto-mounting DVR
-    s.inline = 'sudo mkdir /mnt/dvr && sudo mkdir /etc/samba'
-    s.inline = 'sudo printf "username=#{DVR_USERNAME}\npassword=#{DVR_PASSWORD}" > /etc/samba/passwd'
-    s.inline = 'sudo printf "//10.132.41.31/DVR\t/mnt/dvr\tcifs\t_netdev,credentials=/etc/samba/passwd\t0 0" >> /etc/fstab'
+    s.path = "build_scripts/base.sh"
+    s.args = [DVR_USERNAME, DVR_PASSWORD]
   end
 
   # Single server VM
@@ -56,7 +49,6 @@ Vagrant.configure("2") do |config|
     default.vm.provision :reload  # to prevent 'database is starting up' issue
     default.vm.provision "shell", path: "build_scripts/db_setup/db_setup_config.sh"
   end
-
 
   config.vm.define "web_1", autostart: false do |web|
     # Web Server 1 Configuration

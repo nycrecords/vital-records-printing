@@ -57,7 +57,8 @@ if [ "$DVR_USER" -a "$DVR_PASS" ]; then
     dvr_password=$DVR_PASS
 else
     echo "Enter the service account credentials for mounting DVR"
-    read -p "username: " dvr_username
+    read -p "username (doris_dvr): " dvr_username
+    dvr_username=${dvr_username:-doris_dvr}
     read -s -p "password: " dvr_password
     echo
 fi

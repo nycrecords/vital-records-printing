@@ -7,7 +7,7 @@
 #
 # Usage
 #
-#	./subscribe.sh
+#	./subscribe.sh username password
 #
 # This script will:
 # - Register the system with your Red Hat Developer account
