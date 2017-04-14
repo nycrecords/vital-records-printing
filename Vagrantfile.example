@@ -7,7 +7,7 @@ $dvr_username = ENV["DVR_USER"]
 $dvr_password = ENV["DVR_PASS"]
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "rhel-6.8"
+  config.vm.box = "rhel-6.8-5.1.18"
 
   config.vm.provider "virtualbox" do |vb|
     # Customize the amount of memory on the VM:
@@ -30,8 +30,16 @@ Vagrant.configure("2") do |config|
   config.vm.provision :reload
 
   config.vm.provision "shell" do |s|
-    s.inline = 'sudo yum -y groupinstall "Development Tools" && sudo yum install "kernel-devel" && sudo /etc/init.d/vboxadd setup && echo "cd /vagrant" >> /home/vagrant/.bash_profile'
-    s.inline = 'sudo mkdir /mnt/dvr && sudo mkdir /etc/samba && sudo printf "username={dvr_username}\npassword={dvr_password}" > /etc/samba/passwd && sudo printf "//10.132.41.31/DVR\t/mnt/dvr\tcifs\t_netdev,credentials=/etc/samba/passwd\t0 0" >> /etc/fstab && yum install cifs-utils"
+    # install packages (Development Tools, kernel-devel, cifs-utils)
+    s.inline = 'sudo yum -y groupinstall "Development Tools" && sudo yum -y install kernel-devel cifs-utils'
+    # setup virtualbox guest additions after updating
+    s.inline = 'sudo /etc/init.d/vboxadd setup'
+    # auto-cd to /vagrant
+    s.inline 'echo "cd /vagrant" >> /home/vagrant/.bash_profile'
+    # setup auto-mounting DVR
+    s.inline = 'sudo mkdir /mnt/dvr && sudo mkdir /etc/samba'
+    s.inline = 'sudo printf "username=#{dvr_username}\npassword=#{dvr_password}" > /etc/samba/passwd'
+    s.inline = 'sudo printf "//10.132.41.31/DVR\t/mnt/dvr\tcifs\t_netdev,credentials=/etc/samba/passwd\t0 0" >> /etc/fstab'
   end
 
   # Single server VM
@@ -44,7 +52,9 @@ Vagrant.configure("2") do |config|
     default.vm.network "private_network", ip: "10.0.0.2"
     default.vm.provision "shell", path: "build_scripts/web_setup/web_setup.sh", args: 'single_server'
     default.vm.provision "shell", path: "build_scripts/app_setup/app_setup.sh"
-    default.vm.provision "shell", path: "build_scripts/db_setup/db_setup.sh" .....
+    default.vm.provision "shell", path: "build_scripts/db_setup/db_setup_install.sh", args: 'single_server'
+    default.vm.provision :reload  # to prevent 'database is starting up' issue
+    default.vm.provision "shell", path: "build_scripts/db_setup/db_setup_config.sh"
   end
 
 
@@ -72,6 +82,10 @@ Vagrant.configure("2") do |config|
     # Database Server 2 Configuration
   end
 
-    ........
+  # Unsubscribe and unregister from RedHat before destroying
+  config.trigger.before :destroy, :vm => ["default"] do  # add more VMs if necessary
+    run_remote "subscription-manager unsubscribe --all"
+    run_remote "subscription-manager unregister"
+  end
 
 end
