@@ -36,7 +36,7 @@
                 <!-- Wrapper for slides -->
                 <ol class="carousel-indicators">
                 </ol>
-                <div class="modal-body image-modal-body" style="text-align: center">
+                <div id="carousel-body" class="modal-body image-modal-body" style="text-align: center">
                     <div class="carousel-inner">
                         <img id="spinner" src="/static/img/spinner.gif" style="width:200px;height:200px;">
                     </div>
@@ -48,15 +48,15 @@
             </div>
 
             <div class="modal-footer">
-                <button id="toggle-image-view-btn" class="btn btn-seconday">
-                    Toggle Full View
-                    <span class="glyphicon glyphicon-resize-full"></span>
+                <button id="toggle-image-view-btn" class="btn btn-secondary">
+                    Fit To Screen
+                    <span class="glyphicon glyphicon-resize-small"></span>
                 </button>
-                <button id="rotate-left-btn" class="btn btn-seconday">
+                <button id="rotate-left-btn" class="btn btn-secondary">
                     Rotate Left
                     <span class="glyphicon glyphicon-share-alt icon-flipped"></span>
                 </button>
-                <button id="rotate-right-btn" class="btn btn-seconday">
+                <button id="rotate-right-btn" class="btn btn-secondary">
                     Rotate Right
                     <span class="glyphicon glyphicon-share-alt"></span>
                 </button>
