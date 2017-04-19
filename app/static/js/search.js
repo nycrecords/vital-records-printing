@@ -339,17 +339,29 @@ $(function () {
         printAll = [];
     });
 
-    var toggleFlag = true;
+
+    function addPadding(){
+        var modalHeight = $('.carousel-inner').height();
+        var imageHeight = $('.current').height();
+        var rotationPadding = Math.ceil((imageHeight - modalHeight) / 2);
+        $('.carousel-inner').css({'padding-top': rotationPadding + 'px', 'padding-bottom': rotationPadding + 'px'});
+    }
+
     $('#toggle-image-view-btn').click(function () {
-        // $('.modal-body').toggleClass("image-modal-body");
-        if (toggleFlag){
-            $('.current').css({'max-height': '40%', 'max-width': '40%'});
-            toggleFlag = false;
+        $('.current').toggleClass('fit-to-screen');
+        var modalHeight = $(window).height() + 'px';
+        if ($('.current').hasClass('fit-to-screen')){
+            // $('#carousel-body').css('height', modalHeight);
+            $('.current').css({'max-height': '35%', 'max-width': '35%'});
+            $('#toggle-image-view-btn').text('View Full Image ');
+            $('#toggle-image-view-btn').append('<span class="glyphicon glyphicon-resize-full"></span>');
         }
         else{
             $('.current').css({'max-height': '100%', 'max-width': '100%'});
-            toggleFlag = true;
+            $('#toggle-image-view-btn').text('Fit To Screen ');
+            $('#toggle-image-view-btn').append('<span class="glyphicon glyphicon-resize-small"></span>');
         }
+        addPadding();
     });
 
     // reset brightness & contrast on hide modal
@@ -379,6 +391,16 @@ $(function () {
         var index = parseInt($("li.active").attr("data-slide-to"));
         deg = rotationValues[index];
         rotate = '';
+        // set the toggle button text and functionality
+        if ($('.current').hasClass('fit-to-screen')) {
+            $('#toggle-image-view-btn').text('View Full Image ');
+            $('#toggle-image-view-btn').append('<span class="glyphicon glyphicon-resize-full"></span>');
+        }
+        else {
+            $('#toggle-image-view-btn').text('Fit To Screen ');
+            $('#toggle-image-view-btn').append('<span class="glyphicon glyphicon-resize-small"></span>');
+        }
+        addPadding();
     });
 
     $('#rotate-right-btn').click(function () {
@@ -396,10 +418,7 @@ $(function () {
         rotationValues[index] = deg;
         
         // add padding to top and bottom of rotated image
-        var modalHeight = $('.carousel-inner').height();
-        var imageHeight = $('.current').height();
-        var rotationPadding = Math.ceil((imageHeight - modalHeight) / 2);
-        $('.carousel-inner').css({'padding-top': rotationPadding + 'px', 'padding-bottom': rotationPadding + 'px'});
+        addPadding();
     });
 
     $('#rotate-left-btn').click(function () {
@@ -417,10 +436,7 @@ $(function () {
         rotationValues[index] = deg;
         
         // add padding to top and bottom of rotated image
-        var modalHeight = $('.carousel-inner').height();
-        var imageHeight = $('.current').height();
-        var rotationPadding = Math.ceil((imageHeight - modalHeight) / 2);
-        $('.carousel-inner').css({'padding-top': rotationPadding + 'px', 'padding-bottom': rotationPadding + 'px'});
+        addPadding();
     });
     // end of camanJS functionality
 });
