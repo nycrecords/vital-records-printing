@@ -33,11 +33,8 @@ Authors:
         
     - If you experience build errors, try re-provisioning (at most once):
     
-    ```
-    RH_USER=<Your RedHat Username> RH_PASS=<Your Redhat Password> \
-    
-    DVR_USER=<DVR Server Username> DVR_PASS=<DVR Server Password> vagrant provision
-    ```
+    `RH_USER=<Your RedHat Username> RH_PASS=<Your Redhat Password> 
+    DVR_USER=<DVR Server Username> DVR_PASS=<DVR Server Password> vagrant provision`
     
     - If you do not want to set the `RH_` environment variables and you don't mind having 
     your RedHat credentials stored in your `Vagrantfile`, you can add them on lines 4 - 7.
