@@ -122,6 +122,9 @@ $(function () {
                                 var controls = $("#arrow-controls");
                                 var indicators = $(".carousel-indicators");
                                 var certImages = $(".carousel-inner");
+                                var carouselWidth = $('#cert-carousel').width() + 'px';
+                                var carouselHeight = $('#cert-carousel').height() + 'px';
+                                console.log($('#cert-carousel').width());
                                 setNumImages(response.data.urls.length);
                                 certImages.empty();
                                 indicators.empty();
@@ -137,6 +140,14 @@ $(function () {
                                 }
                                 for (var i = 0; i < numImages; i++) {
                                     indicators.append("<li data-slide-to='" + i + "' class='" + (i === 0 ? "active" : "") + "'></li>");
+                                    // certImages.append(
+                                    //     "<div class='item" +
+                                    //     (i === 0 ? " active" : "") +
+                                    //     "'><table id='image-table' style='text-align: center;' <tr><td><img class='img-responsive cert-image" +
+                                    //     (i === 0 ? " current" : "") + "' src='" +
+                                    //     response.data.urls[i] + "'></td></tr></table></div>"
+                                    // );
+
                                     certImages.append(
                                         "<div class='item" +
                                         (i === 0 ? " active" : "") +
@@ -349,17 +360,32 @@ $(function () {
 
     $('#toggle-image-view-btn').click(function () {
         $('.current').toggleClass('fit-to-screen');
-        var modalHeight = $(window).height() + 'px';
+        var modalHeight = $('#cert-carousel').height() + 'px';
         if ($('.current').hasClass('fit-to-screen')){
-            // $('#carousel-body').css('height', modalHeight);
+            $('#carousel-body').css('height', modalHeight);
             $('.current').css({'max-height': '35%', 'max-width': '35%'});
             $('#toggle-image-view-btn').text('View Full Image ');
             $('#toggle-image-view-btn').append('<span class="glyphicon glyphicon-resize-full"></span>');
+
+
+            var fitToScreenPadding = ($('#cert-carousel').height() - $('.current').height()) / 2;
+            fitToScreenPadding = fitToScreenPadding + 'px';
+            if (deg === 0){
+                $('.current').css('padding-top', fitToScreenPadding);
+            }
+            else if (deg === 180 || deg === -180){
+                $('.current').css('padding-bottom', fitToScreenPadding);
+            }
+            // else if (deg === 90 || deg === -90){
+            //     $('.current').css('padding-left', fitToScreenPadding);
+            // }
         }
         else{
             $('.current').css({'max-height': '100%', 'max-width': '100%'});
             $('#toggle-image-view-btn').text('Fit To Screen ');
             $('#toggle-image-view-btn').append('<span class="glyphicon glyphicon-resize-small"></span>');
+            $('.current').css('padding-top', '');
+            $('.current').css('padding-bottom', '');
         }
         addPadding();
     });
@@ -404,6 +430,8 @@ $(function () {
     });
 
     $('#rotate-right-btn').click(function () {
+        $('.current').css('padding-top', '');
+        $('.current').css('padding-bottom', '');
         deg = deg + 90;
         if (deg === 360) deg = 0;
         rotate = 'rotate(' + deg + 'deg)'
@@ -419,6 +447,15 @@ $(function () {
         
         // add padding to top and bottom of rotated image
         addPadding();
+
+        var fitToScreenPadding = ($('#cert-carousel').height() - $('.current').height()) / 2;
+        fitToScreenPadding = fitToScreenPadding + 'px';
+        if (deg === 0){
+            $('.current').css('padding-top', fitToScreenPadding);
+        }
+        else if (deg === 180 || deg === -180){
+            $('.current').css('padding-bottom', fitToScreenPadding);
+        }
     });
 
     $('#rotate-left-btn').click(function () {
