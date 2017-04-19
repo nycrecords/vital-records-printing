@@ -163,6 +163,13 @@ class User(db.Model, UserMixin):
         self.first_name = first_name
         self.last_name = last_name
 
+    @property
+    def has_invalid_password(self):
+        """
+        Returns whether the user's password is expired or is "password" (True) or not (False).
+        """
+        return datetime.utcnow() > self.expiration_date or self.check_password("password")
+
     def is_new_password(self, password):
         """
         Returns whether the supplied password is not the same as the current 
