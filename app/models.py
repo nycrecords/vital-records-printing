@@ -125,8 +125,8 @@ class File(db.Model):
         """ TODO: docstring """
         try:
             certificate_pdf_to_png(self.path)
-        except Exception:
-            pass  # TODO: log it!
+        except Exception as e:
+            print(e)  # TODO: log it!
         else:
             self.converted = True
             db.session.commit()

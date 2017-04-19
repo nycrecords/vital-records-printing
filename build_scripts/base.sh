@@ -8,7 +8,7 @@
 
 # install packages
 sudo yum -y groupinstall "Development Tools"
-sudo yum -y install kernel-devel cifs-utils
+sudo yum -y install kernel-devel cifs-utils ImageMagick
 
 # activate virtualbox guest additions
 sudo /etc/init.d/vboxadd setup
