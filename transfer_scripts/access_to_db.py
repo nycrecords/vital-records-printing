@@ -33,7 +33,7 @@ except ImportError:
 CONN = psycopg2.connect(
     database="vital_records_printing",
     user="vital_records_printing_db",
-    host="10.0.0.2",
+    host="127.0.0.1",
     port="5432")
 CUR_ = CONN.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
 CUR = CONN.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
