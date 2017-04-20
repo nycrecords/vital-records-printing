@@ -1,6 +1,6 @@
 # Vital Records Printing #
 
-Search for and print **Birth**, **Death**, and **Marriage** certificates.
+Search For and Print **Birth**, **Death**, and **Marriage** Certificates.
 
 Authors:
 
