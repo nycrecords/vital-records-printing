@@ -16,8 +16,8 @@ from multiprocessing import Pool
 from app.constants import counties, months, certificate_types
 
 # To mount, using CSC credentials:
-#   sudo mount -t cifs -o username=<USERNAME>,password=<PASSWORD> //10.132.41.31/DVR /mnt/smb
-DVR_MOUNT_POINT = "/mnt/smb"  # CHANGE THIS TO MATCH YOUR ENVIRONMENT
+#   sudo mount -t cifs -o username=<USERNAME>,password=<PASSWORD> //10.132.41.31/DVR /mnt/dvr
+DVR_MOUNT_POINT = "/mnt/dvr"
 NUM_DVR_DIRS = 15
 
 CHUNKSIZE = 500  # Bump it up if you got the RAM
@@ -33,7 +33,7 @@ except ImportError:
 CONN = psycopg2.connect(
     database="vital_records_printing",
     user="vital_records_printing_db",
-    host="10.0.0.2",
+    host="127.0.0.1",
     port="5432")
 CUR_ = CONN.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
 CUR = CONN.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)

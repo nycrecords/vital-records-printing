@@ -7,11 +7,15 @@ BASEDIR = os.path.abspath(os.path.dirname(__file__))
 dotenv_path = os.path.join(BASEDIR, '.env')
 load_dotenv(dotenv_path)
 
+
 class Config(object):
-    DEBUG = True
-    SECRET_KEY = "secrets"
+
+    SECRET_KEY = os.environ.get("SECRET_KEY") or "ssshhhhh"
+
+    SQLALCHEMY_DATABASE_URI = 'postgresql://vital_records_printing_db@127.0.0.1:5432/vital_records_printing'
+
+    # suppress warning
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://vital_records_printing_db@10.0.0.2:5432/vital_records_printing'  # TODO: vagrant->actual user
 
     # location of certificate image directory from within static folder (default: "img/certificate")
     CERT_IMAGE_STATIC_DIRECTORY = os.environ.get('CERT_IMAGE_STATIC_DIRECTORY') or \
@@ -22,11 +26,11 @@ class Config(object):
 
 
 class DevelopmentConfig(Config):
-    pass
+    DEBUG = True
 
 
 class ProductionConfig(Config):
-    pass
+    DEBUG = False
 
 
 class TestingConfig(Config):
