@@ -7,14 +7,11 @@
 #
 # Usage
 #
-#	./subscribe.sh
+#	./subscribe.sh username password
 #
 # This script will:
-# - Disable the firewall permanently
 # - Register the system with your Red Hat Developer account
 # - Install the latest updates
-#
-# You will be prompted for your developer account credentials.
 #
 # If you are running this at DORIS, make sure your proxy is set.
 # See /etc/profile.d/proxy.sh

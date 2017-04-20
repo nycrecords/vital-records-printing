@@ -125,8 +125,8 @@ class File(db.Model):
         """ TODO: docstring """
         try:
             certificate_pdf_to_png(self.path)
-        except Exception:
-            pass  # TODO: log it!
+        except Exception as e:
+            print(e)  # TODO: log it!
         else:
             self.converted = True
             db.session.commit()
@@ -162,6 +162,13 @@ class User(db.Model, UserMixin):
         self.set_password(password, update_history=False)  # only update on password resets
         self.first_name = first_name
         self.last_name = last_name
+
+    @property
+    def has_invalid_password(self):
+        """
+        Returns whether the user's password is expired or is "password" (True) or not (False).
+        """
+        return datetime.utcnow() > self.expiration_date or self.check_password("password")
 
     def is_new_password(self, password):
         """
