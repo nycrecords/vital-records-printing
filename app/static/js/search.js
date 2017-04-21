@@ -122,9 +122,6 @@ $(function () {
                                 var controls = $("#arrow-controls");
                                 var indicators = $(".carousel-indicators");
                                 var certImages = $(".carousel-inner");
-                                var carouselWidth = $('#cert-carousel').width() + 'px';
-                                var carouselHeight = $('#cert-carousel').height() + 'px';
-                                console.log($('#cert-carousel').width());
                                 setNumImages(response.data.urls.length);
                                 certImages.empty();
                                 indicators.empty();
@@ -140,14 +137,6 @@ $(function () {
                                 }
                                 for (var i = 0; i < numImages; i++) {
                                     indicators.append("<li data-slide-to='" + i + "' class='" + (i === 0 ? "active" : "") + "'></li>");
-                                    // certImages.append(
-                                    //     "<div class='item" +
-                                    //     (i === 0 ? " active" : "") +
-                                    //     "'><table id='image-table' style='text-align: center; width: 1000px; height: 1000px;' <tr><td><img class='img-responsive cert-image" +
-                                    //     (i === 0 ? " current" : "") + "' src='" +
-                                    //     response.data.urls[i] + "'></td></tr></table></div>"
-                                    // );
-
                                     certImages.append(
                                         "<div class='item" +
                                         (i === 0 ? " active" : "") +
@@ -352,58 +341,40 @@ $(function () {
 
 
     function addPadding(){
-        // var modalHeight = $('.carousel-inner').height();
-        var modalHeight = $('#carousel-body').height();
+        var modalHeight = $('.carousel-inner').height();
         var imageHeight = $('.current').height();
         var rotationPadding = Math.ceil((imageHeight - modalHeight) / 2);
-        // $('.carousel-inner').css({'padding-top': rotationPadding + 'px', 'padding-bottom': rotationPadding + 'px'});
         if ((deg === 0 || deg === 180 || deg === -180) && !($('.current').hasClass('fit-to-screen'))) {
-            // if (($('.current').hasClass('fit-to-screen'))) {
-            //     $('.current').css({'padding-top': rotationPadding + 'px', 'padding-bottom': ''});
-            // }
             $('.current').css({'padding-top': '', 'padding-bottom': ''});
         }
         else {
             $('.current').css({'padding-top': rotationPadding + 'px', 'padding-bottom': rotationPadding + 'px'});
         }
-
-        // $('.carousel-inner').css({'padding-top': rotationPadding + 'px', 'padding-bottom': rotationPadding + 'px'});
     }
 
     $('#toggle-image-view-btn').click(function () {
         $('.current').toggleClass('fit-to-screen');
-        // var modalHeight = $('#carousel-body').height() + 'px';
         var modalHeight = $('#cert-carousel').height() + 'px';
         if ($('.current').hasClass('fit-to-screen')){
             $('#carousel-body').css('height', modalHeight);
             $('.current').css({'max-height': '35%', 'max-width': '35%'});
             $('#toggle-image-view-btn').text('View Full Image ');
             $('#toggle-image-view-btn').append('<span class="glyphicon glyphicon-resize-full"></span>');
-
-            // addPadding();
-
             $('#carousel-body').removeClass('image-modal-body');
-
-            var fitToScreenPadding = ($('#cert-carousel').height() - $('.current').height()) / 2;
-            fitToScreenPadding = fitToScreenPadding + 'px';
-            if (deg === 0 || deg === 180 || deg === -180){
-                $('.current').css('padding-top', fitToScreenPadding);
-                $('.current').css('padding-bottom', fitToScreenPadding);
+            if (deg === 0 || deg === 180 || deg === -180) {
+                var fitToScreenPadding = ($('#cert-carousel').height() - $('.current').height()) / 2;
+                var certCarouselHeight = $('#cert-carousel').height();
+                var carouselBodyHeight = $('#carousel-body').height();
+                var paddingDifference = (certCarouselHeight - carouselBodyHeight) / 2;
+                fitToScreenPadding = (fitToScreenPadding - paddingDifference) + 'px'
+                $('.current').css({'padding-top': fitToScreenPadding, 'padding-bottom': fitToScreenPadding});
             }
-            // else if (deg === 180 || deg === -180){
-            //     $('.current').css('padding-bottom', fitToScreenPadding);
-            // }
-            // else if (deg === 90 || deg === -90){
-            //     $('.current').css('padding-left', fitToScreenPadding);
-            // }
         }
         else{
             $('.current').css({'max-height': '100%', 'max-width': '100%'});
             $('#toggle-image-view-btn').text('Fit To Screen ');
             $('#toggle-image-view-btn').append('<span class="glyphicon glyphicon-resize-small"></span>');
             $('#carousel-body').addClass('image-modal-body');
-            // $('.current').css('padding-top', '');
-            // $('.current').css('padding-bottom', '');
         }
         addPadding();
     });
@@ -418,6 +389,7 @@ $(function () {
                 this.render();
             });
         });
+        $('#carousel-body').addClass('image-modal-body');
         $('input[type=range]').val(0);
         $(".carousel-indicators").empty();
         $(".carousel-inner").empty();
@@ -441,6 +413,7 @@ $(function () {
             $('#toggle-image-view-btn').append('<span class="glyphicon glyphicon-resize-full"></span>');
         }
         else {
+            $('#carousel-body').addClass('image-modal-body');
             $('#toggle-image-view-btn').text('Fit To Screen ');
             $('#toggle-image-view-btn').append('<span class="glyphicon glyphicon-resize-small"></span>');
         }
@@ -448,8 +421,6 @@ $(function () {
     });
 
     $('#rotate-right-btn').click(function () {
-        // $('.current').css('padding-top', '');
-        // $('.current').css('padding-bottom', '');
         deg = deg + 90;
         if (deg === 360) deg = 0;
         rotate = 'rotate(' + deg + 'deg)'
@@ -464,21 +435,7 @@ $(function () {
         rotationValues[index] = deg;
 
         // add padding to top and bottom of rotated image
-        // if (!($('.current').hasClass('fit-to-screen'))) {
-        //     addPadding();
-        // }
-
-
         addPadding();
-
-        // var fitToScreenPadding = ($('#cert-carousel').height() - $('.current').height()) / 2;
-        // fitToScreenPadding = fitToScreenPadding + 'px';
-        // if (deg === 0){
-        //     $('.current').css('padding-top', fitToScreenPadding);
-        // }
-        // else if (deg === 180 || deg === -180){
-        //     $('.current').css('padding-bottom', fitToScreenPadding);
-        // }
     });
 
     $('#rotate-left-btn').click(function () {
