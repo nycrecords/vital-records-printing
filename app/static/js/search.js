@@ -54,6 +54,7 @@ $(function () {
 
     var values = [];
     var rotationValues = [];
+    var printOrientation = [];
     var numImages;
 
     function setNumImages(len) {
@@ -159,6 +160,7 @@ $(function () {
                                 for (var i = 0; i < numImages; i++) {
                                     values[i] = {brightness: 0, contrast: 0};
                                     rotationValues[i] = 0;
+                                    printOrientation[i] = 0;
                                 }
                             }
                         });
@@ -288,7 +290,13 @@ $(function () {
 
 
     $('#print-btn').on('click', function (e) {
-        var rotationStyles = "style='-webkit-transform: rotate(" + rotationValues[0] + "deg); -moz-transform: rotate(" + rotationValues[0] + "deg); -o-transform: rotate(" + rotationValues[0] + "deg); -ms-transform: rotate(" + rotationValues[0] + "deg); transform: rotate(" + rotationValues[0] + "deg);' src='";
+        var rotationStyles = "";
+        if ($('.current').height() > $('.current').width()) {
+            rotationStyles = "style='-webkit-transform: rotate(" + 0 + "deg); -moz-transform: rotate(" + 0 + "deg); -o-transform: rotate(" + 0 + "deg); -ms-transform: rotate(" + 0 + "deg); transform: rotate(" + 0 + "deg);' src='";
+        }
+        else {
+            rotationStyles = "style='-webkit-transform: rotate(" + 90 + "deg); -moz-transform: rotate(" + 90 + "deg); -o-transform: rotate(" + 90 + "deg); -ms-transform: rotate(" + 90 + "deg); transform: rotate(" + 90 + "deg);' src='";
+        }
         Caman('.current', function () {
             this.render(function () {
                 var finalImage = this.toBase64();
@@ -313,9 +321,44 @@ $(function () {
                 var rotated = $(value).hasClass('rotate');
                 var imageJSON = {image: image, rotated: rotated};
                 printAll.push(imageJSON);
+                // console.log(key);
+                // console.log($(value).height());
+                // if ($(value).width() > $(value).height()) {
+                //     console.log($(value).width());
+                //     console.log($(value).height());
+                // // console.log(key);
+                //     printOrientation[key] = 90;
+                //     console.log(printOrientation[key]);
+                // }
             });
-
+            // console.log(key);
+            // if ($(value).width() > $(value).height()) {
+            //     console.log($(value).width());
+            //     console.log($(value).height());
+            //     console.log(key);
+            //     printOrientation[key] = 90;
+            //     // console.log(printOrientation[key]);
+            // }
         });
+
+        $('.cert-image').each(function() {
+           console.log($(this).height());
+        });
+        // $.each($(".cert-image"), function (key, value) {
+        //     console.log(key);
+        //     var test =             $(value).find(".cert-image");
+        //     console.log(test.height());
+        //
+        //
+        //     // if ($(value).width() > $(value).height()) {
+        //     //     console.log($(value).width());
+        //     //     console.log($(value).height());
+        //     //     console.log(key);
+        //     //     printOrientation[key] = 90;
+        //     //     // console.log(printOrientation[key]);
+        //     // }
+        // });
+
         var rotationStyles;
         var convertTimer = setInterval(function () {
             if( printAll.length === $(".cert-image").length) {
@@ -323,7 +366,7 @@ $(function () {
                 var printWindow = window.open();
                 printWindow.document.write(printAllTop);
                 for (var i = 0; i < printAll.length; i++) {
-                    rotationStyles = "style='-webkit-transform: rotate(" + rotationValues[i] + "deg); -moz-transform: rotate(" + rotationValues[i] + "deg); -o-transform: rotate(" + rotationValues[i] + "deg); -ms-transform: rotate(" + rotationValues[i] + "deg); transform: rotate(" + rotationValues[i] + "deg);' src='";
+                    rotationStyles = "style='-webkit-transform: rotate(" + printOrientation[i] + "deg); -moz-transform: rotate(" + printOrientation[i] + "deg); -o-transform: rotate(" + printOrientation[i] + "deg); -ms-transform: rotate(" + printOrientation[i] + "deg); transform: rotate(" + printOrientation[i] + "deg);' src='";
                     printWindow.document.write(tableTop);
                     printWindow.document.write(rotationStyles);
                     printWindow.document.write(printAll[i].image);
