@@ -262,6 +262,7 @@ $(function () {
         });
         rotationValues[index] = 0;
         deg = 0;
+        addPadding();
     });
 
     var printSingleTop = "<html>" +
@@ -353,6 +354,19 @@ $(function () {
     }
 
     $('#toggle-image-view-btn').click(function () {
+        var currentDeg = deg;
+        if(deg == 90 || deg == 270 || deg == -90 || -270 && $('.current').hasClass('fit-to-screen') == false) {
+            deg = 0;
+            rotate = '';
+            rotate = 'rotate(' + deg + 'deg)'
+            $('.current').css({
+            '-webkit-transform': rotate,
+            '-moz-transform': rotate,
+            '-o-transform': rotate,
+            '-ms-transform': rotate,
+            'transform': rotate
+            });
+        }
         $('.current').toggleClass('fit-to-screen');
         var modalHeight = $('#cert-carousel').height() + 'px';
         if ($('.current').hasClass('fit-to-screen')){
@@ -376,6 +390,16 @@ $(function () {
             $('#toggle-image-view-btn').append('<span class="glyphicon glyphicon-resize-small"></span>');
             $('#carousel-body').addClass('image-modal-body');
         }
+        deg = currentDeg;
+        rotate = '';
+        rotate = 'rotate(' + deg + 'deg)'
+        $('.current').css({
+        '-webkit-transform': rotate,
+        '-moz-transform': rotate,
+        '-o-transform': rotate,
+        '-ms-transform': rotate,
+        'transform': rotate
+        });
         addPadding();
     });
 
@@ -396,6 +420,7 @@ $(function () {
         $(".carousel-inner").append("<img src='/static/img/spinner.gif' style='width:200px;height:200px;'>");
         deg = 0;
         rotate = '';
+        $('.current').css({'padding-top': '', 'padding-bottom': ''});
     });
 
     $('#cert-carousel').bind('slid.bs.carousel', function (e) {
