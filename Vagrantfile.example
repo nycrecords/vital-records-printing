@@ -1,11 +1,13 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$redhat_username = <REDHAT_USERNAME>
-$redhat_password = <REDHAT_PASSWORD>
+REDHAT_USERNAME = ENV['RH_USER'] || ""
+REDHAT_PASSWORD = ENV['RH_PASS'] || ""
+DVR_USERNAME = ENV["DVR_USER"] || ""
+DVR_PASSWORD = ENV["DVR_PASS"] || ""
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "rhel-6.8"
+  config.vm.box = "rhel-6.8-5.1.18"
 
   config.vm.provider "virtualbox" do |vb|
     # Customize the amount of memory on the VM:
@@ -22,13 +24,15 @@ Vagrant.configure("2") do |config|
   # RedHat Subscription Management
   config.vm.provision "shell" do |s|
     s.path = "build_scripts/subscription_manager.sh"
-    s.args = [$redhat_username, $redhat_password]
+    s.args = [REDHAT_USERNAME, REDHAT_PASSWORD]
   end
 
   config.vm.provision :reload
 
+  # Post-Proxy/RedHat Base Setup
   config.vm.provision "shell" do |s|
-    s.inline = 'sudo yum -y groupinstall "Development Tools" && sudo yum install "kernel-devel" && sudo /etc/init.d/vboxadd setup && echo "cd /vagrant" >> /home/vagrant/.bash_profile'
+    s.path = "build_scripts/base.sh"
+    s.args = [DVR_USERNAME, DVR_PASSWORD]
   end
 
   # Single server VM
@@ -41,9 +45,10 @@ Vagrant.configure("2") do |config|
     default.vm.network "private_network", ip: "10.0.0.2"
     default.vm.provision "shell", path: "build_scripts/web_setup/web_setup.sh", args: 'single_server'
     default.vm.provision "shell", path: "build_scripts/app_setup/app_setup.sh"
-    default.vm.provision "shell", path: "build_scripts/db_setup/db_setup.sh"
+    default.vm.provision "shell", path: "build_scripts/db_setup/db_setup_install.sh", args: 'single_server'
+    default.vm.provision :reload  # to prevent 'database is starting up' issue
+    default.vm.provision "shell", path: "build_scripts/db_setup/db_setup_config.sh"
   end
-
 
   config.vm.define "web_1", autostart: false do |web|
     # Web Server 1 Configuration
@@ -69,50 +74,10 @@ Vagrant.configure("2") do |config|
     # Database Server 2 Configuration
   end
 
+  # Unsubscribe and unregister from RedHat before destroying
+  config.trigger.before :destroy, :force => true, :vm => ["default"] do  # add more VMs if necessary
+    run_remote "subscription-manager unsubscribe --all"
+    run_remote "subscription-manager unregister"
+  end
 
-# Multi VM Config
-#  (1..2).each do |i|
-#    config.vm.define "web#{i}" do |web|
-#      web.vm.network "forwarded_port", guest: 80,  host: "808#{i}".to_i
-#      web.vm.network "forwarded_port", guest: 443, host: "443#{i}".to_i
-#      web.vm.network "forwarded_port", guest: 22,  host: "220#{i}".to_i
-#      web.vm.network "private_network", ip: "10.0.0.#{i+1}"
-#      web.vm.provider :virtualbox do |vb|
-#          vb.memory = 1024
-#      end
-#      web.vm.provision "shell" do |s|
-#          s.path = "build_scripts/web_setup/web_setup.sh"
-#      end
-#    end
-#  end
-
-#  (3..4).each do |i|
-#    config.vm.define "app-{i}" do |app|
-#      app.vm.network "forwarded_port", guest: 80,  host: "808{i}".to_i
-#      app.vm.network "forwarded_port", guest: 22,  host: "222{i}".to_i
-#      app.vm.network "private_network", ip: "10.0.0.{i+1}"
-#      app.vm.provider :virtualbox do |vb|
-#          vb.memory = 1024
-#    end
-#  end
-
-#  (5..6).each do |i|
-#    config.vm.define "db-{i}" do |db|
-#      db.vm.network "forwarded_port", guest: 5432,  host: "900{i}".to_i
-#      db.vm.network "forwarded_port", guest: 22,  host: "222{i}".to_i
-#      db.vm.network "private_network", ip: "10.0.0.{i+1}"
-#      db.vm.provider :virtualbox do |vb|
-#          vb.memory = 1024
-#    end
-#  end
-
-#  (7..9).each do |i|
-#    config.vm.define "es-{i}" do |es|
-#      es.vm.network "forwarded_port", guest: 9200,  host: "920{i}".to_i
-#      es.vm.network "forwarded_port", guest: 22,  host: "222{i}".to_i
-#      es.vm.network "private_network", ip: "10.0.0.{i+1}"
-#      es.vm.provider :virtualbox do |vb|
-#          vb.memory = 2048
-#    end
-#  end
 end

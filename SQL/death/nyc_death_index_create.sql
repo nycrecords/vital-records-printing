@@ -1,12 +1,12 @@
 -- Exported from MS Access to PostgreSQL
 -- (C) 1997-98 CYNERGI - www.cynergi.net, info@cynergi.net
 
--- CREATE TABLE _1868_1890_Deaths_M
---      (
---      Error                varchar(255),
---      Field                varchar(255),
---      Row                  int8
---      );
+CREATE TABLE _1868_1890_Deaths_M
+     (
+     Error                varchar(255),
+     Field                varchar(255),
+     Row                  int8
+     );
 
 
 CREATE TABLE _1868_1890_Deaths_Ma -- 1868_1890_Deaths_Ma
@@ -37,10 +37,9 @@ CREATE TABLE Jrs -- Jr's
      );
 
 
--- CREATE TABLE Totals
---      (
---      Field1               varchar(50),
---      Field2               int8,
---      Field3               int8
---      );
-
+CREATE TABLE Totals
+     (
+     Field1               varchar(50),
+     Field2               int8,
+     Field3               int8
+     );
