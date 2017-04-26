@@ -318,47 +318,20 @@ $(function () {
         $.each($(".cert-image"), function (key, value) {
             Caman(this, function () {
                 var image = this.toBase64();
-                var rotated = $(value).hasClass('rotate');
-                var imageJSON = {image: image, rotated: rotated};
-                printAll.push(imageJSON);
-                // console.log(key);
-                // console.log($(value).height());
-                // if ($(value).width() > $(value).height()) {
-                //     console.log($(value).width());
-                //     console.log($(value).height());
-                // // console.log(key);
-                //     printOrientation[key] = 90;
-                //     console.log(printOrientation[key]);
-                // }
+                printAll.push(image);
             });
-            // console.log(key);
-            // if ($(value).width() > $(value).height()) {
-            //     console.log($(value).width());
-            //     console.log($(value).height());
-            //     console.log(key);
-            //     printOrientation[key] = 90;
-            //     // console.log(printOrientation[key]);
-            // }
+            var getOrientation = document.createElement('img');
+            getOrientation.onload = function () {
+                // GET http://localhost:5000/undefined 404 (NOT FOUND)
+                if (this.height > this.width) {
+                    printOrientation[key] = 0;
+                }
+                else {
+                    printOrientation[key] = 90;
+                }
+            };
+            getOrientation.src = $(value).attr('src');
         });
-
-        $('.cert-image').each(function() {
-           console.log($(this).height());
-        });
-        // $.each($(".cert-image"), function (key, value) {
-        //     console.log(key);
-        //     var test =             $(value).find(".cert-image");
-        //     console.log(test.height());
-        //
-        //
-        //     // if ($(value).width() > $(value).height()) {
-        //     //     console.log($(value).width());
-        //     //     console.log($(value).height());
-        //     //     console.log(key);
-        //     //     printOrientation[key] = 90;
-        //     //     // console.log(printOrientation[key]);
-        //     // }
-        // });
-
         var rotationStyles;
         var convertTimer = setInterval(function () {
             if( printAll.length === $(".cert-image").length) {
@@ -369,7 +342,7 @@ $(function () {
                     rotationStyles = "style='-webkit-transform: rotate(" + printOrientation[i] + "deg); -moz-transform: rotate(" + printOrientation[i] + "deg); -o-transform: rotate(" + printOrientation[i] + "deg); -ms-transform: rotate(" + printOrientation[i] + "deg); transform: rotate(" + printOrientation[i] + "deg);' src='";
                     printWindow.document.write(tableTop);
                     printWindow.document.write(rotationStyles);
-                    printWindow.document.write(printAll[i].image);
+                    printWindow.document.write(printAll[i]);
                     printWindow.document.write(tableBot);
                 }
                 printWindow.document.write(printAllBot);
@@ -382,7 +355,6 @@ $(function () {
         }, 1000);
         printAll = [];
     });
-
 
     function addPadding(){
         var modalHeight = $('.carousel-inner').height();
