@@ -126,6 +126,11 @@ input[type=range]:focus::-ms-fill-upper {
     overflow-y: auto;
 }
 
+.not-logged-in {
+    max-height: calc(100vh - 175px);
+    overflow-y: auto;
+}
+
 .image-modal-header {
     padding-bottom: 0;
 }

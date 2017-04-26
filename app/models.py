@@ -170,6 +170,13 @@ class User(db.Model, UserMixin):
         """
         return datetime.utcnow() > self.expiration_date or self.check_password("password")
 
+    @property
+    def can_print(self):
+        """
+        Returns whether the user is active or not
+        """
+        return not self.has_invalid_password and self.is_authenticated
+
     def is_new_password(self, password):
         """
         Returns whether the supplied password is not the same as the current 
