@@ -41,8 +41,8 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user is not None and user.check_password(form.password.data):
             login_user(user, remember=(request.form.get('remember') is not None))
-            # check if password has expired
-            if datetime.utcnow() > current_user.expiration_date:
+            # check if password has expired or is "password"
+            if current_user.has_invalid_password:
                 return redirect(url_for('password'))
         else:
             flash('Wrong username and/or password.')
