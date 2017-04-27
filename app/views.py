@@ -166,7 +166,7 @@ def image(cert_id):
     """
     cert = Cert.query.get(cert_id)
     if cert.file_id is None:
-        urls = [url_for('static', filename=os.path.join('img', "missing.jpg"))]
+        urls = [url_for('static', filename=os.path.join('img', "missing.png"))]
     else:
         if not cert.file.converted:
             cert.file.convert()
