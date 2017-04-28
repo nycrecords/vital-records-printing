@@ -130,6 +130,7 @@ input[type=range]:focus::-ms-fill-upper {
 .not-logged-in {
     max-height: calc(100vh - 175px);
     overflow-y: auto;
+    text-align: center;
 }
 
 .image-modal-header {
