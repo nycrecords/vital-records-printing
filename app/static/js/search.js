@@ -71,6 +71,7 @@ $(function () {
 
         if (empty) {
             $('#start').val(0);
+            $("#results").empty();
         }
 
         $.ajax({
@@ -113,7 +114,6 @@ $(function () {
                     }
                     // empty results if needed, and add new set
                     var results = $("#results");
-                    empty && results.empty();
                     for (var i = 0; i < response.data.length; i++) {
                         results.append(response.data[i]);
                     }
