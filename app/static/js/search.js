@@ -432,6 +432,7 @@ $(function () {
         deg = 0;
         rotate = '';
         $('.current').css({'padding-top': '', 'padding-bottom': ''});
+        $('#carousel-body').css('height', '');
     });
 
     $('#cert-carousel').bind('slid.bs.carousel', function (e) {
