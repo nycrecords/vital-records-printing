@@ -214,13 +214,19 @@ $(function () {
     $("#year").bind({
         keydown: function (e) {
             if (e.shiftKey === true) {
+                // allow tab and 8 (*)
                 return e.which === 9 || e.which === 56;
             }
-            return !(e.which > 57 || e.which === 32);
+            
+            return (e.which <= 57 && e.which >= 48) || // num row
+                e.which === 9 || // tab
+                (e.which <= 105 && e.which >= 96) || // num pad
+                e.which === 8 || // backspace
+                e.which === 46 || // delete
+                (e.which <= 40 && e.which >= 37) // arrow keys
         }
     });
-
-
+    
     // start of camanJS functionality
     var printAll = [],
         deg = 0,
