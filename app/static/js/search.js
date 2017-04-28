@@ -62,21 +62,24 @@ $(function () {
     }
 
     function search(empty) {  // empty = true
-        loadMoreBtn.hide();
         if (typeof empty === 'undefined') {
             empty = true;
         }
-        if (!empty) {
-            spinner.show();
-        }
-        else {
+
+        loadMoreBtn.hide();
+        spinner.show();
+
+        if (empty) {
             $('#start').val(0);
         }
+
         $.ajax({
             url: "/search",
             method: "post",
             data: searchForm.serialize(),
             success: function (response) {
+                spinner.hide();
+
                 var errType = $("#error-type"),
                     errCounty = $("#error-county"),
                     errYear = $("#error-year"),
@@ -165,9 +168,6 @@ $(function () {
                             }
                         });
                     });
-                }
-                if (!empty) {
-                    spinner.hide();
                 }
             }
         });
@@ -439,6 +439,7 @@ $(function () {
         rotate = '';
         $('.current').css({'padding-top': '', 'padding-bottom': ''});
         $('#carousel-body').css('height', '');
+        $('#arrow-controls').empty();
     });
 
     $('#cert-carousel').bind('slid.bs.carousel', function (e) {
