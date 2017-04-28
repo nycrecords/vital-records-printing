@@ -124,6 +124,7 @@ input[type=range]:focus::-ms-fill-upper {
 .image-modal-body {
     max-height: calc(100vh - 300px);
     overflow-y: auto;
+    text-align: center;
 }
 
 .not-logged-in {

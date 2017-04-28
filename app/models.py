@@ -173,7 +173,7 @@ class User(db.Model, UserMixin):
     @property
     def can_print(self):
         """
-        Returns whether the user is active or not
+        Returns whether the user can print and manipulate certificate images.
         """
         return not self.has_invalid_password and self.is_authenticated
 

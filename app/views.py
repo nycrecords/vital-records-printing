@@ -96,9 +96,13 @@ def search():
                 if value:
                     if WILDCARD_CHAR in value:
                         filter_args.append(
-                            cast(col, String).like(
+                            cast(col, String).ilike(
                                 value.replace(WILDCARD_CHAR, "%")
                             )
+                        )
+                    elif name in ("first_name", "last_name"):
+                        filter_args.append(
+                            col.ilike(value)
                         )
                     else:
                         filter_by_kwargs[name] = value
