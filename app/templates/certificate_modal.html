@@ -19,26 +19,25 @@
                     <span id="cert-soundex"></span>
                 </p>
                 {% if current_user.can_print %}
-                <hr/>
-                <!-- sliders -->
-                <div class="row" id="brightness-slider">
-                    <div class="col-xs-6" stlye="display: none;">
-                        <p>Brightness</p>
-                        <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0">
-                    </div>
-                    <div class="col-xs-6">
-                        <p>Contrast</p>
-                        <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0">
-                    </div>
-                </div>
-                {% elif current_user.is_authenticated and current_user.has_invalid_password %}
-                <hr/>
-                <!-- sliders -->
-                <div class="row" id="brightness-slider">
-                    <h2>You must <a href="/password">update</a> your password first before being able to print.</h2>
-                </div>
+                        <hr/>
+                        <!-- sliders -->
+                        <div class="row" id="brightness-slider">
+                            <div class="col-xs-6" stlye="display: none;">
+                                <p>Brightness</p>
+                                <input id="brightness" name="brightness" type="range" min="-50" max="50" value="0">
+                            </div>
+                            <div class="col-xs-6">
+                                <p>Contrast</p>
+                                <input id="contrast" name="contrast" type="range" min="-50" max="50" value="0">
+                            </div>
+                        </div>
+                    {% elif current_user.is_authenticated and current_user.has_invalid_password %}
+                        <hr/>
+                        <!-- sliders -->
+                        <div class="row" id="brightness-slider">
+                            <h2>You must <a href={{ url_for("password") }}>update</a> your password first before being able to print.</h2>
+                        </div>
                 {% endif %}
-
             </div>
 
             <div id="cert-carousel" class="carousel slide" data-ride="carousel" data-interval="false">
@@ -46,21 +45,21 @@
                 <ol class="carousel-indicators">
                 </ol>
                 {% if current_user.can_print %}
-                    <div id="carousel-body" class="modal-body image-modal-body" style="text-align: center">
+                    <div id="carousel-body" class="modal-body image-modal-body">
                         <div class="carousel-inner">
-                            <img id="spinner" src="/static/img/spinner.gif" style="width:200px;height:200px;">
+                            <img id="spinner" src="/static/img/spinner.gif" width="200" height="200">
                         </div>
                     </div>
                 {% elif current_user.is_authenticated and current_user.has_invalid_password %}
-                    <div id="carousel-body" class="modal-body image-modal-body" style="text-align: center">
+                    <div id="carousel-body" class="modal-body image-modal-body">
                         <div class="carousel-inner">
-                            <img id="spinner" src="/static/img/spinner.gif" style="width:200px;height:200px;">
+                            <img id="spinner" src="/static/img/spinner.gif" width="200" height="200">
                         </div>
                     </div>
                 {% else %}
-                    <div id="carousel-body" class="modal-body not-logged-in" style="text-align: center">
+                    <div id="carousel-body" class="modal-body not-logged-in">
                         <div class="carousel-inner">
-                            <img id="spinner" src="/static/img/spinner.gif" style="width:200px;height:200px;">
+                            <img id="spinner" src="/static/img/spinner.gif" width="200" height="200">
                         </div>
                     </div>
                 {% endif %}
@@ -83,18 +82,18 @@
                     <span class="glyphicon glyphicon-share-alt"></span>
                 </button>
                 {% if current_user.can_print %}
-                <button id="reset-btn" class="btn btn-warning">
-                    Reset
-                    <span class="glyphicon glyphicon-refresh"></span>
-                </button>
-                <button id="print-btn" class="btn btn-info">
-                    Print
-                    <span class="glyphicon glyphicon-print"></span>
-                </button>
-                <button id="print-all-btn" class="btn btn-info">
-                    Print All
-                    <span class="glyphicon glyphicon-duplicate"></span>
-                </button>
+                    <button id="reset-btn" class="btn btn-warning">
+                        Reset
+                        <span class="glyphicon glyphicon-refresh"></span>
+                    </button>
+                    <button id="print-btn" class="btn btn-info">
+                        Print
+                        <span class="glyphicon glyphicon-print"></span>
+                    </button>
+                    <button id="print-all-btn" class="btn btn-info">
+                        Print All
+                        <span class="glyphicon glyphicon-duplicate"></span>
+                    </button>
                 {% endif %}
             </div>
         </div>

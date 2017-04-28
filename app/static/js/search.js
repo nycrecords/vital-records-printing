@@ -52,10 +52,10 @@ $(function () {
     // set year range on page load
     setYearRange();
 
-    var values = [];
-    var rotationValues = [];
-    var printOrientation = [];
-    var numImages;
+    var values = [],
+        rotationValues = [],
+        printOrientation = [],
+        numImages;
 
     function setNumImages(len) {
         numImages = len;
@@ -146,7 +146,7 @@ $(function () {
                                         response.data.urls[i] + "'></div>"
                                     );
                                 }
-                                if (numImages == 1) {
+                                if (numImages === 1) {
                                     $("li.active").css("display", "none");
                                 }
                                 $("#cert-number").text(response.data.number);
@@ -222,17 +222,21 @@ $(function () {
 
 
     // start of camanJS functionality
-    var printAll = [];
-    var deg = 0;
-    var rotate;
+    var printAll = [],
+        deg = 0,
+        rotate,
+        current = $('.current'),
+        certCarousel = $('#cert-carousel'),
+        toggleImageViewButton = $('#toggle-image-view-btn'),
+        carouselBody = $('#carousel-body');
     $('input[type=range]').change(applyFilters);
 
     function applyFilters() {
         var brightness = parseInt($('#brightness').val()),
-            cntrst = parseInt($('#contrast').val());
-        var current = values[parseInt($("li.active").attr("data-slide-to"))];
-        current.brightness = brightness;
-        current.contrast = cntrst;
+            cntrst = parseInt($('#contrast').val()),
+            currentImage = values[parseInt($("li.active").attr("data-slide-to"))];
+        currentImage.brightness = brightness;
+        currentImage.contrast = cntrst;
 
         Caman('.current', function () {
             this.revert(false);
@@ -243,9 +247,9 @@ $(function () {
     }
 
     $('#reset-btn').on('click', function (e) {
-        var current = values[parseInt($("li.active").attr("data-slide-to"))];
-        current.brightness = 0;
-        current.contrast = 0;
+        var currentImage = values[parseInt($("li.active").attr("data-slide-to"))];
+        currentImage.brightness = 0;
+        currentImage.contrast = 0;
 
         $('input[type=range]').val(0);
         Caman('.current', function () {
@@ -253,8 +257,8 @@ $(function () {
             this.render();
         });
 
-        var index = parseInt($("li.active").attr("data-slide-to"));
-        var rotate = 'rotate(' + 360 + 'deg)';
+        var index = parseInt($("li.active").attr("data-slide-to")),
+            rotate = 'rotate(' + 360 + 'deg)';
         $('.current').css({
         '-webkit-transform': rotate,
         '-moz-transform': rotate,
@@ -275,19 +279,18 @@ $(function () {
     "               <table style='text-align: center; width: 8.5in; height: 11in;'" +
     "               <tr>" +
     "               <td>" +
-    "               <img ";
-    var printSingleBot = "'/>" +
+    "               <img ",
+        printSingleBot = "'/>" +
         "               </td>" +
         "               </tr>" +
         "               </table>" +
         "               </body>" +
-        "               </html>";
+        "               </html>",
 
-    var printAllTop = "<html><head><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'></head><body>";
-    var tableTop = "<table style='text-align: center; width: 8.5in; height: 11in; page-break-before: always;'><tr><td><img ";
-    var tableBot = "'/></td></tr></table>";
-    var printAllBot = "</body></html>";
-
+        printAllTop = "<html><head><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'></head><body>",
+        tableTop = "<table style='text-align: center; width: 8.5in; height: 11in; page-break-before: always;'><tr><td><img ",
+        tableBot = "'/></td></tr></table>",
+        printAllBot = "</body></html>";
 
     $('#print-btn').on('click', function (e) {
         var rotationStyles = "";
@@ -299,8 +302,8 @@ $(function () {
         }
         Caman('.current', function () {
             this.render(function () {
-                var finalImage = this.toBase64();
-                var printWindow = window.open();
+                var finalImage = this.toBase64(),
+                    printWindow = window.open();
                 printWindow.document.write(printSingleTop);
                 printWindow.document.write(rotationStyles);
                 printWindow.document.write(finalImage);
@@ -370,10 +373,10 @@ $(function () {
 
     $('#toggle-image-view-btn').click(function () {
         var currentDeg = deg;
-        if(deg == 90 || deg == 270 || deg == -90 || -270 && $('.current').hasClass('fit-to-screen') == false) {
+        if(deg === 90 || deg === 270 || deg === -90 || -270 && current.hasClass('fit-to-screen') === false) {
             deg = 0;
             rotate = '';
-            rotate = 'rotate(' + deg + 'deg)'
+            rotate = 'rotate(' + deg + 'deg)';
             $('.current').css({
             '-webkit-transform': rotate,
             '-moz-transform': rotate,
@@ -394,7 +397,7 @@ $(function () {
                 var certCarouselHeight = $('#cert-carousel').height();
                 var carouselBodyHeight = $('#carousel-body').height();
                 var paddingDifference = (certCarouselHeight - carouselBodyHeight) / 2;
-                fitToScreenPadding = (fitToScreenPadding - paddingDifference) + 'px'
+                fitToScreenPadding = (fitToScreenPadding - paddingDifference) + 'px';
                 $('.current').css({'padding-top': fitToScreenPadding, 'padding-bottom': fitToScreenPadding});
             }
         }
@@ -405,7 +408,7 @@ $(function () {
         }
         deg = currentDeg;
         rotate = '';
-        rotate = 'rotate(' + deg + 'deg)'
+        rotate = 'rotate(' + deg + 'deg)';
         $('.current').css({
         '-webkit-transform': rotate,
         '-moz-transform': rotate,
@@ -459,7 +462,7 @@ $(function () {
     $('#rotate-right-btn').click(function () {
         deg = deg + 90;
         if (deg === 360) deg = 0;
-        rotate = 'rotate(' + deg + 'deg)'
+        rotate = 'rotate(' + deg + 'deg)';
         $('.current').css({
         '-webkit-transform': rotate,
         '-moz-transform': rotate,
@@ -477,7 +480,7 @@ $(function () {
     $('#rotate-left-btn').click(function () {
         deg = deg - 90;
         if (deg === -360) deg = 0;
-        rotate = 'rotate(' + deg + 'deg)'
+        rotate = 'rotate(' + deg + 'deg)';
         $('.current').css({
         '-webkit-transform': rotate,
         '-moz-transform': rotate,
