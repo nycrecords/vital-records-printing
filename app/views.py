@@ -96,9 +96,13 @@ def search():
                 if value:
                     if WILDCARD_CHAR in value:
                         filter_args.append(
-                            cast(col, String).like(
+                            cast(col, String).ilike(
                                 value.replace(WILDCARD_CHAR, "%")
                             )
+                        )
+                    elif name in ("first_name", "last_name"):
+                        filter_args.append(
+                            col.ilike(value)
                         )
                     else:
                         filter_by_kwargs[name] = value
@@ -166,15 +170,14 @@ def image(cert_id):
     """
     cert = Cert.query.get(cert_id)
     if cert.file_id is None:
-        src = url_for('static', filename=os.path.join('img', "missing.jpg"))
+        urls = [url_for('static', filename=os.path.join('img', "missing.png"))]
     else:
         if not cert.file.converted:
             cert.file.convert()
-            # TODO: handle multiple (cert.file.pngs)
-        src = cert.file.pngs[0]
+        urls = cert.file.pngs
     return jsonify({
         "data": {
-            "src": src,
+            "urls": urls,
             "number": cert.number,
             "type": cert.type.title(),
             "name": cert.name,
