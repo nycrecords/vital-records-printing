@@ -141,17 +141,14 @@ input[type=range]:focus::-ms-fill-upper {
 
 #toggle-image-view-btn {
     float: left;
-    color: white;
 }
 
 #rotate-left-btn {
     float: left;
-    color: white;
 }
 
 #rotate-right-btn {
     float: left;
-    color: white;
 }
 
 .glyphicon.glyphicon-chevron-left, .glyphicon.glyphicon-chevron-right {
