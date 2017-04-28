@@ -224,11 +224,7 @@ $(function () {
     // start of camanJS functionality
     var printAll = [],
         deg = 0,
-        rotate,
-        current = $('.current'),
-        certCarousel = $('#cert-carousel'),
-        toggleImageViewButton = $('#toggle-image-view-btn'),
-        carouselBody = $('#carousel-body');
+        rotate;
     $('input[type=range]').change(applyFilters);
 
     function applyFilters() {
@@ -373,7 +369,7 @@ $(function () {
 
     $('#toggle-image-view-btn').click(function () {
         var currentDeg = deg;
-        if(deg === 90 || deg === 270 || deg === -90 || -270 && current.hasClass('fit-to-screen') === false) {
+        if(deg === 90 || deg === 270 || deg === -90 || -270 && $('.current').hasClass('fit-to-screen') === false) {
             deg = 0;
             rotate = '';
             rotate = 'rotate(' + deg + 'deg)';
