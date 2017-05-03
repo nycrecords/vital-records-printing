@@ -2,7 +2,7 @@ import os
 from sqlalchemy import cast, String
 from sqlalchemy.exc import SQLAlchemyError
 from app import app, login_manager, db
-from app.forms import SearchForm, LoginForm, PasswordForm
+from app.forms import SearchForm, LoginForm, PasswordForm, ReportForm
 from app.models import Cert, User
 from flask import (
     render_template,
@@ -186,3 +186,13 @@ def image(cert_id):
             "soundex": cert.soundex,
         }
     })
+
+
+@app.route('/report/<int:cert_id>', methods=['GET', 'POST'])
+def report(cert_id):
+    """
+    Return template for report page
+    """
+    form = ReportForm(request.form)
+
+    return render_template('report_issue.html', form=form)
