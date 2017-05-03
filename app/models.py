@@ -17,6 +17,7 @@ from werkzeug.security import (
     check_password_hash
 )
 from datetime import datetime, timedelta
+from sqlalchemy.dialects.postgresql import JSON
 
 
 class Cert(db.Model):
@@ -229,3 +230,20 @@ class History(db.Model):
         self.user_id = user_id
         self.password = password
         self.timestamp = datetime.utcnow()
+
+
+class Report(db.Model):
+    """
+
+    """
+    __tablename__ = "report"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("auth_user.id"))
+    timestamp = db.Column(db.DateTime)
+    values = db.Column(JSON)
+
+    def __init__(self, user_id, password, values=None):
+        self.user_id = user_id
+        self.password = password
+        self.timestamp = datetime.utcnow()
+        self.values = values
