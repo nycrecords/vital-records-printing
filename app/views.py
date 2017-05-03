@@ -184,5 +184,6 @@ def image(cert_id):
             "year": cert.year,
             "county": cert.county.title(),
             "soundex": cert.soundex,
+            "filename": cert.file.name if cert.file is not None else ""
         }
     })

@@ -2,6 +2,16 @@
     margin: auto;
 }
 
+#cert-type, #cert-name, #cert-year, #cert-county, #cert-soundex, #cert-filename {
+    font-weight: bold;
+}
+
+#cert-filename {
+    float: right;
+    text-decoration: underline;
+    padding-right: 10px;
+}
+
 #brightness-slider {
     text-align: center;
     padding-bottom: 20px;

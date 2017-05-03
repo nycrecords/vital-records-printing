@@ -153,11 +153,12 @@ $(function () {
                                     $("li.active").css("display", "none");
                                 }
                                 $("#cert-number").text(response.data.number);
-                                $("#cert-type").text(response.data.type);
+                                $("#cert-type").text(response.data.type && response.data.type.toUpperCase());
                                 $("#cert-name").text(response.data.name);
                                 $("#cert-year").text(response.data.year);
                                 $("#cert-county").text(response.data.county);
                                 $("#cert-soundex").text(response.data.soundex);
+                                $("#cert-filename").text(response.data.filename);
                             },
                             complete: function () {
                                 for (var i = 0; i < numImages; i++) {
