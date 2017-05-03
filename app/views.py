@@ -3,7 +3,7 @@ from sqlalchemy import cast, String
 from sqlalchemy.exc import SQLAlchemyError
 from app import app, login_manager, db
 from app.forms import SearchForm, LoginForm, PasswordForm, ReportForm
-from app.models import Cert, User
+from app.models import Cert, User, Report
 from flask import (
     render_template,
     redirect,
@@ -194,5 +194,11 @@ def report(cert_id):
     Return template for report page
     """
     form = ReportForm(request.form)
+    if request.method == 'POST':
+        print(form.county.data)
+
+
+        flash("Your report has been submitted")
+        return redirect(url_for('report', cert_id = cert_id))
 
     return render_template('report_issue.html', form=form)
