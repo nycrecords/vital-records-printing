@@ -234,7 +234,13 @@ class History(db.Model):
 
 class Report(db.Model):
     """
-    Report.__table__.create(db.engine)
+    Define the Report class for the 'report' table with the following columns:
+
+    id          integer, primary key
+    cert_id     integer, foreign key to `certificate`
+    user_id     integer, foreign key to `users`
+    timestamp   datetime, time when report created
+    values      JSON, contains all filled out form fields
     """
     __tablename__ = "report"
     id = db.Column(db.Integer, primary_key=True)
