@@ -17,4 +17,9 @@
 
 #report-comments {
     height: 150px;
+    resize: none;
+}
+
+.report-title {
+    text-align: center;
 }

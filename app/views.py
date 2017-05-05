@@ -45,7 +45,7 @@ def login():
             if current_user.has_invalid_password:
                 return redirect(url_for('password'))
         else:
-            flash('Wrong username and/or password.')
+            flash('Wrong username and/or password.', category="danger")
     return redirect('/')
 
 
@@ -205,8 +205,34 @@ def report(cert_id):
     form = ReportForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
-            flash("Your report has been submitted.")
-            return redirect(url_for('report', cert_id=cert_id))
+            form_completed = False
+            for key, value in form.data.items():
+                if value != "" and key is not 'csrf_token' and key is not 'submit':
+                    form_completed = True
+            if not form_completed:
+                flash("Please complete at least one form field.", category="warning")
+                return render_template('report_issue.html', form=form, cert=cert, urls=urls)
+            else:
+                form_fields = {
+                    name: data for name, data in {
+                    'county': form.county.data,
+                    'month': form.month.data,
+                    'day': form.day.data,
+                    'year': form.year.data,
+                    'age': form.age.data,
+                    'number': form.number.data,
+                    'soundex': form.soundex.data,
+                    'first_name': form.first_name.data,
+                    'last_name': form.last_name.data,
+                    'comments': form.comments.data}.items()
+                    if data
+                }
+                report = Report(cert_id=cert_id, user_id=current_user.id, values=form_fields)
+                print(report.cert_id)
+                db.session.add(report)
+                db.session.commit()
+                flash("Your report has been submitted.", category="success")
+                return redirect('/')
         else:
             flash("An error has occurred.")
             print(form.errors)
