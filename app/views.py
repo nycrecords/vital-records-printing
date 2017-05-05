@@ -189,16 +189,25 @@ def image(cert_id):
 
 
 @app.route('/report/<int:cert_id>', methods=['GET', 'POST'])
+@login_required
 def report(cert_id):
     """
     Return template for report page
     """
+    cert = Cert.query.get(cert_id)
+    if cert.file_id is None:
+        urls = [url_for('static', filename=os.path.join('img', "missing.png"))]
+    else:
+        if not cert.file.converted:
+            cert.file.convert()
+        urls = cert.file.pngs
+
     form = ReportForm(request.form)
     if request.method == 'POST':
-        print(form.county.data)
-
-
-        flash("Your report has been submitted")
-        return redirect(url_for('report', cert_id = cert_id))
-
-    return render_template('report_issue.html', form=form)
+        if form.validate_on_submit():
+            flash("Your report has been submitted.")
+            return redirect(url_for('report', cert_id=cert_id))
+        else:
+            flash("An error has occurred.")
+            print(form.errors)
+    return render_template('report_issue.html', form=form, cert=cert, urls=urls)

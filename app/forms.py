@@ -131,16 +131,14 @@ class ReportForm(Form):
     """
     Form for reporting an issue with a certificate
     """
-    cert_id = IntegerField()
     county = StringField()
     month = StringField()
-    day = IntegerField()
-    year = IntegerField()
+    day = StringField()
+    year = StringField()
     age = StringField()
-    number = IntegerField()
+    number = StringField()
     soundex = StringField()
     first_name = StringField()
     last_name = StringField()
-    comment = TextAreaField()
+    comments = TextAreaField()
     submit = SubmitField()
-
