@@ -9,14 +9,15 @@
                     <span style="font-size: 1.5em; font-weight: bold;">
                         #<span id="cert-number"></span>
                     </span>
+                    &nbsp
+                    <span id="cert-type" style="font-weight: bold"></span>
+                    of <span id="cert-name" style="font-weight: bold"></span>
+                    in <span id="cert-year" style="font-weight: bold"></span>
+                    (<span id="cert-county" style="font-weight: bold"></span>)
                     &nbsp;
-                    <span id="cert-type" style="font-weight: bold"></span>:
-                    <span id="cert-name"></span>,
-                    <span id="cert-year"></span>,
-                    <span id="cert-county"></span>
-                    &nbsp;
-                    <strong>Soundex:</strong>
-                    <span id="cert-soundex"></span>
+                    soundex: <span id="cert-soundex"></span>
+
+                    <span id="cert-filename"></span>
                 </p>
                 {% if current_user.can_print %}
                         <hr/>
