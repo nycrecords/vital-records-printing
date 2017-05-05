@@ -55,7 +55,8 @@ $(function () {
     var values = [],
         rotationValues = [],
         printOrientation = [],
-        numImages;
+        numImages,
+        rowID;
 
     function setNumImages(len) {
         numImages = len;
@@ -119,6 +120,7 @@ $(function () {
                     }
                     // bind click event for modal to result rows
                     $(".result-row").click(function (e) {
+                        rowID = $(this).attr("id"); // get the id of the row being clicked
                         e.preventDefault();
                         $.ajax({
                             url: "/certificate/" + $(this).attr("id"),
@@ -158,6 +160,7 @@ $(function () {
                                 $("#cert-year").text(response.data.year);
                                 $("#cert-county").text(response.data.county);
                                 $("#cert-soundex").text(response.data.soundex);
+                                $("#report-btn").attr('href','/report/' + rowID);
                             },
                             complete: function () {
                                 for (var i = 0; i < numImages; i++) {
