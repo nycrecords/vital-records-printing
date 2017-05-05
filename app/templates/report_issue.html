@@ -3,7 +3,6 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <link href="{{ url_for("static", filename="css/bootstrap.min.css") }}" rel="stylesheet">
-    <link href="{{ url_for("static", filename="css/search.css") }}" rel="stylesheet">
     <link href="{{ url_for("static", filename="css/edit.css") }}" rel="stylesheet">
     <link href="{{ url_for("static", filename="css/report.css") }}" rel="stylesheet">
 </head>
@@ -98,7 +97,6 @@
                     {% endfor %}
 
                 </ol>
-
                 <!-- Wrapper for slides -->
                 <div class="carousel-inner">
                     {% for url in urls %}
@@ -107,8 +105,6 @@
                         </div>
                     {% endfor %}
                 </div>
-
-
                 <!-- Left and right controls -->
                 <div id="arrow-controls">
                 </div>
@@ -131,7 +127,6 @@
 <script type="text/javascript" src="{{ url_for("static", filename="js/lib/jquery-3.1.1.min.js") }}"></script>
 <script type="text/javascript" src="{{ url_for("static", filename="js/lib/tether.min.js") }}"></script>
 <script type="text/javascript" src="{{ url_for("static", filename="js/lib/bootstrap.min.js") }}"></script>
-<script type="text/javascript" src="{{ url_for("static", filename="js/lib/caman.full.min.js") }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/report.js') }}"></script>
 </body>

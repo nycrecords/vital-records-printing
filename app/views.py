@@ -215,16 +215,16 @@ def report(cert_id):
             else:
                 form_fields = {
                     name: data for name, data in {
-                    'county': form.county.data,
-                    'month': form.month.data,
-                    'day': form.day.data,
-                    'year': form.year.data,
-                    'age': form.age.data,
-                    'number': form.number.data,
-                    'soundex': form.soundex.data,
-                    'first_name': form.first_name.data,
-                    'last_name': form.last_name.data,
-                    'comments': form.comments.data}.items()
+                        'county': form.county.data,
+                        'month': form.month.data,
+                        'day': form.day.data,
+                        'year': form.year.data,
+                        'age': form.age.data,
+                        'number': form.number.data,
+                        'soundex': form.soundex.data,
+                        'first_name': form.first_name.data,
+                        'last_name': form.last_name.data,
+                        'comments': form.comments.data}.items()
                     if data
                 }
                 report = Report(cert_id=cert_id, user_id=current_user.id, values=form_fields)

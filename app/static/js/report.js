@@ -8,10 +8,10 @@ $(document).ready(function(){
         controls.append("<a class='left carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
             "<span class='glyphicon glyphicon-chevron-left'></span>" +
             "</a>"
-        )
+        );
         controls.append("<a class='right carousel-control' href='#cert-carousel' role='button' data-slide='next'>" +
             "<span class='glyphicon glyphicon-chevron-right'></span>" +
             "</a>"
-        )
+        );
     }
 });
