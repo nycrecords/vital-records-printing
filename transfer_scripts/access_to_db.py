@@ -7,6 +7,7 @@ Usage:
     
 """
 import os
+import re
 import math
 import subprocess
 import psycopg2.extras
@@ -317,11 +318,14 @@ def create_insert_files_sql_file(log_file=None):
         if log_file is not None:
             log_file.write("{path}{n}{msg}{n}{n}".format(path=path, msg=msg, n=os.linesep))
 
+    non_numeric_chars = re.compile('[^0-9]')
     file_count = 0
     with open("add_files.sql", "w") as sql:
         for root, dirs, files in os.walk(DVR_MOUNT_POINT):
-            # certificate files are assumed to be in "Delivery*" directories
-            if "Delivery" in root:
+            # certificate files are assumed to be in "Delivery*" directories or in
+            # directories with names that include years (at least 4 numeric characters long)
+            numeric_only_root = re.sub(non_numeric_chars, '', root)
+            if "Delivery" in root or (len(numeric_only_root) >= 4 and numeric_only_root.isdigit()):
                 for file_ in files:
                     path = os.path.join(root, file_)
                     name, ext = os.path.splitext(file_)
