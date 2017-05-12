@@ -39,6 +39,8 @@ CONN = psycopg2.connect(
 CUR_ = CONN.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
 CUR = CONN.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
 
+NON_NUMERIC_CHARS = re.compile('[^0-9]')
+
 
 class MockProgressBar(object):
     """
@@ -300,6 +302,18 @@ def create_files(error_log_file=None):
         CONN.commit()
 
 
+def _is_valid_certificate_directory(root):
+    """
+    Certificate files are assumed to be in "Delivery*" directories or in
+    directories with names that include years (at least 4 numeric characters long)
+    :param root: first item in os.walk return value 
+    """
+    if "RECYCLE.BIN" not in root:
+        numeric_root = re.sub(NON_NUMERIC_CHARS, '', os.path.basename(root))
+        return "Delivery" in root or (len(numeric_root) >= 4 and numeric_root.isdigit())
+    return False
+
+
 def create_insert_files_sql_file(log_file=None):
     """
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -318,14 +332,10 @@ def create_insert_files_sql_file(log_file=None):
         if log_file is not None:
             log_file.write("{path}{n}{msg}{n}{n}".format(path=path, msg=msg, n=os.linesep))
 
-    non_numeric_chars = re.compile('[^0-9]')
     file_count = 0
     with open("add_files.sql", "w") as sql:
         for root, dirs, files in os.walk(DVR_MOUNT_POINT):
-            # certificate files are assumed to be in "Delivery*" directories or in
-            # directories with names that include years (at least 4 numeric characters long)
-            numeric_only_root = re.sub(non_numeric_chars, '', root)
-            if "Delivery" in root or (len(numeric_only_root) >= 4 and numeric_only_root.isdigit()):
+            if _is_valid_certificate_directory(root):
                 for file_ in files:
                     path = os.path.join(root, file_)
                     name, ext = os.path.splitext(file_)
@@ -364,8 +374,10 @@ def create_insert_files_sql_file(log_file=None):
                                 msg = "Skipping: {}".format(name)
                                 write_to_log(msg, path)
                                 print(msg)
-    print("{} files to add. Run 'psql -d vital_records_printing -f add_files.sql' and go grab a coffee or something"
-          "because that is going to take a while.".format(file_count))  # at least 5,787,832 expected
+    print("{} files to add.".format(file_count))
+    if file_count > 0:
+        print("Run 'psql -d vital_records_printing -f add_files.sql' and go grab a coffee or something"
+              "because that is going to take a while.")
 
 
 def transfer_all():
