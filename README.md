@@ -21,23 +21,23 @@ Authors:
 
 3. Run `./setup.sh` from within your project root directory.
 
-    - This script will attempt to:
+  - This script will attempt to:
+
+    - Add the *rhel-6.8-5.1.18* vagrant box
+    - Install the vagrant plugins *vagrant-reload*, *vagrant-vbguest*, and *vagrant-triggers*
+    - Copy `Vagrantfile.example` into `Vagrantfile`
+    - Prompt you for your RedHat Developer Account credentials
+        - If you do not have a developer account, [create one](https://www.redhat.com/en/developers).
+    - Prompt you for the service account credentials for mounting `DVR`
+    - Build your development VM
     
-        - Add the *rhel-6.8-5.1.18* vagrant box
-        - Install the vagrant plugins *vagrant-reload*, *vagrant-vbguest*, and *vagrant-triggers*
-        - Copy `Vagrantfile.example` into `Vagrantfile`
-        - Prompt you for your RedHat Developer Account credentials
-            - If you do not have a developer account, [create one](https://www.redhat.com/en/developers).
-        - Prompt you for the service account credentials for mounting `DVR`
-        - Build your development VM
-        
-    - If you experience build errors, try re-provisioning (at most once):
-    
-    `RH_USER=<Your RedHat Username> RH_PASS=<Your Redhat Password> 
-    DVR_USER=<DVR Server Username> DVR_PASS=<DVR Server Password> vagrant provision`
-    
-    - If you do not want to set the `RH_` environment variables and you don't mind having 
-    your RedHat credentials stored in your `Vagrantfile`, you can add them on lines 4 - 7.
+  - If you experience build errors, try re-provisioning (at most once):
+
+`RH_USER=<Your RedHat Username> RH_PASS=<Your Redhat Password> 
+DVR_USER=<DVR Server Username> DVR_PASS=<DVR Server Password> vagrant provision`
+
+- If you do not want to set the `RH_` environment variables and you don't mind having 
+your RedHat credentials stored in your `Vagrantfile`, you can add them on lines 4 - 7.
 
 4. Run `vagrant ssh` to connect to your development environment.
 
