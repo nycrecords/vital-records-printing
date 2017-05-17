@@ -39,7 +39,7 @@ CONN = psycopg2.connect(
 CUR_ = CONN.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
 CUR = CONN.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
 
-NON_NUMERIC_CHARS = re.compile('[^0-9]')
+YEAR_REGEX = re.compile(r'1\d{3}')
 
 
 class MockProgressBar(object):
@@ -305,13 +305,10 @@ def create_files(error_log_file=None):
 def _is_valid_certificate_directory(root):
     """
     Certificate files are assumed to be in "Delivery*" directories or in
-    directories with names that include years (at least 4 numeric characters long)
+    directories with names that include years ('1' followed by 3 numeric characters).
     :param root: first item in os.walk return value 
     """
-    if "RECYCLE.BIN" not in root:
-        numeric_root = re.sub(NON_NUMERIC_CHARS, '', os.path.basename(root))
-        return "Delivery" in root or (len(numeric_root) >= 4 and numeric_root.isdigit())
-    return False
+    return "RECYCLE.BIN" not in root and ("Delivery" in root or re.search(YEAR_REGEX, root) is not None)
 
 
 def create_insert_files_sql_file(log_file=None):
@@ -376,7 +373,7 @@ def create_insert_files_sql_file(log_file=None):
                                 print(msg)
     print("{} files to add.".format(file_count))
     if file_count > 0:
-        print("Run 'psql -d vital_records_printing -f add_files.sql' and go grab a coffee or something"
+        print("Run 'psql -d vital_records_printing -f add_files.sql' and go grab a coffee or something "
               "because that is going to take a while.")
 
 
