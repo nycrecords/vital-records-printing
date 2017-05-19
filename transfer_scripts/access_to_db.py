@@ -332,7 +332,10 @@ def create_insert_files_sql_file(log_file=None):
     file_count = 0
     with open("add_files.sql", "w") as sql:
         for root, dirs, files in os.walk(DVR_MOUNT_POINT):
-            if _is_valid_certificate_directory(root):
+            if not _is_valid_certificate_directory(root):
+                print("\x1b[2m{}\x1b[0m".format(root))
+            else:
+                print("\x1b[1m{}\x1b[0m".format(root))
                 for file_ in files:
                     path = os.path.join(root, file_)
                     name, ext = os.path.splitext(file_)
