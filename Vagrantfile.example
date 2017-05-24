@@ -7,7 +7,7 @@ DVR_USERNAME = ENV["DVR_USER"] || ""
 DVR_PASSWORD = ENV["DVR_PASS"] || ""
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "rhel-6.8-5.1.18"
+  config.vm.box = "rhel-7.3-5.1.18"
 
   config.vm.provider "virtualbox" do |vb|
     # Customize the amount of memory on the VM:
