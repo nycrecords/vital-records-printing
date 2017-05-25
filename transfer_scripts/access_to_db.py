@@ -7,6 +7,7 @@ Usage:
     
 """
 import os
+import re
 import math
 import subprocess
 import psycopg2.extras
@@ -16,7 +17,7 @@ from multiprocessing import Pool
 from app.constants import counties, months, certificate_types
 
 # To mount, using CSC credentials:
-#   sudo mount -t cifs -o username=<USERNAME>,password=<PASSWORD> //10.132.41.31/DVR /mnt/dvr
+#   sudo mount -t cifs -o username=<USERNAME>,password=<PASSWORD>,vers=2.0 //10.132.41.31/DVR /mnt/dvr
 DVR_MOUNT_POINT = "/mnt/dvr"
 NUM_DVR_DIRS = 15
 
@@ -37,6 +38,8 @@ CONN = psycopg2.connect(
     port="5432")
 CUR_ = CONN.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
 CUR = CONN.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor)
+
+YEAR_REGEX = re.compile(r'1\d{3}')
 
 
 class MockProgressBar(object):
@@ -299,6 +302,15 @@ def create_files(error_log_file=None):
         CONN.commit()
 
 
+def _is_valid_certificate_directory(root):
+    """
+    Certificate files are assumed to be in "Delivery*" directories or in
+    directories with names that include years ('1' followed by 3 numeric characters).
+    :param root: first item in os.walk return value 
+    """
+    return "RECYCLE.BIN" not in root and ("Delivery" in root or re.search(YEAR_REGEX, root) is not None)
+
+
 def create_insert_files_sql_file(log_file=None):
     """
     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -320,8 +332,10 @@ def create_insert_files_sql_file(log_file=None):
     file_count = 0
     with open("add_files.sql", "w") as sql:
         for root, dirs, files in os.walk(DVR_MOUNT_POINT):
-            # certificate files are assumed to be in "Delivery*" directories
-            if "Delivery" in root:
+            if not _is_valid_certificate_directory(root):
+                print("\x1b[2m{}\x1b[0m".format(root))
+            else:
+                print("\x1b[1m{}\x1b[0m".format(root))
                 for file_ in files:
                     path = os.path.join(root, file_)
                     name, ext = os.path.splitext(file_)
@@ -360,8 +374,10 @@ def create_insert_files_sql_file(log_file=None):
                                 msg = "Skipping: {}".format(name)
                                 write_to_log(msg, path)
                                 print(msg)
-    print("{} files to add. Run 'psql -d vital_records_printing -f add_files.sql' and go grab a coffee or something"
-          "because that is going to take a while.".format(file_count))  # at least 5,787,832 expected
+    print("{} files to add.".format(file_count))
+    if file_count > 0:
+        print("Run 'psql -d vital_records_printing -f add_files.sql' and go grab a coffee or something "
+              "because that is going to take a while.")
 
 
 def transfer_all():
