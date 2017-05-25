@@ -24,8 +24,8 @@ fi
 
 subscription-manager register --username $1 --password $2
 subscription-manager attach
-subscription-manager repos --enable rhel-server-rhscl-6-rpms
-subscription-manager repos --enable rhel-6-server-optional-rpms
+subscription-manager repos --enable rhel-server-rhscl-7-rpms
+subscription-manager repos --enable rhel-7-server-optional-rpms
 
 yum -y update
 
