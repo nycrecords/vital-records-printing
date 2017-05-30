@@ -2,8 +2,8 @@ import os
 from sqlalchemy import cast, String
 from sqlalchemy.exc import SQLAlchemyError
 from app import app, login_manager, db
-from app.forms import SearchForm, LoginForm, PasswordForm
-from app.models import Cert, User
+from app.forms import SearchForm, LoginForm, PasswordForm, ReportForm
+from app.models import Cert, User, Report
 from flask import (
     render_template,
     redirect,
@@ -45,7 +45,7 @@ def login():
             if current_user.has_invalid_password:
                 return redirect(url_for('password'))
         else:
-            flash('Wrong username and/or password.')
+            flash('Wrong username and/or password.', category="danger")
     return redirect('/')
 
 
@@ -187,3 +187,53 @@ def image(cert_id):
             "filename": cert.file.name if cert.file is not None else ""
         }
     })
+
+
+@app.route('/report/<int:cert_id>', methods=['GET', 'POST'])
+@login_required
+def report(cert_id):
+    """
+    Return template for report page
+    """
+    cert = Cert.query.get(cert_id)
+    if cert.file_id is None:
+        urls = [url_for('static', filename=os.path.join('img', "missing.png"))]
+    else:
+        if not cert.file.converted:
+            cert.file.convert()
+        urls = cert.file.pngs
+
+    form = ReportForm(request.form)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            form_completed = False
+            for key, value in form.data.items():
+                if value != "" and key is not 'csrf_token' and key is not 'submit':
+                    form_completed = True
+            if not form_completed:
+                flash("Please complete at least one form field.", category="warning")
+                return render_template('report_issue.html', form=form, cert=cert, urls=urls)
+            else:
+                form_fields = {
+                    name: data for name, data in {
+                        'county': form.county.data,
+                        'month': form.month.data,
+                        'day': form.day.data,
+                        'year': form.year.data,
+                        'age': form.age.data,
+                        'number': form.number.data,
+                        'soundex': form.soundex.data,
+                        'first_name': form.first_name.data,
+                        'last_name': form.last_name.data,
+                        'comments': form.comments.data}.items()
+                    if data
+                }
+                report = Report(cert_id=cert_id, user_id=current_user.id, values=form_fields)
+                db.session.add(report)
+                db.session.commit()
+                flash("Your report has been submitted.", category="success")
+                return redirect('/')
+        else:
+            flash("An error has occurred.")
+            print(form.errors)
+    return render_template('report_issue.html', form=form, cert=cert, urls=urls)
