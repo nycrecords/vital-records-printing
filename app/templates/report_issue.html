@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <link href="{{ url_for("static", filename="css/bootstrap.min.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/edit.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/report.css") }}" rel="stylesheet">
+</head>
+<body>
+
+{% include("navbar.html") %}
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    <div>{{ message }}</div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h2 class="report-title">Report a Certificate Error</h2>
+
+    <form class="form-horizontal" id="report-issue-form" method="post">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            <label class="control-label col-sm-2">County</label>
+            <div class="col-sm-8">
+                {{ form.county (class="form-control", placeholder=cert.county) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Month</label>
+            <div class="col-sm-8">
+                {{ form.month (class="form-control", placeholder=cert.month) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Day</label>
+            <div class="col-sm-8">
+                {{ form.day (class="form-control", placeholder=cert.day) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Year</label>
+            <div class="col-sm-8">
+                {{ form.year (class="form-control", placeholder=cert.year) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Age</label>
+            <div class="col-sm-8">
+                {{ form.age (class="form-control", placeholder=cert.age) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Number</label>
+            <div class="col-sm-8">
+                {{ form.number (class="form-control", placeholder=cert.number) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Soundex</label>
+            <div class="col-sm-8">
+                {{ form.soundex (class="form-control", placeholder=cert.soundex) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">First Name</label>
+            <div class="col-sm-8">
+                {{ form.first_name (class="form-control", placeholder=cert.first_name) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Last Name</label>
+            <div class="col-sm-8">
+                {{ form.last_name (class="form-control", placeholder=cert.last_name) }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div id="cert-carousel" class="carousel slide" data-ride="carousel" data-interval="false">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    {% for url in urls %}
+                        <li class="indicator" data-target="#cert-carousel" data-slide-to={{ loop.index0 }}></li>
+                    {% endfor %}
+
+                </ol>
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+                    {% for url in urls %}
+                        <div class="item">
+                            <img class="img-responsive center-block" src={{ url }}/>
+                        </div>
+                    {% endfor %}
+                </div>
+                <!-- Left and right controls -->
+                <div id="arrow-controls">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Comments</label>
+            <div class="col-sm-8">
+                {{ form.comments (id="report-comments", class="form-control center-block", placeholder="Please leave any additional comments here.") }}
+            </div>
+        </div>
+
+        <div class="form-actions">
+                {{ form.submit (id="submit-report-btn", class="btn btn-primary btn-lg btn-block center-block") }}
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript" src="{{ url_for("static", filename="js/lib/jquery-3.1.1.min.js") }}"></script>
+<script type="text/javascript" src="{{ url_for("static", filename="js/lib/tether.min.js") }}"></script>
+<script type="text/javascript" src="{{ url_for("static", filename="js/lib/bootstrap.min.js") }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/report.js') }}"></script>
+</body>
+</html>

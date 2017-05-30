@@ -55,7 +55,8 @@ $(function () {
     var values = [],
         rotationValues = [],
         printOrientation = [],
-        numImages;
+        numImages,
+        rowID;
 
     function setNumImages(len) {
         numImages = len;
@@ -119,6 +120,7 @@ $(function () {
                     }
                     // bind click event for modal to result rows
                     $(".result-row").click(function (e) {
+                        rowID = $(this).attr("id"); // get the id of the row being clicked
                         e.preventDefault();
                         $.ajax({
                             url: "/certificate/" + $(this).attr("id"),
@@ -130,6 +132,7 @@ $(function () {
                                 certImages.empty();
                                 indicators.empty();
                                 if (numImages > 1) {
+                                    // append controls if there is more than one image
                                     controls.append("<a class='left carousel-control' href='#cert-carousel' role='button' data-slide='prev'>" +
                                         "<span class='glyphicon glyphicon-chevron-left'></span>" +
                                         "</a>"
@@ -140,6 +143,7 @@ $(function () {
                                     )
                                 }
                                 for (var i = 0; i < numImages; i++) {
+                                    // append the images to the carousel
                                     indicators.append("<li data-slide-to='" + i + "' class='" + (i === 0 ? "active" : "") + "'></li>");
                                     certImages.append(
                                         "<div class='item" +
@@ -149,6 +153,7 @@ $(function () {
                                         response.data.urls[i] + "'></div>"
                                     );
                                 }
+                                // hide the indicator if there is only one image
                                 if (numImages === 1) {
                                     $("li.active").css("display", "none");
                                 }
@@ -159,8 +164,10 @@ $(function () {
                                 $("#cert-county").text(response.data.county);
                                 $("#cert-soundex").text(response.data.soundex);
                                 $("#cert-filename").text(response.data.filename);
+                                $("#report-btn").attr('href','/report/' + rowID);
                             },
                             complete: function () {
+                                // setting default values for slider, rotation, and print orientation values after AJAX is complete
                                 for (var i = 0; i < numImages; i++) {
                                     values[i] = {brightness: 0, contrast: 0};
                                     rotationValues[i] = 0;
@@ -273,7 +280,8 @@ $(function () {
         deg = 0;
         addPadding();
     });
-
+    
+    // HTML templates for printing images
     var printSingleTop = "<html>" +
     "               <head>" +
     "               <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>" +
@@ -297,6 +305,7 @@ $(function () {
 
     $('#print-btn').on('click', function (e) {
         var rotationStyles = "";
+        // rotate image to the best orientation for the page
         if ($('.current').height() > $('.current').width()) {
             rotationStyles = "style='-webkit-transform: rotate(" + 0 + "deg); -moz-transform: rotate(" + 0 + "deg); -o-transform: rotate(" + 0 + "deg); -ms-transform: rotate(" + 0 + "deg); transform: rotate(" + 0 + "deg);' src='";
         }
@@ -312,6 +321,7 @@ $(function () {
                 printWindow.document.write(finalImage);
                 printWindow.document.write(printSingleBot);
                 printWindow.document.close();
+                // set a timeout so the image has time to render before printing
                 setTimeout(function(){
                     printWindow.print();
                     printWindow.close();
@@ -326,6 +336,7 @@ $(function () {
                 var image = this.toBase64();
                 printAll.push(image);
             });
+            // have to create an element for each image to compare dimensions, $.each function won't render them 
             var getOrientation = document.createElement('img');
             getOrientation.onload = function () {
                 // GET http://localhost:5000/undefined 404 (NOT FOUND)
@@ -339,6 +350,7 @@ $(function () {
             getOrientation.src = $(value).attr('src');
         });
         var rotationStyles;
+        // setting interval to wait until all images are rendered before printing
         var convertTimer = setInterval(function () {
             if( printAll.length === $(".cert-image").length) {
                 clearInterval(convertTimer);
@@ -356,12 +368,13 @@ $(function () {
                 setTimeout(function(){
                     printWindow.print();
                     printWindow.close();
-                }, 100);
+                }, 2000);
             }
-        }, 1000);
+        }, 2000);
         printAll = [];
     });
-
+    
+    // add padding for rotated images so they fit within the modal
     function addPadding(){
         var modalHeight = $('.carousel-inner').height();
         var imageHeight = $('.current').height();
@@ -376,6 +389,7 @@ $(function () {
 
     $('#toggle-image-view-btn').click(function () {
         var currentDeg = deg;
+        // reset the rotation when switching between view modes then reapply rotation after scaling
         if(deg === 90 || deg === 270 || deg === -90 || -270 && $('.current').hasClass('fit-to-screen') === false) {
             deg = 0;
             rotate = '';

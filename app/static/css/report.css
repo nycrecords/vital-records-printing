@@ -1,0 +1,25 @@
+.cert-info {
+    display: inline;
+}
+
+#submit-report-btn {
+    width: 50%;
+}
+
+.form-actions {
+    padding-top: 25px;
+    padding-bottom: 50px;
+}
+
+.form-group {
+    padding-top: 15px;
+}
+
+#report-comments {
+    height: 150px;
+    resize: none;
+}
+
+.report-title {
+    text-align: center;
+}

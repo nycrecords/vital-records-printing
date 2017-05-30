@@ -2,7 +2,7 @@ from collections import namedtuple
 from itertools import combinations
 from flask_script import Manager, Shell
 from app import app, db
-from app.models import Cert, File, User, History
+from app.models import Cert, File, User, History, Report
 
 manager = Manager(app)
 
@@ -68,6 +68,7 @@ def make_shell_context():
         File=File,
         User=User,
         History=History,
+        Report=Report
     )
 
 

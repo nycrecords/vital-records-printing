@@ -7,6 +7,7 @@ from wtforms.fields import (
     IntegerField,
     PasswordField,
     BooleanField,
+    TextAreaField,
 )
 from wtforms.validators import Length, DataRequired
 from flask_login import current_user
@@ -124,3 +125,20 @@ class PasswordForm(Form):
             has_lower and
             has_special
         )
+
+
+class ReportForm(Form):
+    """
+    Form for reporting an issue with a certificate
+    """
+    county = StringField()
+    month = StringField()
+    day = StringField()
+    year = StringField()
+    age = StringField()
+    number = StringField()
+    soundex = StringField()
+    first_name = StringField()
+    last_name = StringField()
+    comments = TextAreaField()
+    submit = SubmitField()
