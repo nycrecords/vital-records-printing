@@ -229,7 +229,6 @@ def report(cert_id):
                     if data
                 }
                 report = Report(cert_id=cert_id, user_id=current_user.id, values=form_fields)
-                print(report.cert_id)
                 db.session.add(report)
                 db.session.commit()
                 flash("Your report has been submitted.", category="success")
