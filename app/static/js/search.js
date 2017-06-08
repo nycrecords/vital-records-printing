@@ -336,18 +336,12 @@ $(function () {
                 var image = this.toBase64();
                 printAll.push(image);
             });
-            // have to create an element for each image to compare dimensions, $.each function won't render them 
-            var getOrientation = document.createElement('img');
-            getOrientation.onload = function () {
-                // GET http://localhost:5000/undefined 404 (NOT FOUND)
-                if (this.height > this.width) {
-                    printOrientation[key] = 0;
-                }
-                else {
-                    printOrientation[key] = 90;
-                }
-            };
-            getOrientation.src = $(value).attr('src');
+            if (value.height > value.width) {
+                printOrientation[key] = 0;
+            }
+            else {
+                printOrientation[key] = 90;
+            }
         });
         var rotationStyles;
         // setting interval to wait until all images are rendered before printing
@@ -368,9 +362,9 @@ $(function () {
                 setTimeout(function(){
                     printWindow.print();
                     printWindow.close();
-                }, 2000);
+                }, 1000);
             }
-        }, 2000);
+        }, 1000);
         printAll = [];
     });
     
