@@ -237,3 +237,15 @@ def report(cert_id):
             flash("An error has occurred.")
             print(form.errors)
     return render_template('report_issue.html', form=form, cert=cert, urls=urls)
+
+
+@app.route('/reported_issues', methods=['GET', 'POST'])
+@login_required
+def reported_issues():
+    reports = Report.query.all()
+    #
+    # cert=Cert.query.get(cert_id)
+    # urls = cert.file.pngs
+    # form=ReportForm(request.form)
+    return render_template('reports_page.html', reports=reports, test="hgfhgf")
+

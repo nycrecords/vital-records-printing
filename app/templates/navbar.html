@@ -8,6 +8,11 @@
 
                 {% if current_user.is_authenticated and request.endpoint != 'password' %}
                     <li>
+                        <a href="{{ url_for('reported_issues') }}">
+                            Reported Issues
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ url_for('password') }}">
                             Change Password
                         </a>
