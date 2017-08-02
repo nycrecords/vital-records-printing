@@ -19,16 +19,11 @@ from flask_login import (
     login_required,
 )
 from datetime import datetime
-
 RESULT_SET_LIMIT = 20
 WILDCARD_CHAR = "*"
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
-
-
 @app.route('/login', methods=['POST'])
 def login():
     """
@@ -37,6 +32,8 @@ def login():
     but redirect to the change password page.
     """
     form = LoginForm(request.form)
+    if form.validate_on_submit():
+        return redirect(url_for('change'))
     if form.validate():
         user = User.query.filter_by(username=form.username.data).first()
         if user is not None and user.check_password(form.password.data):
@@ -47,13 +44,20 @@ def login():
         else:
             flash('Wrong username and/or password.', category="danger")
     return redirect('/')
-
-
 @app.route("/logout", methods=["GET"])
 @login_required
 def logout():
     logout_user()
     return redirect('/')
+
+
+@app.route("/change", methods=['GET', 'POST'])
+def change():
+    """
+    Ask the user for their email...they will be sent an email
+    with a link that lets them re-set their password
+    """
+    return render_template('password_reset.html')
 
 
 @app.route('/password', methods=['GET', 'POST'])
@@ -69,8 +73,6 @@ def password():
                                      password_form.new_password.data)
         return redirect('/')
     return render_template('change_password.html', password_form=password_form)
-
-
 @app.route('/', methods=['GET'])
 @app.route('/search', methods=['POST'])
 def search():
@@ -106,9 +108,7 @@ def search():
                         )
                     else:
                         filter_by_kwargs[name] = value
-
             base_query = Cert.query.filter_by(**filter_by_kwargs).filter(*filter_args)
-
             # set ordering
             for field, col in [
                 (form.year_sort, Cert.year),
@@ -123,19 +123,14 @@ def search():
                     else:
                         base_query = base_query.order_by(col.desc())
                     break
-
             # render rows
             rows = []
             for cert in base_query.slice(form.start.data, RESULT_SET_LIMIT + form.start.data).all():
                 rows.append(render_template('certificate_row.html', certificate=cert))
-
             return jsonify({"data": rows})
         else:
             return jsonify({"errors": form.errors})
-
     return render_template('index.html', form=form, login_form=login_form)
-
-
 @app.route("/years", methods=['GET'])
 def years():
     """
@@ -161,8 +156,6 @@ def years():
     except (SQLAlchemyError, AttributeError):
         response_json = {}
     return jsonify(response_json)
-
-
 @app.route('/certificate/<int:cert_id>', methods=['GET'])
 def image(cert_id):
     """
@@ -187,8 +180,6 @@ def image(cert_id):
             "filename": cert.file.name if cert.file is not None else ""
         }
     })
-
-
 @app.route('/report/<int:cert_id>', methods=['GET', 'POST'])
 @login_required
 def report(cert_id):
@@ -202,7 +193,6 @@ def report(cert_id):
         if not cert.file.converted:
             cert.file.convert()
         urls = cert.file.pngs
-
     form = ReportForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
