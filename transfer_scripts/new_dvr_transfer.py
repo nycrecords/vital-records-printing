@@ -1,30 +1,34 @@
 import os
+from dotenv.main import load_dotenv
+
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+
+dotenv_path = os.path.join(BASEDIR, '.env')
+load_dotenv(dotenv_path)
 
 not_pdf_file = open('not_pdf.txt', 'w')
 bad_format_file = open('bad_format.txt', 'w')
 
-try:
-    os.makedirs('DVR/Births/Kings')
-    os.makedirs('DVR/Births/Queens')
-    os.makedirs('DVR/Births/Bronx')
-    os.makedirs('DVR/Births/Manhattan')
-    os.makedirs('DVR/Births/Richmond')
+cert_types = ['Births', 'Deaths', 'Marriages']
+counties = ['Kings', 'Queens', 'Bronx', 'Manhattan', 'Richmond']
 
-    os.makedirs('DVR/Deaths/Kings')
-    os.makedirs('DVR/Deaths/Queens')
-    os.makedirs('DVR/Deaths/Bronx')
-    os.makedirs('DVR/Deaths/Manhattan')
-    os.makedirs('DVR/Deaths/Richmond')
+# create the new default DVR structure
+new_dvr_structure_path = os.environ.get('NEW_DVR_BASE_DIR')
+for cert_type in cert_types:
+    new_dvr_structure_path = os.path.join(new_dvr_structure_path, cert_type)
+    for county in counties:
+        new_dvr_structure_path = os.path.join(new_dvr_structure_path, county)
+        try:
+            os.makedirs(new_dvr_structure_path)
+        except FileExistsError:
+            print('Directory: ' + new_dvr_structure_path + " already exists")
+        remove_county = os.path.split(new_dvr_structure_path)
+        new_dvr_structure_path = remove_county[0]
+    new_dvr_structure_path = os.environ.get('NEW_DVR_BASE_DIR')
+print('New Default DVR structure created')
 
-    os.makedirs('DVR/Marriages/Kings')
-    os.makedirs('DVR/Marriages/Queens')
-    os.makedirs('DVR/Marriages/Bronx')
-    os.makedirs('DVR/Marriages/Manhattan')
-    os.makedirs('DVR/Marriages/Richmond')
-except FileExistsError:
-    print("Default DVR structure already created")
 
-new_path = 'DVR/'
+new_path = os.environ.get('NEW_DVR_BASE_DIR')
 
 for subdir, dirs, files in os.walk('/mnt/dvr/'):
     for file in files:
@@ -47,6 +51,7 @@ for subdir, dirs, files in os.walk('/mnt/dvr/'):
                 year = split_filename[2]
                 cert_num = split_filename[3]
 
+                # add os.path.join
                 if cert_type is 'B':
                     new_path += 'Births/'
                 if cert_type is 'D':
@@ -85,10 +90,10 @@ for subdir, dirs, files in os.walk('/mnt/dvr/'):
                 copy_command = 'cp ' + original_dvr_path + ' ' + new_dvr_path
                 print(copy_command + '\n')
 
-                try:
-                    os.system(copy_command)
-                except Exception:
-                    print('Something went wrong!')
+                # try:
+                #     os.system(copy_command)
+                # except Exception:
+                #     print('Something went wrong!')
 
                 new_path = 'DVR/'
         else:
