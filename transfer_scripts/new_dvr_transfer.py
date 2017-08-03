@@ -1,5 +1,9 @@
 import os
 from dotenv.main import load_dotenv
+from datetime import datetime
+
+start_time = datetime.utcnow()
+print("Program started at " + str(start_time))
 
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -78,7 +82,7 @@ for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
 
                 try:
                     os.makedirs(new_path)
-                    print(new_path + " created \n")
+                    print('Directory: ' + new_path + " created \n")
                 except FileExistsError:
                     # print("Directory: " + new_path + " already exists")
                     pass
@@ -106,3 +110,7 @@ for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
 
 not_pdf_file.close()
 bad_format_file.close()
+
+end_time = datetime.utcnow()
+elapsed_time = end_time - start_time
+print('Program took ' + str(elapsed_time) + " to run")
