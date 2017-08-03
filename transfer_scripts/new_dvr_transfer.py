@@ -2,16 +2,21 @@ import os
 from dotenv.main import load_dotenv
 from datetime import datetime
 
-start_time = datetime.utcnow()
-print("Program started at " + str(start_time))
-
-BASEDIR = os.path.abspath(os.path.dirname(__file__))
-
-dotenv_path = os.path.join(BASEDIR, '.env')
-load_dotenv(dotenv_path)
-
 not_pdf_file = open('not_pdf.txt', 'w')
 bad_format_file = open('bad_format.txt', 'w')
+stats_file = open('stats.txt', 'w')
+
+start_time = datetime.utcnow()
+stats_file.write("Program started at " + str(start_time) + '\n')
+
+files_counter = 0
+files_copied_counter = 0
+not_pdf_counter = 0
+bad_format_counter = 0
+
+BASEDIR = os.path.abspath(os.path.dirname(__file__))
+dotenv_path = os.path.join(BASEDIR, '.env')
+load_dotenv(dotenv_path)
 
 cert_types = ['Births', 'Deaths', 'Marriages']
 counties = ['Kings', 'Queens', 'Bronx', 'Manhattan', 'Richmond']
@@ -35,6 +40,7 @@ new_path = os.environ.get('NEW_DVR_BASE_DIR') + os.sep
 
 for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
     for file in files:
+        files_counter += 1
         filepath = subdir + os.sep + file
 
         if filepath.endswith(".pdf"):
@@ -50,6 +56,7 @@ for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
                 bad_format_file.write(filepath + '\n')
                 bad_format_file.close()
                 bad_format_file = open('bad_format.txt', 'w')
+                bad_format_counter += 1
             else:
                 cert_type = split_filename[0]
                 county = split_filename[1]
@@ -107,10 +114,16 @@ for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
             not_pdf_file.write(filepath)
             not_pdf_file.close()
             not_pdf_file = open('not_pdf.txt', 'w')
+            not_pdf_counter += 1
+end_time = datetime.utcnow()
+stats_file.write('Program ended at ' + str(end_time) + '\n')
+elapsed_time = end_time - start_time
+stats_file.write('Program took ' + str(elapsed_time) + " to run\n")
+stats_file.write('Files in directory: ' + files_counter + '\n')
+stats_file.write('Files copied: '+ files_copied_counter + '\n')
+stats_file.write('Bad format: ' + bad_format_counter + '\n')
+stats_file.write('Not PDF:' + not_pdf_counter + '\n')
 
 not_pdf_file.close()
 bad_format_file.close()
-
-end_time = datetime.utcnow()
-elapsed_time = end_time - start_time
-print('Program took ' + str(elapsed_time) + " to run")
+stats_file.close()
