@@ -6,6 +6,8 @@
     <link href="{{ url_for("static", filename="css/bootstrap.min.css") }}" rel="stylesheet">
     <link href="{{ url_for("static", filename="css/edit.css") }}" rel="stylesheet">
     <link href="{{ url_for("static", filename="css/report.css") }}" rel="stylesheet">
+
+
     <title>Certificate Issue Reports</title>
 </head>
 
@@ -13,26 +15,27 @@
 
 <body>
 <div class="container">
-    <h1><center>Reports</center></h1>
+    <h1>
+        <center>Reports</center>
+    </h1>
     {% for key in newList %}
-        <h3>
-            Certificate ID: <a href="{{ url_for('.report', cert_id=key) }}">{{key }}</a>
-        </h3>
-        <div align="right">
-            <h4>
-                Reported By:
-                <br>
-                on:
-            </h4>
+        <div>
+            <h3>
+                <div align="left">
+
+                Certificate ID: <a href="{{ url_for('.report', cert_id=key) }}">{{ key }}</a>
+                Reported By:{{ newList[key].pop() }}
+                on:{{ newList[key].pop() }}
         </div>
-            <br>
+        </h3>
+
         {% for item in newList[key] %}
-          <p>{{ item }}</p>
-            {% endfor %}
+            <p>{{ item }}</p>
+        {% endfor %}
 
 
 
-{#    <h3> {{key }}{{ newList[key] }}</h3>#}
+        {#    <h3> {{key }}{{ newList[key] }}</h3>#}
         <hr>
     {% endfor %}
 

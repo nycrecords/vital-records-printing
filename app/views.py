@@ -242,23 +242,39 @@ def report(cert_id):
 @app.route('/reported_issues', methods=['GET', 'POST'])
 @login_required
 def reported_issues():
-    user = User.query.all()
+    users = User.query.all()
     reports = Report.query.order_by(Report.cert_id.asc())
-    newList = {}  # strip out value from dict and append to new list
+    certs=Cert.query.all()
+    newList = {}  # strip out value from dict; a dict of key to list {cert_id:list}
+    # list will look like [ attribute change 1, attribute change 2, etc , timestamp, firstname+lastname]
+
+
 
     default = 'comments'  # key default value
 
-    for report in reports:
+    for report in reports:# iterate through report db
         report_values = report.values
+        #
         for key, value in report_values.items():
 
-            print(key + ": " + value)
-            newList.setdefault(report.cert_id, [])
+            #print(key + ": " + value)
+            newList.setdefault(report.cert_id, []) #a dict of key to list
             if key == default:
                 newList[report.cert_id].append(key + ": " + value)
             else:
                 newList[report.cert_id].append(key + " should be :" + value)
-        newList[report.cert_id].append(str(report.timestamp)[:10])
+
+        newList[report.cert_id].append(str(report.timestamp)[:10])#timestamp of the issue reported
+
+        for user in users:#iterate through user db to find Report author
+            if report.user_id==user.id:
+                newList[report.cert_id].append(user.first_name + " " + user.last_name)
+
+
+
+
+
+
         print(newList)
         print("END")
 
