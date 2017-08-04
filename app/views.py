@@ -18,6 +18,8 @@ from flask_login import (
     current_user,
     login_required,
 )
+from flask.ext.login import logout_user, login_required
+from ..email import send_email
 from datetime import datetime
 RESULT_SET_LIMIT = 20
 WILDCARD_CHAR = "*"
@@ -32,8 +34,6 @@ def login():
     but redirect to the change password page.
     """
     form = LoginForm(request.form)
-    if form.validate_on_submit():
-        return redirect(url_for('change'))
     if form.validate():
         user = User.query.filter_by(username=form.username.data).first()
         if user is not None and user.check_password(form.password.data):
@@ -51,14 +51,31 @@ def logout():
     return redirect('/')
 
 
-@app.route("/change", methods=['GET', 'POST'])
+@app.route("/change", methods=['POST'])
 def change():
+    form = LoginForm(request.form)
+    change_form = LoginForm()
+    #login_form = LoginForm()
     """
     Ask the user for their email...they will be sent an email
     with a link that lets them re-set their password
     """
-    return render_template('password_reset.html')
+    if form.validate():
+        return render_template('password_reset.html', form=form, change_form=change_form)
 
+@app.route("/email", methods=['GET', 'POST'])
+def email():
+    """
+    Sends an email to the user, giving them a link
+    to change their password.
+    """
+    #form = RegistrationForm()
+    #if form.validate_on_submit():
+        #db.session.add(user)
+        #db.session.commit()
+        #token = user.generate_confirmation_token()
+        #send_email(user.email, 'Change Your Password', 'auth/email/confirm', user=user, token=token)
+        #flash('An email has been sent to you.')
 
 @app.route('/password', methods=['GET', 'POST'])
 @login_required

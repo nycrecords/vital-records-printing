@@ -9,8 +9,9 @@ from wtforms.fields import (
     BooleanField,
     TextAreaField,
 )
-from wtforms.validators import Length, DataRequired
+from wtforms.validators import Length, DataRequired, Required, Email
 from flask_login import current_user
+
 class Form(FlaskForm):
     class Meta:
         def bind_field(self, form, unbound_field, options):
@@ -70,11 +71,18 @@ class SearchForm(Form):
     last_name_sort = SelectSortField("Last Name")
     soundex_sort = SelectSortField("Soundex")
     start = IntegerField("Start", default=0)
+
 class LoginForm(Form):
     username = StringField("Username")
     password = PasswordField("Password")
     remember = BooleanField("Remember me")
     forgot_username_password = SubmitField("Forgot username/password")
+
+class ForgotPassword(Form):
+    #email = StringField("Email", validators=[Required(), Length(1,64), Email()])
+    email = StringField("Email")
+
+
 class PasswordForm(Form):
     current_password = PasswordField("Current Password", validators=[DataRequired()])
     new_password = PasswordField("New Password", validators=[Length(min=8, max=32)])
