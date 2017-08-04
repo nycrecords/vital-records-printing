@@ -8,21 +8,20 @@ import os
 from dotenv.main import load_dotenv
 from datetime import datetime
 
-not_pdf_file = open('not_pdf.txt', 'w')
-bad_format_file = open('bad_format.txt', 'w')
-stats_file = open('stats.txt', 'w')
-
-start_time = datetime.utcnow()
-stats_file.write("Program started at " + str(start_time) + '\n')
-
-files_counter = 0
-files_copied_counter = 0
-not_pdf_counter = 0
-bad_format_counter = 0
-
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 dotenv_path = os.path.join(BASEDIR, '.env')
 load_dotenv(dotenv_path)
+
+non_pdf_log = open(os.environ.get('NON_PDF_LOG_FILE_PATH'), 'w')
+bad_format_log = open(os.environ.get('BAD_FORMAT_LOG_FILE_PATH'), 'w')
+stats_log = open(os.environ.get('STATS_LOG_FILE_PATH'), 'w')
+
+start_time = datetime.utcnow()
+stats_log.write("Program started at " + str(start_time) + '\n')
+files_counter = 0
+files_copied_counter = 0
+non_pdf_counter = 0
+bad_format_counter = 0
 
 cert_types = ['Births', 'Deaths', 'Marriages']
 counties = ['Kings', 'Queens', 'Bronx', 'Manhattan', 'Richmond']
@@ -114,21 +113,21 @@ for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
                 new_path = os.environ.get('NEW_DVR_BASE_DIR') + os.sep
         else:
             # write the paths of all non pdf files to a file for later processing
-            print("NOT A PDF DETECTED")
+            print("NON PDF DETECTED")
             print(filepath + '\n')
-            not_pdf_file.write(filepath)
-            not_pdf_file.close()
-            not_pdf_file = open('not_pdf.txt', 'w')
-            not_pdf_counter += 1
+            non_pdf_log.write(filepath)
+            non_pdf_log.close()
+            non_pdf_log = open('not_pdf.txt', 'w')
+            non_pdf_counter += 1
 end_time = datetime.utcnow()
-stats_file.write('Program ended at ' + str(end_time) + '\n')
+stats_log.write('Program ended at ' + str(end_time) + '\n')
 elapsed_time = end_time - start_time
-stats_file.write('Program took ' + str(elapsed_time) + " to run\n")
-stats_file.write('Files in directory: ' + str(files_counter) + '\n')
-stats_file.write('Files copied: '+ str(files_copied_counter) + '\n')
-stats_file.write('Bad format: ' + str(bad_format_counter) + '\n')
-stats_file.write('Not PDF:' + str(not_pdf_counter) + '\n')
+stats_log.write('Program took ' + str(elapsed_time) + " to run\n")
+stats_log.write('Files in directory: ' + str(files_counter) + '\n')
+stats_log.write('Files copied: '+ str(files_copied_counter) + '\n')
+stats_log.write('Bad format: ' + str(bad_format_counter) + '\n')
+stats_log.write('Non PDF:' + str(non_pdf_counter) + '\n')
 
-not_pdf_file.close()
-bad_format_file.close()
-stats_file.close()
+non_pdf_log.close()
+bad_format_log.close()
+stats_log.close()
