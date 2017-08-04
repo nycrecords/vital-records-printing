@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import cast, String
+from sqlalchemy import cast, String, desc
 from sqlalchemy.exc import SQLAlchemyError
 from app import app, login_manager, db
 from app.forms import SearchForm, LoginForm, PasswordForm, ReportForm
@@ -228,6 +228,8 @@ def report(cert_id):
                     'comments': form.comments.data}.items()
                     if data
                 }
+                print("AKSLDJFHASDKJHF")
+                print(form_fields)
                 report = Report(cert_id=cert_id, user_id=current_user.id, values=form_fields)
                 db.session.add(report)
                 db.session.commit()
@@ -243,8 +245,9 @@ def report(cert_id):
 @login_required
 def reported_issues():
     users = User.query.all()
-    reports = Report.query.order_by(Report.cert_id.asc())
-    certs=Cert.query.all()
+    # reports = Report.query.order_by(Report.id.asc())
+    reports = Report.query.order_by(desc(Report.id))
+
     newList = {}  # strip out value from dict; a dict of key to list {cert_id:list}
     # list will look like [ attribute change 1, attribute change 2, etc , timestamp, firstname+lastname]
 
@@ -252,32 +255,58 @@ def reported_issues():
 
     default = 'comments'  # key default value
 
-    for report in reports:# iterate through report db
+    for report in reports:  # iterate through report db
         report_values = report.values
-        #
+        # print(report_values)
         for key, value in report_values.items():
 
-            #print(key + ": " + value)
-            newList.setdefault(report.cert_id, []) #a dict of key to list
+            # print(key + ": " + value)
+            newList.setdefault(report.cert_id, [])  # a dict of key to list
             if key == default:
                 newList[report.cert_id].append(key + ": " + value)
             else:
-                newList[report.cert_id].append(key + " should be :" + value)
+                certs = Cert.query.filter_by(id=report.cert_id)
+                for cert in certs:
+                    print(key)
+                    if key == "county":
+                        newList[report.cert_id].append(
+                            "- " + key + " is " + cert.county + " when it should be " + value)
+                    elif key == "month":
+                        newList[report.cert_id].append("- " + key + " is " + cert.month + " when it should be " + value)
+                    elif key == "day":
+                        newList[report.cert_id].append("- " + key + " is " + cert.day + " when it should be " + value)
+                    elif key == "year":
+                        newList[report.cert_id].append(
+                            "- " + key + " is " + str(cert.year) + " when it should be " + value)
+                    elif key == "number":
+                        newList[report.cert_id].append(
+                            "- " + key + " is " + cert.number + " when it should be " + value)
+                    elif key == "first_name":
+                        newList[report.cert_id].append(
+                            "- first name" + " is " + cert.first_name + " when it should be " + value)
+                    elif key == "last_name":
+                        newList[report.cert_id].append(
+                            "- last name" + " is " + cert.last_name + " when it should be " + value)
+                    elif key == "age":
+                        newList[report.cert_id].append("- " + key + " is " + cert.age + " when it should be " + value)
+                    # elif key=="soundex":
+                    else:
+                        newList[report.cert_id].append(
+                            "- " + key + " is " + cert.soundex + " when it should be " + value)
 
-        newList[report.cert_id].append(str(report.timestamp)[:10])#timestamp of the issue reported
+        # newList[report.cert_id].insert(len(newList[report.cert_id]),(str(report.timestamp)[:10]))  # timestamp of the issue reported
+        newList[report.cert_id].append(str(report.timestamp)[:10])  # timestamp of the issue reported
 
-        for user in users:#iterate through user db to find Report author
-            if report.user_id==user.id:
+        for user in users:  # iterate through user db to find Report author
+            if report.user_id == user.id:
                 newList[report.cert_id].append(user.first_name + " " + user.last_name)
 
 
 
 
 
-
-        print(newList)
-        print("END")
-
-
+                # for item in newList:
+                #     print(newList.items)
+                # print("END")
 
     return render_template('reports_page.html', reports=reports, newList=newList, user=user)

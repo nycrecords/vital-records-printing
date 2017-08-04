@@ -6,10 +6,18 @@
     <link href="{{ url_for("static", filename="css/bootstrap.min.css") }}" rel="stylesheet">
     <link href="{{ url_for("static", filename="css/edit.css") }}" rel="stylesheet">
     <link href="{{ url_for("static", filename="css/report.css") }}" rel="stylesheet">
-
-
+<style>
+    div.a {
+        float: right;
+        margin: 0 0 10px 10px;
+    }
+    div.b {
+        float: left;
+    }
+</style>
     <title>Certificate Issue Reports</title>
 </head>
+
 
 {% include("navbar.html") %}
 
@@ -21,16 +29,18 @@
     {% for key in newList %}
         <div>
             <h3>
-                <div align="left">
-
-                Certificate ID: <a href="{{ url_for('.report', cert_id=key) }}">{{ key }}</a>
-                Reported By:{{ newList[key].pop() }}
-                on:{{ newList[key].pop() }}
-        </div>
+                <div class="b">
+                    Certificate ID  <a href="{{ url_for('.report', cert_id=key) }}">{{ key }}</a><br>
+                </div>
+                <div class="a">
+                    Reported By {{ newList[key].pop() }}
+                    On {{ newList[key].pop() }}
+                </div>
+               <br>
         </h3>
 
         {% for item in newList[key] %}
-            <p>{{ item }}</p>
+            <h4>{{ item }}</h4>
         {% endfor %}
 
 
@@ -46,4 +56,13 @@
 </body>
 
 
+{#<style>#}
+{#    div.a {#}
+{#        float: right;#}
+{#        margin: 0 0 10px 10px;#}
+{#    }#}
+{#    div.b {#}
+{#        float: left;#}
+{#    }#}
+{#</style>#}
 </html>
