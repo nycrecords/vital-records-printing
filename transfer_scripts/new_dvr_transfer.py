@@ -1,3 +1,9 @@
+"""
+This script will create a new DVR directory in your desired path with the format DVR_V2 > TYPE > COUNTY > YEAR > FILE.
+The script will then walk through the current DVR and copy each file in to its respective directory.
+All files that are not PDF or are not in the proper name format will be written to log files for later processing.
+"""
+
 import os
 from dotenv.main import load_dotenv
 from datetime import datetime
@@ -96,9 +102,8 @@ for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
 
                 original_dvr_path = filepath.replace(' ', '\ ')
                 print('Original: ' + original_dvr_path)
-                new_dvr_path = os.environ.get('NEW_DVR_TARGET_DIR') + new_path
-                print('New: ' + new_dvr_path)
-                copy_command = 'cp ' + original_dvr_path + ' ' + new_dvr_path
+                print('New: ' + new_path)
+                copy_command = 'cp ' + original_dvr_path + ' ' + new_path
                 print(copy_command + '\n')
 
                 try:
@@ -119,10 +124,10 @@ end_time = datetime.utcnow()
 stats_file.write('Program ended at ' + str(end_time) + '\n')
 elapsed_time = end_time - start_time
 stats_file.write('Program took ' + str(elapsed_time) + " to run\n")
-stats_file.write('Files in directory: ' + files_counter + '\n')
-stats_file.write('Files copied: '+ files_copied_counter + '\n')
-stats_file.write('Bad format: ' + bad_format_counter + '\n')
-stats_file.write('Not PDF:' + not_pdf_counter + '\n')
+stats_file.write('Files in directory: ' + str(files_counter) + '\n')
+stats_file.write('Files copied: '+ str(files_copied_counter) + '\n')
+stats_file.write('Bad format: ' + str(bad_format_counter) + '\n')
+stats_file.write('Not PDF:' + str(not_pdf_counter) + '\n')
 
 not_pdf_file.close()
 bad_format_file.close()
