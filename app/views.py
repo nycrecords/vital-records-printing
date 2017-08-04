@@ -147,7 +147,7 @@ def years():
             type=request.args["type"],
             county=request.args["county"]
         ).items() if val
-        }
+    }
     base_query = Cert.query.filter_by(**filters).filter(Cert.year != None)
     try:
         start = base_query.order_by(Cert.year.asc()).first()
@@ -216,16 +216,16 @@ def report(cert_id):
             else:
                 form_fields = {
                     name: data for name, data in {
-                        'county': form.county.data,
-                        'month': form.month.data,
-                        'day': form.day.data,
-                        'year': form.year.data,
-                        'age': form.age.data,
-                        'number': form.number.data,
-                        'soundex': form.soundex.data,
-                        'first_name': form.first_name.data,
-                        'last_name': form.last_name.data,
-                        'comments': form.comments.data}.items()
+                    'county': form.county.data,
+                    'month': form.month.data,
+                    'day': form.day.data,
+                    'year': form.year.data,
+                    'age': form.age.data,
+                    'number': form.number.data,
+                    'soundex': form.soundex.data,
+                    'first_name': form.first_name.data,
+                    'last_name': form.last_name.data,
+                    'comments': form.comments.data}.items()
                     if data
                 }
                 report = Report(cert_id=cert_id, user_id=current_user.id, values=form_fields)
@@ -242,10 +242,26 @@ def report(cert_id):
 @app.route('/reported_issues', methods=['GET', 'POST'])
 @login_required
 def reported_issues():
-    reports = Report.query.all()
-    #
-    # cert=Cert.query.get(cert_id)
-    # urls = cert.file.pngs
-    # form=ReportForm(request.form)
-    return render_template('reports_page.html', reports=reports, test="hgfhgf")
+    user = User.query.all()
+    reports = Report.query.order_by(Report.cert_id.asc())
+    newList = {}  # strip out value from dict and append to new list
 
+    default = 'comments'  # key default value
+
+    for report in reports:
+        report_values = report.values
+        for key, value in report_values.items():
+
+            print(key + ": " + value)
+            newList.setdefault(report.cert_id, [])
+            if key == default:
+                newList[report.cert_id].append(key + ": " + value)
+            else:
+                newList[report.cert_id].append(key + " should be :" + value)
+        newList[report.cert_id].append(str(report.timestamp)[:10])
+        print(newList)
+        print("END")
+
+
+
+    return render_template('reports_page.html', reports=reports, newList=newList, user=user)
