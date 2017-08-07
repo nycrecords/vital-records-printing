@@ -262,6 +262,9 @@ def reported_issues():
     for report in reports:  # iterate through report db
         report_values = report.values
         # print(report_values)
+        id=report.cert_id+report.user_id # distinct key for for different users on same report(varies by user_id)
+
+
 
 
 
@@ -272,20 +275,20 @@ def reported_issues():
 
             # print(key + ": " + value)
             print(report.user_id)
-            newList.setdefault(report.cert_id, [])  # a dict of key to list
-
+            newList.setdefault(id, [])  # a dict of key to list
+            # newList[id].append(report.cert_id - report.user_id)
             for user in users:  # iterate through user db to find Report author
-                # if report.user_id!=user.id:
-                #     newList.setdefault(report.cert_id, [])  # a dict of key to list
+
 
                 if report.user_id == user.id and (user.first_name + " " + user.last_name) not in newList[
-                    report.cert_id]:
-                    newList[report.cert_id].append(user.first_name + " " + user.last_name)
+                    id]:
+                    newList[id].append(report.cert_id)  #(id-report.user_id)
+                    newList[id].append(user.first_name + " " + user.last_name)
 
 
-            if (str(report.timestamp)[:10]) not in newList[report.cert_id]:
+            if (str(report.timestamp)) not in newList[id]:
                 #print((str(report.timestamp)[:10]) not in newList[report.cert_id])
-                newList[report.cert_id].append(str(report.timestamp)[:10])  # timestamp of the issue reported
+                newList[id].append(str(report.timestamp))  # timestamp of the issue reported
 
             # for user in users:  # iterate through user db to find Report author
             #     if report.user_id == user.id and (user.first_name + " " + user.last_name) not in newList[
@@ -293,36 +296,36 @@ def reported_issues():
             #         newList[report.cert_id].append(user.first_name + " " + user.last_name)
 
             if key == default:
-                newList[report.cert_id].append(key + ": " + value)
+                newList[id].append(key + ": " + value)
             else:
                 certs = Cert.query.filter_by(id=report.cert_id)
                 #if report.cert_id in newList.keys()==False:
                 for cert in certs:
                     # print(key)
                     if key == "county":
-                        newList[report.cert_id].append(
+                        newList[id].append(
                             "- " + key + " is " + cert.county + " when it should be " + value)
                     elif key == "month":
-                        newList[report.cert_id].append("- " + key + " is " + cert.month + " when it should be " + value)
+                        newList[id].append("- " + key + " is " + cert.month + " when it should be " + value)
                     elif key == "day":
-                        newList[report.cert_id].append("- " + key + " is " + cert.day + " when it should be " + value)
+                        newList[id].append("- " + key + " is " + cert.day + " when it should be " + value)
                     elif key == "year":
-                        newList[report.cert_id].append(
+                        newList[id].append(
                             "- " + key + " is " + str(cert.year) + " when it should be " + value)
                     elif key == "number":
-                        newList[report.cert_id].append(
+                        newList[id].append(
                             "- " + key + " is " + cert.number + " when it should be " + value)
                     elif key == "first_name":
-                        newList[report.cert_id].append(
+                        newList[id].append(
                             "- first name" + " is " + cert.first_name + " when it should be " + value)
                     elif key == "last_name":
-                        newList[report.cert_id].append(
+                        newList[id].append(
                             "- last name" + " is " + cert.last_name + " when it should be " + value)
                     elif key == "age":
-                        newList[report.cert_id].append("- " + key + " is " + cert.age + " when it should be " + value)
+                        newList[id].append("- " + key + " is " + cert.age + " when it should be " + value)
                     # elif key=="soundex":
                     else:
-                        newList[report.cert_id].append(
+                        newList[id].append(
                             "- " + key + " is " + cert.soundex + " when it should be " + value)
 
         # newList[report.cert_id].insert(len(newList[report.cert_id]),(str(report.timestamp)[:10]))  # timestamp of the issue reported

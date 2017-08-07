@@ -30,16 +30,16 @@
         <div>
             <h3>
                 <div class="b">
-                    Certificate ID  <a href="{{ url_for('.report', cert_id=key) }}">{{ key }}</a><br>
+                    Certificate ID  <a href="{{ url_for('.report', cert_id=newList[key][0]) }}">{{ newList[key][0] }}</a><br>
                 </div>
                 <div class="a">
-                    Reported By {{ newList[key][0] }}
-                    Updated On {{ newList[key][1] }}
+                    Reported By {{ newList[key][1] }}
+                    Updated On {{ newList[key][2][:10]}}
                 </div>
                <br>
         </h3>
 
-        {% for item in newList[key][2:] %}
+        {% for item in newList[key][3:] %}
             <h4>{{ item }}</h4>
         {% endfor %}
 
