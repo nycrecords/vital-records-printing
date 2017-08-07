@@ -13,6 +13,10 @@
     }
     div.b {
         float: left;
+
+    }
+    div.delete_button{
+        float: right;
     }
 </style>
     <title>Certificate Issue Reports</title>
@@ -34,9 +38,13 @@
                 </div>
                 <div class="a">
                     Reported By {{ newList[key][1] }}
-                    Updated On {{ newList[key][2][:10]}}
+                    Updated On {{ newList[key][2][:10]}}<br>
+                    <div class="delete_button">
+                        <button type="button" onclick="alert('Delete Successfully')">Delete</button>
+                    </div>
                 </div>
                <br>
+
         </h3>
 
         {% for item in newList[key][3:] %}

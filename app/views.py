@@ -282,7 +282,7 @@ def reported_issues():
 
                 if report.user_id == user.id and (user.first_name + " " + user.last_name) not in newList[
                     id]:
-                    newList[id].append(report.cert_id)  #(id-report.user_id)
+                    newList[id].append(report.cert_id)  #(id-report.user_id) (first index)
                     newList[id].append(user.first_name + " " + user.last_name)
 
 
