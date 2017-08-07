@@ -230,7 +230,9 @@ def report(cert_id):
                 }
                 print("AKSLDJFHASDKJHF")
                 print(form_fields)
+
                 report = Report(cert_id=cert_id, user_id=current_user.id, values=form_fields)
+                print(current_user.id)
                 db.session.add(report)
                 db.session.commit()
                 flash("Your report has been submitted.", category="success")
@@ -244,9 +246,11 @@ def report(cert_id):
 @app.route('/reported_issues', methods=['GET', 'POST'])
 @login_required
 def reported_issues():
+    #T
     users = User.query.all()
     # reports = Report.query.order_by(Report.id.asc())
     reports = Report.query.order_by(desc(Report.id))
+
 
     newList = {}  # strip out value from dict; a dict of key to list {cert_id:list}
     # list will look like [ attribute change 1, attribute change 2, etc , timestamp, firstname+lastname]
@@ -258,16 +262,43 @@ def reported_issues():
     for report in reports:  # iterate through report db
         report_values = report.values
         # print(report_values)
+
+
+
+
+
         for key, value in report_values.items():
 
+
             # print(key + ": " + value)
+            print(report.user_id)
             newList.setdefault(report.cert_id, [])  # a dict of key to list
+
+            for user in users:  # iterate through user db to find Report author
+                # if report.user_id!=user.id:
+                #     newList.setdefault(report.cert_id, [])  # a dict of key to list
+
+                if report.user_id == user.id and (user.first_name + " " + user.last_name) not in newList[
+                    report.cert_id]:
+                    newList[report.cert_id].append(user.first_name + " " + user.last_name)
+
+
+            if (str(report.timestamp)[:10]) not in newList[report.cert_id]:
+                #print((str(report.timestamp)[:10]) not in newList[report.cert_id])
+                newList[report.cert_id].append(str(report.timestamp)[:10])  # timestamp of the issue reported
+
+            # for user in users:  # iterate through user db to find Report author
+            #     if report.user_id == user.id and (user.first_name + " " + user.last_name) not in newList[
+            #         report.cert_id]:
+            #         newList[report.cert_id].append(user.first_name + " " + user.last_name)
+
             if key == default:
                 newList[report.cert_id].append(key + ": " + value)
             else:
                 certs = Cert.query.filter_by(id=report.cert_id)
+                #if report.cert_id in newList.keys()==False:
                 for cert in certs:
-                    print(key)
+                    # print(key)
                     if key == "county":
                         newList[report.cert_id].append(
                             "- " + key + " is " + cert.county + " when it should be " + value)
@@ -295,18 +326,16 @@ def reported_issues():
                             "- " + key + " is " + cert.soundex + " when it should be " + value)
 
         # newList[report.cert_id].insert(len(newList[report.cert_id]),(str(report.timestamp)[:10]))  # timestamp of the issue reported
-        newList[report.cert_id].append(str(report.timestamp)[:10])  # timestamp of the issue reported
+        # if (str(report.timestamp)[:10]) not in newList[report.cert_id]:
+        #     newList[report.cert_id].append(str(report.timestamp)[:10])  # timestamp of the issue reported
 
-        for user in users:  # iterate through user db to find Report author
-            if report.user_id == user.id:
-                newList[report.cert_id].append(user.first_name + " " + user.last_name)
-
-
-
-
-
-                # for item in newList:
-                #     print(newList.items)
-                # print("END")
+        # for user in users:  # iterate through user db to find Report author
+        #     if report.user_id == user.id and (user.first_name + " " + user.last_name) not in newList[report.cert_id]:
+        #         newList[report.cert_id].append(user.first_name + " " + user.last_name)
+        # print(newList['3944961'])
+        # print(newList['3944961'])
+        #if report.cert_id==3944961:
+         #   print(newList[report.cert_id])
+    # print("END")
 
     return render_template('reports_page.html', reports=reports, newList=newList, user=user)

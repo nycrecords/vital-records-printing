@@ -33,13 +33,13 @@
                     Certificate ID  <a href="{{ url_for('.report', cert_id=key) }}">{{ key }}</a><br>
                 </div>
                 <div class="a">
-                    Reported By {{ newList[key].pop() }}
-                    On {{ newList[key].pop() }}
+                    Reported By {{ newList[key][0] }}
+                    Updated On {{ newList[key][1] }}
                 </div>
                <br>
         </h3>
 
-        {% for item in newList[key] %}
+        {% for item in newList[key][2:] %}
             <h4>{{ item }}</h4>
         {% endfor %}
 
