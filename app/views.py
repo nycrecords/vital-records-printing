@@ -262,7 +262,7 @@ def reported_issues():
     for report in reports:  # iterate through report db
         report_values = report.values
         # print(report_values)
-        id=report.cert_id+report.user_id # distinct key for for different users on same report(varies by user_id)
+        id=report.cert_id+report.id # distinct key for each report.id(total # of reports)
 
 
 
@@ -282,7 +282,7 @@ def reported_issues():
 
                 if report.user_id == user.id and (user.first_name + " " + user.last_name) not in newList[
                     id]:
-                    newList[id].append(report.cert_id)  #(id-report.user_id) (first index)
+                    newList[id].append(report.cert_id)  #(id-report.id) (first index)
                     newList[id].append(user.first_name + " " + user.last_name)
 
 
