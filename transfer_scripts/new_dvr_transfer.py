@@ -107,6 +107,7 @@ for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
 
                 try:
                     os.system(copy_command)
+                    files_copied_counter += 1
                 except Exception:
                     print('Something went wrong!')
 
@@ -124,7 +125,7 @@ stats_log.write('Program ended at ' + str(end_time) + '\n')
 elapsed_time = end_time - start_time
 stats_log.write('Program took ' + str(elapsed_time) + " to run\n")
 stats_log.write('Files in directory: ' + str(files_counter) + '\n')
-stats_log.write('Files copied: '+ str(files_copied_counter) + '\n')
+stats_log.write('Files copied: ' + str(files_copied_counter) + '\n')
 stats_log.write('Bad format: ' + str(bad_format_counter) + '\n')
 stats_log.write('Non PDF:' + str(non_pdf_counter) + '\n')
 
