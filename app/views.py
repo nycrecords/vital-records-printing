@@ -244,6 +244,7 @@ def report(cert_id):
     return render_template('report_issue.html', form=form, cert=cert, urls=urls)
 
 
+
 @app.route('/reported_issues', methods=['GET', 'POST'])
 @login_required
 def reported_issues():
@@ -265,9 +266,7 @@ def reported_issues():
                     id]:
                     newList[id].append(report.cert_id)  #(id-report.id) (first index)
                     newList[id].append(user.first_name + " " + user.last_name)
-
-            if (str(report.timestamp)) not in newList[id]:
-                newList[id].append(str(report.timestamp))  # timestamp of the issue reported
+                    newList[id].append(str(report.timestamp))  # timestamp of the issue reported
 
             if key == default:
                 newList[id].append(key + ": " + value)
