@@ -20,6 +20,7 @@ from flask_login import (
 )
 from collections import OrderedDict
 from datetime import datetime
+from collections import OrderedDict
 
 RESULT_SET_LIMIT = 20
 WILDCARD_CHAR = "*"
@@ -215,23 +216,23 @@ def report(cert_id):
                 flash("Please complete at least one form field.", category="warning")
                 return render_template('report_issue.html', form=form, cert=cert, urls=urls)
             else:
-                form_fields = {
-                    name: data for name, data in {
-                    'county': form.county.data,
-                    'month': form.month.data,
-                    'day': form.day.data,
-                    'year': form.year.data,
-                    'age': form.age.data,
-                    'number': form.number.data,
-                    'soundex': form.soundex.data,
-                    'first_name': form.first_name.data,
-                    'last_name': form.last_name.data,
-                    'comments': form.comments.data}.items()
-                    if data
-                }
-                print("AKSLDJFHASDKJHF")
-                print(form_fields)
+                form_fields = OrderedDict()
+                form_fields['county'] = form.county.data
+                form_fields['month'] = form.month.data
+                form_fields['day'] = form.day.data
+                form_fields['year'] = form.year.data
+                form_fields['age'] = form.age.data
+                form_fields['number'] = form.number.data
+                form_fields['soundex'] = form.soundex.data
+                form_fields['first_name'] = form.first_name.data
+                form_fields['last_name'] = form.last_name.data
+                form_fields['comments'] = form.comments.data
 
+                # convert the keys of form_fields to a list so you can delete from it while iterating
+                # (you can't alter a dictionary while iterating it)
+                for key in list(form_fields.keys()):
+                    if form_fields[key] == '':
+                        del form_fields[key]
                 report = Report(cert_id=cert_id, user_id=current_user.id, values=form_fields)
                 print(current_user.id)
                 db.session.add(report)
