@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -13,13 +13,11 @@
     }
     div.b {
         float: left;
-
     }
 
 </style>
     <title>Certificate Issue Reports</title>
 </head>
-
 
 {% include("navbar.html") %}
 
@@ -37,19 +35,21 @@
                 <div class="a">
                     Reported By {{ newList[key][1] }}
                     Updated On {{ newList[key][2][:10]}}<br>
-
                 </div>
                <br>
             </h3>
         </div>
-        {% for item in newList[key][3:] %}
-            <h4>{{ item }}</h4>
+        {% for items in newList[key][3:] %}
+            <p><font size="4">
+                {{ items[0] }}
+                <b>{{ items[1] }}</b>
+                {{ items[2] }}
+                <b>{{ items[3] }}</b>
+            </font>
+            </p>
         {% endfor %}
-
         <hr>
     {% endfor %}
-
 </div>
-
 </body>
 </html>
