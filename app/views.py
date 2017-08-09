@@ -2,7 +2,7 @@ import os
 from sqlalchemy import cast, String, desc
 from sqlalchemy.exc import SQLAlchemyError
 from app import app, login_manager, db
-from app.forms import SearchForm, LoginForm, PasswordForm, ReportForm
+from app.forms import SearchForm, LoginForm, PasswordForm, ReportForm, ReportDescription
 from app.models import Cert, User, Report
 from flask import (
     render_template,
@@ -301,3 +301,8 @@ def reported_issues():
                             ["- soundex is " , cert.soundex , " when it should be " , value])
 
     return render_template('reports_page.html', newList=newList)
+
+@app.route('/general_report', methods=['POST'])
+@login_required
+def general_report():
+    form=ReportDescription(request.form)

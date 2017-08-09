@@ -142,3 +142,7 @@ class ReportForm(Form):
     last_name = StringField()
     comments = TextAreaField()
     submit = SubmitField()
+
+class ReportDescription(Form):
+    description=TextAreaField()
+    submit=SubmitField()
