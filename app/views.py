@@ -81,6 +81,7 @@ def search():
     """
     form = SearchForm()
     login_form = LoginForm()
+    report_form = ReportForm()
     if request.method == "POST":
         if form.validate_on_submit():
             # set filters
@@ -135,7 +136,7 @@ def search():
         else:
             return jsonify({"errors": form.errors})
 
-    return render_template('index.html', form=form, login_form=login_form)
+    return render_template('index.html', form=form, login_form=login_form, report_form=report_form )
 
 
 @app.route("/years", methods=['GET'])
@@ -305,4 +306,21 @@ def reported_issues():
 @app.route('/general_report', methods=['POST'])
 @login_required
 def general_report():
-    form=ReportDescription(request.form)
+
+    form = ReportForm(request.form)
+    if request.method == 'POST':
+        print("hi")
+        if form.validate_on_submit():
+            form_completed = False
+            for key, value in form.data.items():
+                if value != "" and key is not 'csrf_token' and key is not 'submit':
+                    form_completed = True
+            if not form_completed:
+                flash("Please complete at least one form field.", category="warning")
+                return render_template('index.html', form=form)
+            else:
+                form_fields = OrderedDict()
+                form_fields['comments'] = form.comments.data
+            report = Report(user_id=current_user.id, values=form_fields)
+    return render_template('index.html', form=form)
+
