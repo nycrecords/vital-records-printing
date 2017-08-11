@@ -326,6 +326,7 @@ def reported_issues():
 @app.route('/general_report', methods=['GET', 'POST'])
 @login_required
 def general_report():
+    form=ReportForm(request.form)
     users=User.query.all()
     reports = Report.query.order_by(desc(Report.id))
     newReport={}
@@ -344,5 +345,5 @@ def general_report():
 
                 newReport[id].append(value)
 
-    return render_template('general_report.html', report=newReport)
+    return render_template('general_report.html', report=newReport, form=form)
 

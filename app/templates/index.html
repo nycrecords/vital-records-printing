@@ -28,22 +28,24 @@
     {% include("search_results.html") %}
     {% include("certificate_modal.html") %}
 
-    <a href="#" class="btn btn-lg btn-success"
-       data-toggle="modal"
-       data-target="#basicModal">Submit a Report</a>
+    <a
+            data-toggle="modal"
+            data-target="#basicModal">Submit a Report</a>
 
-    <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" style='text-align: center' id="myModalLabel">Submit a Report</h4>
+                    <h4 class="modal-title" style='text-align: center' id="myModalLabel">Submit a
+                        Report</h4>
                 </div>
                 <form class="form-horizontal" id="report-issue-form" method="post">
                     <div class="modal-body">
-                            {{ form.csrf_token }}
-                            <h3>Description</h3>
-                            {{ report_form.comments(id="report-comments", class="form-control center-block", placeholder="Please enter your description here.") }}
+                        {{ form.csrf_token }}
+                        <h3>Description</h3>
+                        {{ report_form.comments(id="report-comments", class="form-control center-block", placeholder="Please enter your description here.") }}
                     </div>
                     <div class="modal-footer">
 

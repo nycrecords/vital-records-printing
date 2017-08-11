@@ -9,18 +9,20 @@
                 {% if current_user.is_authenticated and request.endpoint != 'password' %}
                     <li>
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Report
-                                <span class="caret"></span></button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="{{ url_for('reported_issues') }}">View Certificate Report</a></li>
-                                    <li><a href="{{ url_for('general_report') }}"> View General Report</a> </li>
+                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" style="height: 50px">Reports
+                                <span class="caret"></span> </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ url_for('reported_issues') }}">View Certificate Report</a></li>
+                                <li><a href="{{ url_for('general_report') }}"> View General Report</a></li>
+                                <li>
+                                    <a data-target="#basicModal" data-toggle="modal">Submit a Report</a>
+                                </li>
 
-                                    <li>
-                                    {% include('submit_report.html') %}
-                                    </li>
-
-                                </ul>
+                            </ul>
                         </div>
+                    </li>
+                    <li>
+
                     </li>
 
                     <li>
