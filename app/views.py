@@ -280,46 +280,46 @@ def reported_issues():
     for report in reports:  # iterate through report db
         report_values = report.values
         id=report.id # distinct key for each report.id(total # of reports)
+        if report.cert_id is not None:
+            for key, value in report_values.items():
+                newList.setdefault(id, [])  # a dict of key to list
+                for user in users:  # iterate through user db to find Report author
+                    if report.user_id == user.id and (user.first_name + " " + user.last_name) not in newList[
+                        id]:
+                        newList[id].append(report.cert_id)  #(id-report.id) (first index)
+                        newList[id].append(user.first_name + " " + user.last_name)
+                        newList[id].append(str(report.timestamp))  # timestamp of the issue reported
 
-        for key, value in report_values.items():
-            newList.setdefault(id, [])  # a dict of key to list
-            for user in users:  # iterate through user db to find Report author
-                if report.user_id == user.id and (user.first_name + " " + user.last_name) not in newList[
-                    id]:
-                    newList[id].append(report.cert_id)  #(id-report.id) (first index)
-                    newList[id].append(user.first_name + " " + user.last_name)
-                    newList[id].append(str(report.timestamp))  # timestamp of the issue reported
-
-            #appends a list of strings, number of index are for matching html formatting
-            if key == default:
-                newList[id].append(["comments: ",'',value])
-            else:
-                certs = Cert.query.filter_by(id=report.cert_id)
-                for cert in certs:
-                    if key == "county":
-                        newList[id].append([
-                            "- county is " , cert.county , " when it should be " , value])
-                    elif key == "month":
-                        newList[id].append(["- month is " , cert.month , " when it should be " , value])
-                    elif key == "day":
-                        newList[id].append(["- day is " , cert.day , " when it should be " , value])
-                    elif key == "year":
-                        newList[id].append(
-                            ["- year is " , str(cert.year) , " when it should be " , value])
-                    elif key == "number":
-                        newList[id].append(
-                            ["- number is " , cert.number , " when it should be " , value])
-                    elif key == "first_name":
-                        newList[id].append(
-                            ["- first name is " , cert.first_name , " when it should be " , value])
-                    elif key == "last_name":
-                        newList[id].append(
-                            ["- last name is " , cert.last_name , " when it should be " , value])
-                    elif key == "age":
-                        newList[id].append(["- age is " , cert.age , " when it should be " , value])
-                    else:
-                        newList[id].append(
-                            ["- soundex is " , cert.soundex , " when it should be " , value])
+                #appends a list of strings, number of index are for matching html formatting
+                if key == default:
+                    newList[id].append(["comments: ",'',value])
+                else:
+                    certs = Cert.query.filter_by(id=report.cert_id)
+                    for cert in certs:
+                        if key == "county":
+                            newList[id].append([
+                                "- county is " , cert.county , " when it should be " , value])
+                        elif key == "month":
+                            newList[id].append(["- month is " , cert.month , " when it should be " , value])
+                        elif key == "day":
+                            newList[id].append(["- day is " , cert.day , " when it should be " , value])
+                        elif key == "year":
+                            newList[id].append(
+                                ["- year is " , str(cert.year) , " when it should be " , value])
+                        elif key == "number":
+                            newList[id].append(
+                                ["- number is " , cert.number , " when it should be " , value])
+                        elif key == "first_name":
+                            newList[id].append(
+                                ["- first name is " , cert.first_name , " when it should be " , value])
+                        elif key == "last_name":
+                            newList[id].append(
+                                ["- last name is " , cert.last_name , " when it should be " , value])
+                        elif key == "age":
+                            newList[id].append(["- age is " , cert.age , " when it should be " , value])
+                        else:
+                            newList[id].append(
+                                ["- soundex is " , cert.soundex , " when it should be " , value])
 
     return render_template('reports_page.html', newList=newList)
 
