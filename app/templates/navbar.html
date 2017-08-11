@@ -12,7 +12,8 @@
                             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Report
                                 <span class="caret"></span></button>
                                 <ul class="dropdown-menu">
-                                    <li><a href="{{ url_for('reported_issues') }}">View All Report</a></li>
+                                    <li><a href="{{ url_for('reported_issues') }}">View Certificate Report</a></li>
+                                    <li><a href="{{ url_for('general_report') }}"> View General Report</a> </li>
 
                                     <li>
                                     {% include('submit_report.html') %}

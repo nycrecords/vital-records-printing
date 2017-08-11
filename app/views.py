@@ -323,29 +323,26 @@ def reported_issues():
 
     return render_template('reports_page.html', newList=newList)
 
-# # @app.route('/', methods=['GET'])
-# @app.route('/general_report', methods=['GET','POST'])
-# @login_required
-# def general_report():
-#     print('hi')
-#     form = ReportForm(request.form)
-#     if request.method == 'POST':
-#         print("hi")
-#         if form.validate_on_submit():
-#             form_completed = False
-#             for key, value in form.data.items():
-#                 if value != "" and key is not 'csrf_token' and key is not 'submit':
-#                     form_completed = True
-#             if not form_completed:
-#                 flash("Please complete at least one form field.", category="warning")
-#                 return render_template('index.html', form=form)
-#             else:
-#                 form_fields = OrderedDict()
-#                 form_fields['comments'] = form.comments.data
-#             report = Report(user_id=current_user.id, values=form_fields)
-#             db.session.add(report)
-#             db.session.commit()
-#             flash("Your report has been submitted.", category="success")
-#             return redirect('/')
-#     return render_template('index.html', form=form)
+@app.route('/general_report', methods=['GET', 'POST'])
+@login_required
+def general_report():
+    users=User.query.all()
+    reports = Report.query.order_by(desc(Report.id))
+    newReport={}
+
+    for report in reports:
+        report_values=report.values
+        id=report.id # distinct key for each report.id(total # of reports)
+        if report.cert_id is None:
+            for key, value in report_values.items():
+                newReport.setdefault(id, [])  # a dict of key to list
+                for user in users:  # iterate through user db to find Report author
+                    if report.user_id == user.id and (user.first_name + " " + user.last_name) not in newReport[
+                        id]:
+                        newReport[id].append(user.first_name + " " + user.last_name)
+                        newReport[id].append(str(report.timestamp))  # timestamp of the issue reported
+
+                newReport[id].append(value)
+
+    return render_template('general_report.html', report=newReport)
 

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<style>
+    div.a {
+        float: right;
+        margin: 0 0 10px 10px;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <link href="{{ url_for("static", filename="css/bootstrap.min.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/edit.css") }}" rel="stylesheet">
+    <link href="{{ url_for("static", filename="css/report.css") }}" rel="stylesheet">
+
+
+    <title>General Reports</title>
+</head>
+
+
+{% include("navbar.html") %}
+
+<body>
+<div class="container">
+    <h1>
+        <center>General Reports</center>
+    </h1>
+    {% for key in report %}
+        <div>
+            <h3>
+                <div class="a">
+                    Reported By {{ report[key][0] }}
+                    Updated On {{ report[key][1][:10] }}<br>
+                </div>
+                <br>
+            </h3>
+        </div>
+        {% for items in report[key][2:] %}
+            <p>
+            {{ items }}
+            </p>
+        {% endfor %}
+        <hr>
+    {% endfor %}
+
+
+</div>
+</body>
+</html>
