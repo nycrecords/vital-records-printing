@@ -249,7 +249,7 @@ class Report(db.Model):
     timestamp = db.Column(db.DateTime)
     values = db.Column(JSON)
 
-    def __init__(self, cert_id, user_id, values=None):
+    def __init__(self, cert_id=None, user_id=None, values=None):
         self.cert_id = cert_id
         self.user_id = user_id
         self.timestamp = datetime.utcnow()

@@ -73,7 +73,7 @@ def password():
     return render_template('change_password.html', password_form=password_form)
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET','POST'])
 @app.route('/search', methods=['POST'])
 def search():
     """
@@ -133,6 +133,26 @@ def search():
                 rows.append(render_template('certificate_row.html', certificate=cert))
 
             return jsonify({"data": rows})
+        elif report_form.validate_on_submit():
+            print('hi')
+            form_completed = False
+            for key, value in form.data.items():
+                if value != "" and key is not 'csrf_token' and key is not 'submit':
+                    form_completed = True
+            if not form_completed:
+                flash("Please complete at least one form field.", category="warning")
+                return render_template('index.html', form=form)
+            else:
+                form_fields = OrderedDict()
+                form_fields['comments'] = report_form.comments.data
+            report = Report(user_id=current_user.id, values=form_fields)
+            db.session.add(report)
+            db.session.commit()
+            flash("Your report has been submitted.", category="success")
+            return redirect('/')
+            # return render_template('index.html', form=form)
+
+
         else:
             return jsonify({"errors": form.errors})
 
@@ -303,24 +323,29 @@ def reported_issues():
 
     return render_template('reports_page.html', newList=newList)
 
-@app.route('/general_report', methods=['POST'])
-@login_required
-def general_report():
-
-    form = ReportForm(request.form)
-    if request.method == 'POST':
-        print("hi")
-        if form.validate_on_submit():
-            form_completed = False
-            for key, value in form.data.items():
-                if value != "" and key is not 'csrf_token' and key is not 'submit':
-                    form_completed = True
-            if not form_completed:
-                flash("Please complete at least one form field.", category="warning")
-                return render_template('index.html', form=form)
-            else:
-                form_fields = OrderedDict()
-                form_fields['comments'] = form.comments.data
-            report = Report(user_id=current_user.id, values=form_fields)
-    return render_template('index.html', form=form)
+# # @app.route('/', methods=['GET'])
+# @app.route('/general_report', methods=['GET','POST'])
+# @login_required
+# def general_report():
+#     print('hi')
+#     form = ReportForm(request.form)
+#     if request.method == 'POST':
+#         print("hi")
+#         if form.validate_on_submit():
+#             form_completed = False
+#             for key, value in form.data.items():
+#                 if value != "" and key is not 'csrf_token' and key is not 'submit':
+#                     form_completed = True
+#             if not form_completed:
+#                 flash("Please complete at least one form field.", category="warning")
+#                 return render_template('index.html', form=form)
+#             else:
+#                 form_fields = OrderedDict()
+#                 form_fields['comments'] = form.comments.data
+#             report = Report(user_id=current_user.id, values=form_fields)
+#             db.session.add(report)
+#             db.session.commit()
+#             flash("Your report has been submitted.", category="success")
+#             return redirect('/')
+#     return render_template('index.html', form=form)
 
