@@ -30,10 +30,14 @@ counties = ['Kings', 'Queens', 'Bronx', 'Manhattan', 'Richmond']
 new_dvr_structure_path = os.environ.get('NEW_DVR_BASE_DIR')
 for cert_type in cert_types:
     new_dvr_structure_path = os.path.join(new_dvr_structure_path, cert_type)
+    try:
+        os.system('sudo mkdir ' + new_dvr_structure_path)
+    except FileExistsError:
+        print('Directory: ' + new_dvr_structure_path + " already exists")
     for county in counties:
         new_dvr_structure_path = os.path.join(new_dvr_structure_path, county)
         try:
-            os.makedirs(new_dvr_structure_path)
+            os.system('sudo mkdir ' + new_dvr_structure_path)
         except FileExistsError:
             print('Directory: ' + new_dvr_structure_path + " already exists")
         remove_county = os.path.split(new_dvr_structure_path)
@@ -58,9 +62,9 @@ for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
             if len(split_filename) != 4:
                 print('BAD FILENAME DETECTED')
                 print(filepath + '\n')
-                bad_format_file.write(filepath + '\n')
-                bad_format_file.close()
-                bad_format_file = open('bad_format.txt', 'w')
+                bad_format_log.write(filepath + '\n')
+                bad_format_log.close()
+                bad_format_log = open('bad_format.txt', 'w')
                 bad_format_counter += 1
             else:
                 cert_type = split_filename[0]
@@ -92,17 +96,14 @@ for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
 
                 new_path = os.path.join(new_path, year) + os.sep
 
-                try:
-                    os.makedirs(new_path)
-                    print('Directory: ' + new_path + " created \n")
-                except FileExistsError:
-                    # print("Directory: " + new_path + " already exists")
-                    pass
+                # make the directory for year if it doesn't already exist
+                if not os.path.exists(new_path):
+                    os.system('sudo mkdir ' + new_path)
 
                 original_dvr_path = filepath.replace(' ', '\ ')
                 print('Original: ' + original_dvr_path)
                 print('New: ' + new_path)
-                copy_command = 'cp ' + original_dvr_path + ' ' + new_path
+                copy_command = 'sudo cp ' + original_dvr_path + ' ' + new_path
                 print(copy_command + '\n')
 
                 try:
