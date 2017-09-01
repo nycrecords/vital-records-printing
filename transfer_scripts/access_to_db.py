@@ -17,7 +17,7 @@ from multiprocessing import Pool
 from app.constants import counties, months, certificate_types
 
 # To mount, using CSC credentials:
-#   sudo mount -t cifs -o username=<USERNAME>,password=<PASSWORD>,vers=2.0 //10.132.41.31/DVR /mnt/dvr
+#   sudo mount -t cifs -o username=<USERNAME>,password=<PASSWORD>,vers=2.0 //10.132.32.32/DVR /mnt/dvr
 DVR_MOUNT_POINT = "/mnt/dvr"
 NUM_DVR_DIRS = 15
 
