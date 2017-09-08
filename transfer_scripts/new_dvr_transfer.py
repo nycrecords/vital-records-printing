@@ -124,17 +124,21 @@ for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
                 print('New: ' + new_path)
                 print(copy_command)
                 print(new_completed_path)
+                print(datetime.utcnow())
+                print()
 
-                if not os.path.exists(new_path):
+                if not os.path.exists(new_completed_path):
                     os.system(copy_command)
-                    if not os.path.exists(new_path):
+                    if not os.path.exists(new_completed_path):
                         print('COPY FAILED' + '\n')
-                        copy_failed_log.write(original_dvr_path)
+                        copy_failed_log.write(original_dvr_path + '\n')
                         copy_failed_log.close()
                         copy_failed_log = open(os.environ.get('COPY_FAILED_LOG_FILE_PATH'), 'a')
+                        execution_log.write('COPY FAILED' + '\n')
                     else:
                         files_copied_counter += 1
                 else:
+                    execution_log.write('FILE ALREADY ON SERVER' + '\n\n')
                     print('FILE ALREADY ON SERVER' + '\n')
 
                 execution_log.close()
