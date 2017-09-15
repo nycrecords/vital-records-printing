@@ -57,7 +57,6 @@ execution_log.close()
 execution_log = open(os.environ.get('EXECUTION_LOG_FILE_PATH'), 'a')
 
 new_path = os.environ.get('NEW_DVR_BASE_DIR') + os.sep
-
 for subdir, dirs, files in os.walk(os.environ.get('CUR_DVR_BASE_DIR')):
     for file in files:
         files_counter += 1
