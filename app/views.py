@@ -1,7 +1,7 @@
 import os
 from sqlalchemy import cast, String
 from sqlalchemy.exc import SQLAlchemyError
-from app import app, login_manager, db
+from app import app, login_manager, db, s3
 from app.forms import SearchForm, LoginForm, PasswordForm, ReportForm
 from app.models import Cert, User, Report
 from flask import (
@@ -172,8 +172,8 @@ def image(cert_id):
     if cert.file_id is None:
         urls = [url_for('static', filename=os.path.join('img', "missing.png"))]
     else:
-        if not cert.file.converted:
-            cert.file.convert()
+        # if not cert.file.converted: // I changed this always convert
+        cert.file.convert()
         urls = cert.file.pngs
     return jsonify({
         "data": {

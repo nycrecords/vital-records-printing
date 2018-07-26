@@ -3,7 +3,7 @@ Models for Vital Records Printing
 """
 
 import os
-from app import db
+from app import db, s3
 from app.constants import (
     certificate_types,
     months,
@@ -18,6 +18,7 @@ from werkzeug.security import (
 )
 from datetime import datetime, timedelta
 from sqlalchemy.dialects.postgresql import JSON
+import botocore
 
 
 class Cert(db.Model):
@@ -104,34 +105,41 @@ class File(db.Model):
     @property
     def pngs(self):
         """ TODO: docstring """
-        if self.converted:
-            return [
-                url_for(
-                    "static",
-                    filename=os.path.join(
-                        current_app.config["CERT_IMAGE_STATIC_DIRECTORY"],
-                        self.name,
-                        png
-                    )
+        # if self.converted: // I changed this to always return whether or not its converted
+        return [
+            url_for(
+                "static",
+                filename=os.path.join(
+                    current_app.config["CERT_IMAGE_STATIC_DIRECTORY"],
+                    self.name,
+                    png
                 )
-                for png in os.listdir(
-                    os.path.join(
-                        current_app.config["CERT_IMAGE_DIRECTORY"],
-                        self.name
-                    )
+            )
+            for png in os.listdir(
+                os.path.join(
+                    current_app.config["CERT_IMAGE_DIRECTORY"],
+                    self.name
                 )
-            ]
+            )
+        ]
 
     def convert(self):
         """ TODO: docstring """
         try:
-            certificate_pdf_to_png(self.path)
+            BUCKET_NAME = 'nycrecords-vital-records'
+            KEY = self.path.strip('mnt/dvr_v2')
+            download_path = '/vagrant/app/static/img/s3_download/' + self.name + '.pdf'
+
+            try:
+                s3.Bucket(BUCKET_NAME).download_file(KEY, download_path)
+            except botocore.exceptions.ClientError as e:
+                if e.response['Error']['Code'] == "404":
+                    print("The object does not exist.")
+                else:
+                    raise
+            certificate_pdf_to_png(download_path)
         except Exception as e:
             print(e)  # TODO: log it!
-        else:
-            self.converted = True
-            db.session.commit()
-
 
 class User(db.Model, UserMixin):
     """

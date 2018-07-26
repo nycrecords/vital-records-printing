@@ -12,7 +12,7 @@ class Config(object):
 
     SECRET_KEY = os.environ.get("SECRET_KEY") or "ssshhhhh"
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI") or 'postgresql://vital_records_printing_db@127.0.0.1:5432/vital_records_printing'
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI") or 'postgresql://vital_records_printing_db@127.0.0.1:5432/vital_records_printing_v2'
 
     # suppress warning
     SQLALCHEMY_TRACK_MODIFICATIONS = True
