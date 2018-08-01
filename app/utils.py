@@ -32,3 +32,8 @@ def certificate_pdf_to_png(pdf_path):
         pdf_path,
         os.path.join(png_path, ''.join(("%d", os.extsep, "png")))
     ])
+    subprocess.call([
+        "rm",
+        "-rf",
+        pdf_path,
+    ])
