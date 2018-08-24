@@ -6,6 +6,10 @@ a:hover {
     color: hotpink;
 }
 
+a:hover.home-page-panel-anchor {
+    color: #337ab7;
+}
+
 .error {
     color: red;
 }

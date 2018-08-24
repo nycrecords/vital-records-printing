@@ -23,6 +23,44 @@
     {% endwith %}
 
     <h2>Search for <u>Birth</u>, <u>Death</u>, and <u>Marriage</u> Certificates</h2>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a class="home-page-panel-anchor" data-toggle="collapse" href="#home-page-panel">Please Note: The
+                    following records are not available
+                    via this website. To access these records, please use the microfilm. (Expand to view list)</a>
+            </h4>
+        </div>
+        <div id="home-page-panel" class="panel-collapse collapse">
+            <div class="panel-body">
+                <strong>Manhattan and Brooklyn birth records prior to 1866<br>
+                    Queens and Richmond (Staten Island) birth, death and marriage records prior to 1898<br>
+                    City of Brooklyn death records prior to 1862<br>
+                    All Manhattan & Kings County Town (Flatbush, Flatlands, Gravesend, New Lots, and New Utrecht) death
+                    records<br>
+                    All marriage license* records (1908-1949)<br>
+                    Manhattan marriage records prior to 1866<br>
+                    All Kings County Town (Flatbush, Flatlands, Gravesend, New Lots, and New Utrecht) marriage
+                    records<br><br>
+                    *Marriage Certificate versus Marriage License Records
+                </strong>
+                <br><br>
+                Prior to 1908 there is only one available marriage record, the “certificate” recorded by the Health
+                Department. Beginning in 1908, in compliance with N.Y. State Law, couples planning to marry were
+                required to obtain a license. In the five boroughs of New York City the City Clerk issued the license.
+                The City Clerk marriage record series typically includes an “affidavit” form filled-out by the couple,
+                the “license” issued by the Clerk, and a “certificate” filled-out by the person performing the wedding
+                ceremony.
+                <br><br>
+                The Health Department continued to record marriages until 1937. Consequently, there are potentially TWO
+                entirely separate records of a marriage for the time period from 1908 through 1937 – the Health
+                Department Certificate and the City Clerk License/Affidavit/Certificate. Although the information in
+                both series is duplicative, the City Clerk series includes additional information: bride and groom
+                parents’ “country of birth”, and the bride’s occupation. The City Clerk series is not yet available via
+                this website.
+            </div>
+        </div>
+    </div>
     {% include("search_form.html") %}
     {% include("search_results.html") %}
     {% include("certificate_modal.html") %}
