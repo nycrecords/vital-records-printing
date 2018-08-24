@@ -14,4 +14,8 @@ $(function () {
         // ensure only 1 click is required to show popover after hiding
         $(e.target).data("bs.popover").inState.click = false;
     });
+
+    $("body").on("contextmenu", "img", function(e) {
+        return false;
+    });
 });
